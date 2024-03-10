@@ -19,6 +19,9 @@
         android:theme="@style/Theme.NuocNgotTVD"
         tools:targetApi="31">
         <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
