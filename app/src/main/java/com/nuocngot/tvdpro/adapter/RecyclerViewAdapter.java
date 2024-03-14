@@ -23,6 +23,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.dataList = dataList;
     }
 
+    public RecyclerViewAdapter(Context context, ArrayList<productAdapter> productDataList) {
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -13,12 +13,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.nuocngot.tvdpro.LoginActivity;
+import com.nuocngot.tvdpro.adapter.Admin;
 import com.nuocngot.tvdpro.adapter.stAdpater;
 import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.adapter.stListViewAdapter;
+import com.nuocngot.tvdpro.database.DatabaseHelper;
 
 import java.util.ArrayList;
 
@@ -29,16 +34,20 @@ public class SettingsFragment extends Fragment {
     public ListView listView;
 
     public Button btnExit;
+    public TextView tvName, tvThanhVien;
 
+    public ImageView ivAvatar;
     public String NAME_SHARED_PREFERENCES = "manager";
     public String IS_LOGIN = "isLogin";
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_settings, container, false);
         listView = view.findViewById(R.id.listViewST);
         btnExit = view.findViewById(R.id.btnLogout);
+        tvName = view.findViewById(R.id.tvName);
+        tvThanhVien = view.findViewById(R.id.tvThanhVien);
+        ivAvatar = view.findViewById(R.id.imgAvatar);
         stAdapters.add(new stAdpater("Đổi ảnh đại diện"));
         stAdapters.add(new stAdpater("Đổi tên tài khoản"));
         stAdapters.add(new stAdpater("Thay đổi địa chỉ"));
@@ -52,8 +61,17 @@ public class SettingsFragment extends Fragment {
                 showAskDialog();
             }
         });
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        Admin admin = dbHelper.getAdminInfo(); 
+        if (admin != null) {
+            tvName.setText(admin.getTenAdmin());
+            Glide.with(getContext()).load(admin.getHinhAnh()).into(ivAvatar);
+        }
+
         return view;
     }
+
+
     public void showAskDialog() {
         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
         alertDialog.setTitle("Đăng xuất");

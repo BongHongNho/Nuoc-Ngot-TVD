@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@drawable/bg1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/m3_appbar_background"
     tools:context=".LoginActivity">
     <LinearLayout
         android:id="@+id/layout_regsiter"
@@ -19,7 +19,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="REGISTER TO TDV SOFT DRINK"
+            android:text="ĐĂNG KÝ"
+            android:textAllCaps="true"
             android:textSize="20dp"
             android:layout_margin="10dp"
             android:layout_gravity="center"
@@ -32,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:id="@+id/edEmailPhone"
                 android:layout_height="wrap_content"
-                android:hint="Email/Phone number">
+                android:hint="Email hoặc số điện thoại">
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
@@ -42,34 +43,36 @@
                 android:layout_width="match_parent"
                 android:id="@+id/edUsenameRE"
                 android:layout_height="wrap_content"
-                android:hint="Username">
+                android:hint="Tài khoản">
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
+            app:passwordToggleEnabled="true"
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:id="@+id/edPasswordRE"
                 android:inputType="textPassword"
                 android:layout_height="wrap_content"
-                android:hint="Password">
+                android:hint="Mật khẩu">
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
+            app:passwordToggleEnabled="true"
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:id="@+id/edCfPasswordRE"
                 android:inputType="textPassword"
                 android:layout_height="wrap_content"
-                android:hint="Re-password">
+                android:hint="Nhập lại mật khẩu">
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:text="Register"
+            android:text="Đăng ký"
             android:id="@+id/btnnRegister"
             android:textAllCaps="true"
             android:layout_gravity="center"
@@ -83,7 +86,7 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Have account..? Back to login here">
+            android:text="Đã có tài khoản...? Đăng nhập tại đây">
         </TextView>
     </LinearLayout>
 

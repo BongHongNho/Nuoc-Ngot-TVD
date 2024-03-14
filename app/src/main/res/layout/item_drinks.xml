@@ -2,72 +2,86 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
-<com.google.android.material.card.MaterialCardView
-    android:layout_width="wrap_content"
-    android:layout_margin="10dp"
-    android:layout_height="wrap_content">
-    <LinearLayout
-        android:background="@drawable/m3_appbar_background"
-        android:orientation="vertical"
-        android:layout_width="100dp"
-        android:layout_height="150dp">
-          <ImageView
-              android:id="@+id/imgPro"
-              android:layout_marginTop="5dp"
-              android:layout_gravity="center"
-              android:layout_width="60dp"
-              android:src="@drawable/twister_orange"
-              android:layout_height="60dp">
-          </ImageView>
-        <TextView
-            android:id="@+id/productName"
-            android:layout_marginTop="5dp"
-            android:textSize="16dp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tropicana Twister">
-        </TextView>
-        <TextView
-            android:id="@+id/productCost"
-            android:textColor="#FF0000"
-            android:textStyle="bold"
-            android:layout_marginBottom="5dp"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="12.000 VND">
-        </TextView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
         <LinearLayout
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="30dp"
-                android:layout_margin="10dp"
-                android:layout_height="30dp">
-                <ImageView
-                    android:padding="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/paid">
-                </ImageView>
-            </com.google.android.material.card.MaterialCardView>
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="30dp"
-                android:layout_margin="10dp"
-                android:layout_height="30dp">
-                <ImageView
-                    android:padding="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/cart">
-                </ImageView>
-            </com.google.android.material.card.MaterialCardView>
+            android:layout_width="100dp"
+            android:layout_height="180dp"
+            android:background="@drawable/m3_appbar_background"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imgPro"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/twister_orange" />
+
+            <TextView
+                android:id="@+id/productName"
+                android:singleLine="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:text="Tropicana Twister"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/productCost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp"
+                android:text="12.000 VND"
+                android:textColor="#FF0000"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/productSL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:text="1000" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="10dp">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="5dp"
+                        android:src="@drawable/paid" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="30dp"
+                    android:id="@+id/addToCart"
+                    android:layout_height="30dp"
+                    android:layout_margin="10dp">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="5dp"
+                        android:src="@drawable/cart" />
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+    </com.google.android.material.card.MaterialCardView>
 </LinearLayout>
