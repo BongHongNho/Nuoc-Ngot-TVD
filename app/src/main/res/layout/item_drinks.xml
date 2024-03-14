@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 <com.google.android.material.card.MaterialCardView
     android:layout_width="wrap_content"
     android:layout_margin="10dp"
     android:layout_height="wrap_content">
     <LinearLayout
+        android:background="@drawable/m3_appbar_background"
         android:orientation="vertical"
-        android:layout_width="150dp"
-        android:layout_height="200dp">
+        android:layout_width="100dp"
+        android:layout_height="150dp">
           <ImageView
-              android:layout_marginTop="10dp"
+              android:id="@+id/imgPro"
+              android:layout_marginTop="5dp"
               android:layout_gravity="center"
-              android:layout_width="80dp"
+              android:layout_width="60dp"
               android:src="@drawable/twister_orange"
-              android:layout_height="80dp">
+              android:layout_height="60dp">
           </ImageView>
         <TextView
             android:id="@+id/productName"
-            android:layout_margin="10dp"
+            android:layout_marginTop="5dp"
             android:textSize="16dp"
             android:layout_gravity="center"
+            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tropicana Twister">
@@ -30,6 +33,7 @@
             android:id="@+id/productCost"
             android:textColor="#FF0000"
             android:textStyle="bold"
+            android:layout_marginBottom="5dp"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,26 +42,25 @@
         <LinearLayout
             android:orientation="horizontal"
             android:gravity="center"
+            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="40dp"
+                android:layout_width="30dp"
                 android:layout_margin="10dp"
-                android:layout_height="40dp">
+                android:layout_height="30dp">
                 <ImageView
                     android:padding="5dp"
-                    android:background="@drawable/m3_appbar_background"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/paid">
                 </ImageView>
             </com.google.android.material.card.MaterialCardView>
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="40dp"
+                android:layout_width="30dp"
                 android:layout_margin="10dp"
-                android:layout_height="40dp">
+                android:layout_height="30dp">
                 <ImageView
-                    android:background="@drawable/m3_appbar_background"
                     android:padding="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

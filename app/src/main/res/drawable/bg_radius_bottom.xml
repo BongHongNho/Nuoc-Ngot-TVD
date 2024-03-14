@@ -4,8 +4,9 @@
     <shape
         android:shape="rectangle">
         <corners
-            android:radius="@dimen/m3_alert_dialog_corner_size" />
+            android:bottomLeftRadius="28dp"
+            android:bottomRightRadius="28dp"/>
         <solid
-            android:color="@color/m3_appbar_overlay_color" />
+            android:color="?colorSurface" />
     </shape>
 </inset>

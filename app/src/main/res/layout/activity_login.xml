@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@drawable/bg1"
+    android:background="@drawable/m3_appbar_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
@@ -19,7 +19,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="LOGIN TO TDV SOFT DRINK"
+            android:text="Đăng Nhập"
+            android:textAllCaps="true"
             android:textSize="20dp"
             android:layout_margin="10dp"
             android:layout_gravity="center"
@@ -32,18 +33,19 @@
                 android:layout_width="match_parent"
                 android:id="@+id/edUsenameLG"
                 android:layout_height="wrap_content"
-                android:hint="Username">
+                android:hint="Tài khoản">
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
+            app:passwordToggleEnabled="true"
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:id="@+id/edPasswordLG"
                 android:inputType="textPassword"
                 android:layout_height="wrap_content"
-                android:hint="Password">
+                android:hint="Mật khẩu">
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
        <LinearLayout
@@ -54,7 +56,7 @@
            <com.google.android.material.checkbox.MaterialCheckBox
                android:layout_width="0dp"
                android:layout_height="wrap_content"
-               android:text="Remember me"
+               android:text="Ghi nhớ đăng nhập"
                android:layout_gravity="center"
                android:layout_weight="1">
            </com.google.android.material.checkbox.MaterialCheckBox>
@@ -66,11 +68,12 @@
                android:layout_gravity="center"
                android:gravity="right"
                android:layout_height="wrap_content"
-               android:text="Forget password..?">
+               android:text="Quên mật khẩu..?">
            </TextView>
        </LinearLayout>
         <Button
-            android:text="Login"
+            android:text="Đăng nhập"
+            android:id="@+id/btnLogin"
             android:textAllCaps="true"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
@@ -83,7 +86,7 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Not have account..? Please register here">
+            android:text="Không có tài khoản, vui lòng tạo tài khoản">
         </TextView>
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -108,7 +111,7 @@
                     android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Login with Google">
+                    android:text="Đăng nhập với Google">
                 </TextView>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
