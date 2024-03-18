@@ -32,6 +32,11 @@
             android:layout_height="wrap_content"
             android:text="Sản phẩm bán chạy nhất">
         </TextView>
+        <View
+            android:layout_margin="5dp"
+            android:background="@drawable/m3_appbar_background"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"></View>
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:id="@+id/recycleViewItems"
@@ -45,6 +50,11 @@
             android:layout_height="wrap_content"
             android:text="Xem thêm >>>">
         </TextView>
+       <View
+           android:layout_margin="5dp"
+           android:background="@drawable/m3_appbar_background"
+           android:layout_width="match_parent"
+           android:layout_height="2dp"></View>
     </LinearLayout>
 </ScrollView>
 

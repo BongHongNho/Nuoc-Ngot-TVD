@@ -16,10 +16,10 @@
 
             <ImageView
                 android:id="@+id/imgPro"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
                 android:src="@drawable/twister_orange" />
 
             <TextView
@@ -51,37 +51,6 @@
                 android:layout_marginTop="5dp"
                 android:gravity="center"
                 android:text="1000" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_margin="10dp">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="5dp"
-                        android:src="@drawable/paid" />
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="30dp"
-                    android:id="@+id/addToCart"
-                    android:layout_height="30dp"
-                    android:layout_margin="10dp">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="5dp"
-                        android:src="@drawable/cart" />
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

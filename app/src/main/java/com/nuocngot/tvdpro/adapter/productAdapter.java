@@ -1,17 +1,26 @@
 package com.nuocngot.tvdpro.adapter;
 
 public class productAdapter {
+    private int id_product;
     private String itemName;
-    private double itemPrice;
+    private int itemPrice;
     private String itemImage;
-
     private int itemQuantity;
 
-    public productAdapter(String itemName, double itemPrice, String itemImage, int itemQuantity) {
+    public productAdapter(int id_product, String itemName, int itemPrice, String itemImage, int itemQuantity) {
+        this.id_product = id_product;
         this.itemName = itemName;
         this.itemPrice = itemPrice;
         this.itemImage = itemImage;
         this.itemQuantity = itemQuantity;
+    }
+
+    public int getId_product() {
+        return id_product;
+    }
+
+    public void setId_product(int id_product) {
+        this.id_product = id_product;
     }
 
     public String getItemName() {
@@ -22,11 +31,11 @@ public class productAdapter {
         this.itemName = itemName;
     }
 
-    public double getItemPrice() {
+    public int getItemPrice() {
         return itemPrice;
     }
 
-    public void setItemPrice(double itemPrice) {
+    public void setItemPrice(int itemPrice) {
         this.itemPrice = itemPrice;
     }
 

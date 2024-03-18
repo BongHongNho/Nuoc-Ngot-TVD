@@ -3,116 +3,122 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@drawable/m3_appbar_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/m3_appbar_background"
     tools:context=".LoginActivity">
+
     <LinearLayout
         android:id="@+id/layout_login"
-        android:background="@drawable/background_radius"
-        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
+        android:layout_gravity="center"
         android:layout_margin="10dp"
-        android:orientation="vertical">
+        android:background="@drawable/background_radius"
+        android:orientation="vertical"
+        android:padding="20dp">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
             android:text="Đăng Nhập"
             android:textAllCaps="true"
             android:textSize="20dp"
-            android:layout_margin="10dp"
-            android:layout_gravity="center"
-            android:textStyle="bold">
-        </TextView>
+            android:textStyle="bold"></TextView>
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
                 android:id="@+id/edUsenameLG"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Tài khoản">
-            </com.google.android.material.textfield.TextInputEditText>
+                android:hint="Tài khoản"></com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            app:passwordToggleEnabled="true"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:passwordToggleEnabled="true">
+
             <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
                 android:id="@+id/edPasswordLG"
-                android:inputType="textPassword"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Mật khẩu">
-            </com.google.android.material.textfield.TextInputEditText>
+                android:hint="Mật khẩu"
+                android:inputType="textPassword"></com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
-       <LinearLayout
-           android:layout_marginTop="10dp"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal">
-           <com.google.android.material.checkbox.MaterialCheckBox
-               android:layout_width="0dp"
-               android:layout_height="wrap_content"
-               android:text="Ghi nhớ đăng nhập"
-               android:layout_gravity="center"
-               android:layout_weight="1">
-           </com.google.android.material.checkbox.MaterialCheckBox>
-           <TextView
-               android:id="@+id/tvForget"
-               android:textColor="#FF0000"
-               android:layout_width="0dp"
-               android:layout_weight="1"
-               android:layout_gravity="center"
-               android:gravity="right"
-               android:layout_height="wrap_content"
-               android:text="Quên mật khẩu..?">
-           </TextView>
-       </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="Ghi nhớ đăng nhập"></com.google.android.material.checkbox.MaterialCheckBox>
+
+            <TextView
+                android:id="@+id/tvForget"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="Quên mật khẩu..?"
+                android:textColor="#FF0000"></TextView>
+        </LinearLayout>
+
         <Button
-            android:text="Đăng nhập"
             android:id="@+id/btnLogin"
-            android:textAllCaps="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </Button>
+            android:text="Đăng nhập"
+            android:textAllCaps="true"></Button>
+
         <TextView
             android:id="@+id/tvResgiter"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Không có tài khoản, vui lòng tạo tài khoản">
-        </TextView>
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            app:strokeWidth="0dp"
+            android:text="Không có tài khoản, vui lòng tạo tài khoản"></TextView>
+
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvLogin"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:strokeWidth="0dp">
+
             <LinearLayout
-                android:padding="10dp"
-                android:background="@drawable/m3_appbar_background"
-                android:layout_gravity="center"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_gravity="center"
+                android:background="@drawable/m3_appbar_background"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
                 <ImageView
-                    android:src="@drawable/icon_google"
                     android:layout_width="30dp"
-                    android:layout_height="30dp">
-                </ImageView>
+                    android:layout_height="30dp"
+                    android:src="@drawable/icon_google"></ImageView>
+
                 <TextView
-                    android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Đăng nhập với Google">
-                </TextView>
+                    android:layout_gravity="center"
+                    android:text="Đăng nhập với Google"></TextView>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

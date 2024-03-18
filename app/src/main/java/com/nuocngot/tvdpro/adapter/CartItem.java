@@ -12,6 +12,14 @@ public class CartItem {
     private int quantityInStock; // Số lượng sản phẩm có sẵn
     private String totalAmount; // Tổng số tiền của mục trong giỏ hàng
 
+    public CartItem(int productId, String productName, String productImage, int productPrice, int productQuantity) {
+        this.productId = productId;
+        this.productName = productName;
+        this.productImage = productImage;
+        this.productPrice = productPrice;
+        this.productQuantity = productQuantity;
+    }
+
     public int getId() {
         return id;
     }
@@ -107,7 +115,5 @@ public class CartItem {
 
     public CartItem() {
     }
-
-    // Các phương thức getter và setter
 }
 
