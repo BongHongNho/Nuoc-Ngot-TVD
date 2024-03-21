@@ -1,6 +1,7 @@
-package com.nuocngot.tvdpro;
+package com.nuocngot.tvdpro.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -16,6 +17,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.nuocngot.tvdpro.R;
+import com.nuocngot.tvdpro.adapter.ViewPagerAdapter;
 import com.nuocngot.tvdpro.fragment.CategoryFragment;
 import com.nuocngot.tvdpro.fragment.HomeFragment;
 import com.nuocngot.tvdpro.fragment.NotiFragment;
@@ -88,10 +91,20 @@ public class MainActivity extends AppCompatActivity {
                     bottomNavigationView.setSelectedItemId(R.id.menu_category);
                 } else if (position == 2) {
                     bottomNavigationView.setSelectedItemId(R.id.menu_noti);
-                }
-                else if (position == 3) {
+                } else if (position == 3) {
                     bottomNavigationView.setSelectedItemId(R.id.menu_settings);
                 }
+            }
+        });
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int itemId = menuItem.getItemId();
+                if (itemId == R.id.nav_menu_cart) {
+                    Intent intent = new Intent(MainActivity.this, GioHangActivity.class);
+                    startActivity(intent);
+                }
+                return false;
             }
         });
     }
@@ -109,11 +122,11 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle("Nhắc nhở")
                 .setMessage("Bạn muôn thoát khỏi ứng dụng ?")
                 .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finishAffinity();
-                    }
-                }
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finishAffinity();
+                            }
+                        }
                 )
                 .setNegativeButton("Không", new DialogInterface.OnClickListener() {
                     @Override

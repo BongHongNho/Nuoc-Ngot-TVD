@@ -1,11 +1,9 @@
 package com.nuocngot.tvdpro.adapter;
 
 import static android.content.ContentValues.TAG;
-import static androidx.core.content.ContentProviderCompat.requireContext;
 import static androidx.core.content.ContextCompat.startActivity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,14 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.nuocngot.tvdpro.DetailsActivity;
+import com.nuocngot.tvdpro.activity.DetailsActivity;
 import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
 

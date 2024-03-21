@@ -14,7 +14,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 
 import com.bumptech.glide.Glide;
-import com.nuocngot.tvdpro.CartActivity;
+import com.nuocngot.tvdpro.activity.CartActivity;
 import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
 

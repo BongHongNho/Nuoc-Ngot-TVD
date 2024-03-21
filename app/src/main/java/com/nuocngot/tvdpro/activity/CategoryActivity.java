@@ -1,24 +1,32 @@
-package com.nuocngot.tvdpro;
+package com.nuocngot.tvdpro.activity;
 
 import android.os.Bundle;
+import android.widget.Toolbar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.nuocngot.tvdpro.R;
 
 public class CategoryActivity extends AppCompatActivity {
+
+    RecyclerView recyclerView;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_category);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+        recyclerView = findViewById(R.id.recycle_view_more);
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Giỏ hàng");
+        toolbar.setNavigationIcon(R.drawable.back);
+        toolbar.setNavigationOnClickListener(v -> {
+            onBackPressed();
         });
     }
 }

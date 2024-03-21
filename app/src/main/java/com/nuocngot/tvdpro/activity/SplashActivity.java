@@ -1,4 +1,4 @@
-package com.nuocngot.tvdpro;
+package com.nuocngot.tvdpro.activity;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -8,11 +8,9 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.nuocngot.tvdpro.R;
 
 public class SplashActivity extends AppCompatActivity {
     private TextView textViewSpalsh;

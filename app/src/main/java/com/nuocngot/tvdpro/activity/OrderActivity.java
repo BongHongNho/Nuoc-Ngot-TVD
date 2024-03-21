@@ -1,4 +1,4 @@
-package com.nuocngot.tvdpro;
+package com.nuocngot.tvdpro.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.adapter.Order;
 import com.nuocngot.tvdpro.adapter.OrderDetailsAdapter;
 

@@ -5,10 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.nuocngot.tvdpro.OrderActivity;
+import com.nuocngot.tvdpro.activity.OrderActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class OrderDetailsAdapter extends BaseAdapter {
     private ArrayList<CartItem> cartItems = new ArrayList<>();

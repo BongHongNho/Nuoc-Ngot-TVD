@@ -1,4 +1,4 @@
-package com.nuocngot.tvdpro;
+package com.nuocngot.tvdpro.activity;
 
 public class FragmentAdapter {
 }

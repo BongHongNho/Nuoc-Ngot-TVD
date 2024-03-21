@@ -1,60 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<!-- fragment_home.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragment.HomeFragment">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewSanPham"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-            <ImageSwitcher
-                android:id="@+id/imageSwitcher"
-                android:layout_width="match_parent"
-                android:layout_height="200dp" />
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/m3_appbar_background"
-                android:layout_height="wrap_content"
-                android:id="@+id/recycleView">
-            </androidx.recyclerview.widget.RecyclerView>
-        </LinearLayout>
-        <TextView
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sản phẩm bán chạy nhất">
-        </TextView>
-        <View
-            android:layout_margin="5dp"
-            android:background="@drawable/m3_appbar_background"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"></View>
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:id="@+id/recycleViewItems"
-            android:layout_height="wrap_content">
-        </androidx.recyclerview.widget.RecyclerView>
-        <TextView
-            android:layout_gravity="right"
-            android:layout_marginRight="20dp"
-            android:textStyle="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Xem thêm >>>">
-        </TextView>
-       <View
-           android:layout_margin="5dp"
-           android:background="@drawable/m3_appbar_background"
-           android:layout_width="match_parent"
-           android:layout_height="2dp"></View>
-    </LinearLayout>
-</ScrollView>
+        android:padding="8dp"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:background="@android:color/white"
+        android:scrollbars="none" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/add"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+</RelativeLayout>

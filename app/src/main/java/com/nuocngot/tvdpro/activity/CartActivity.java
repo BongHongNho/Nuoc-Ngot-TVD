@@ -1,4 +1,4 @@
-package com.nuocngot.tvdpro;
+package com.nuocngot.tvdpro.activity;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -6,16 +6,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.card.MaterialCardView;
+import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.adapter.CartItem;
 import com.nuocngot.tvdpro.adapter.CartItemAdapter;
 import com.nuocngot.tvdpro.adapter.Order;
@@ -38,7 +34,8 @@ public class CartActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         btnOrder = findViewById(R.id.btnOrder);
         btnOrder.setOnClickListener(v -> {
-            ArrayList<CartItem> cartItems = getCartItems();
+            int userId = getCurrentUserId(); // Lấy ID của người dùng đăng nhập
+            ArrayList<CartItem> cartItems = getCartItems(userId); // Lấy danh sách các mục trong giỏ hàng của người dùng đó
             int totalQuantity = calculateTotalQuantity(cartItems);
             int totalPrice = calculateTotalPrice(cartItems);
             Order order = new Order(cartItems, totalQuantity, totalPrice);
@@ -59,23 +56,41 @@ public class CartActivity extends AppCompatActivity {
         displayCartItems();
     }
 
-    public ArrayList<CartItem> getCartItems() {
+    private int getCurrentUserId() {
+        int userId = -1;
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT maTK FROM TaiKhoan WHERE isLogin = 1", null); // Lấy ID của người dùng đang đăng nhập
+        if (cursor.moveToFirst()) {
+            userId = cursor.getInt(cursor.getColumnIndex("maTK"));
+        }
+        cursor.close();
+        db.close();
+        return userId;
+    }
+
+
+    public ArrayList<CartItem> getCartItems(int userId) {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         ArrayList<CartItem> cartItems = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM GioHang", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM GioHang WHERE userId = ?", new String[]{String.valueOf(userId)});
         if (cursor.moveToFirst()) {
-//            do {
-//                int productId = cursor.getInt(cursor.getColumnIndex("maSP"));
-//                String productName = cursor.getString(cursor.getColumnIndex("tenSP"));
-//                CartItem cartItem = new CartItem(productId, productName);
-//                cartItems.add(cartItem);
-//            } while (cursor.moveToNext());
+            do {
+                int productId = cursor.getInt(cursor.getColumnIndex("maSP"));
+                String productName = cursor.getString(cursor.getColumnIndex("tenSP"));
+                int productPrice = cursor.getInt(cursor.getColumnIndex("giaSP"));
+                int productQuantity = cursor.getInt(cursor.getColumnIndex("soLuong"));
+                String productImage = cursor.getString(cursor.getColumnIndex("hinhAnh"));
+                CartItem cartItem = new CartItem(productId, productName, productImage, productPrice, productQuantity);
+                cartItems.add(cartItem);
+            } while (cursor.moveToNext());
         }
         cursor.close();
         db.close();
         return cartItems;
     }
+
 
 
     private int calculateTotalQuantity(ArrayList<CartItem> cartItems) {

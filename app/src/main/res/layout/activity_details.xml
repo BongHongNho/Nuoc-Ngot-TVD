@@ -1,101 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".DetailsActivity">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@drawable/m3_appbar_background"
-        app:layout_constraintTop_toTopOf="parent"
-        app:menu="@menu/toolbar_menu"
-        app:title="@string/app_name"></androidx.appcompat.widget.Toolbar>
+    android:layout_height="match_parent"
+    tools:context=".activity.ChiTietSPActivity">
 
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:layout_margin="10dp"
-        android:orientation="vertical">
-
+        android:layout_height="wrap_content">
         <ImageView
-            android:id="@+id/imgProDe"
+            android:id="@+id/imageViewProduct"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:background="#FFFFFF"
-            android:layout_gravity="center"
-            android:src="@drawable/product_image_1"></ImageView>
+            android:layout_height="350dp"
+            android:scaleType="centerCrop" />
 
         <TextView
-            android:id="@+id/tvNameDe"
+            android:id="@+id/textViewProductName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Trà Bí Đao WormderFam"
-            android:textSize="20dp"
-            android:textStyle="bold"></TextView>
+            android:layout_below="@id/imageViewProduct"
+            android:layout_marginTop="16dp"
+            android:text="Product Name"
+            android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/tvDetais"
+            android:id="@+id/textViewProductOrigin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:textSize="16dp"
-            android:text="Trà Bí Đao Wonderfarm là một thức uống bổ dưỡng, có nhiều loại vitamin như Caroten, B1, B2, B3, C,....tốt cho sức khỏe. Sản phẩm còn giúp thanh nhiệt, giải nhiệt và làm tan đờm, làm mát ruột và hết khát, lợi tiểu, làm hết phù, giải độc và giảm béo, và có lợi cho da và tóc."></TextView>
+            android:layout_below="@id/textViewProductName"
+            android:layout_marginTop="8dp"
+            android:text="Origin: "
+            android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/tvXuatXU"
+            android:id="@+id/textViewProductInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:textSize="16dp"
-            android:text="Xuất sứ: Việt Nam"></TextView>
+            android:layout_below="@id/textViewProductOrigin"
+            android:layout_marginTop="8dp"
+            android:text="Product Info"
+            android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/tvSoLuongDe"
-            android:textSize="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Kho: 1000"></TextView>
-
-        <TextView
-            android:id="@+id/tvGiaTienDE"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:textSize="16dp"
-            android:text="Giá: 12000 VND"
-            android:textColor="#FF0000"
-            android:textStyle="bold"></TextView>
     </LinearLayout>
-
     <LinearLayout
+        android:id="@+id/lnBtn"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="10dp"
-        android:orientation="horizontal">
+        android:layout_marginTop="16dp">
 
         <Button
-            android:id="@+id/btnAddToCard"
+            android:id="@+id/buttonAddToCart"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:layout_weight="1"
-            android:text="Thêm vào giỏ hàng"></Button>
+            android:layout_height="wrap_content"
+            android:text="Thêm vào giỏ hàng"
+            android:onClick="addToCart"/>
 
         <Button
+            android:id="@+id/buttonCheckout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:layout_weight="1"
-            android:text="Đặt hàng"></Button>
+            android:layout_height="wrap_content"
+            android:text="Thanh toán"
+            android:onClick="checkout"/>
     </LinearLayout>
-</RelativeLayout>
+
+
+</LinearLayout>

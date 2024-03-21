@@ -1,4 +1,4 @@
-package com.nuocngot.tvdpro;
+package com.nuocngot.tvdpro.adapter;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;

@@ -18,7 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.nuocngot.tvdpro.LoginActivity;
+import com.nuocngot.tvdpro.activity.LoginActivity;
 import com.nuocngot.tvdpro.adapter.Admin;
 import com.nuocngot.tvdpro.adapter.stAdpater;
 import com.nuocngot.tvdpro.R;
@@ -37,8 +37,8 @@ public class SettingsFragment extends Fragment {
     public TextView tvName, tvThanhVien;
 
     public ImageView ivAvatar;
-    public String NAME_SHARED_PREFERENCES = "manager";
-    public String IS_LOGIN = "isLogin";
+    public String NAME_SHARED_PREFERENCES = "login_status";
+    public String IS_LOGIN = "isLoggedIn";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
