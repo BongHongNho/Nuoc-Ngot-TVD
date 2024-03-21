@@ -24,13 +24,18 @@
         android:layout_margin="10dp"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/imageViewProduct"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:background="#FFFFFF"
-            android:layout_gravity="center"
-            android:src="@drawable/product_image_1"></ImageView>
+<com.google.android.material.card.MaterialCardView
+    android:layout_width="match_parent"
+    app:strokeWidth="0dp"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/imageViewProduct"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="#FFFFFF"
+        android:layout_gravity="center"
+        android:src="@drawable/product_image_1"></ImageView>
+</com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:id="@+id/textViewProductName"

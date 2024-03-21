@@ -1,48 +1,67 @@
 package com.nuocngot.tvdpro.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.nuocngot.tvdpro.R;
-
-import org.w3c.dom.Text;
+import com.nuocngot.tvdpro.activity.CategoryActivity;
 
 import java.util.ArrayList;
 
-public class CategoryAdapter extends BaseAdapter {
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
+    private ArrayList<Category> categoryList;
+    private Context context;
 
-    public Context context;
-    public ArrayList<Category> categoryArrayList = new ArrayList<>();
-
-    public CategoryAdapter(Context context, ArrayList<Category> categoryArrayList) {
+    public CategoryAdapter(ArrayList<Category> categoryList, Context context) {
+        this.categoryList = categoryList;
         this.context = context;
-        this.categoryArrayList = categoryArrayList;
+    }
+
+    @NonNull
+    @Override
+    public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category, parent, false);
+        return new CategoryViewHolder(view);
     }
 
     @Override
-    public int getCount() {
-        return categoryArrayList.size();
+    public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
+        Category category = categoryList.get(position);
+        holder.bind(category);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int maDM = category.getMaDM();
+                Intent intent = new Intent(context, CategoryActivity.class);
+                intent.putExtra("maDM", maDM);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
-    public Object getItem(int position) {
-        return categoryArrayList.get(position);
+    public int getItemCount() {
+        return categoryList.size();
     }
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
+    public static class CategoryViewHolder extends RecyclerView.ViewHolder {
+        private TextView textViewCategoryName;
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_settings, parent, false);
-        TextView tvName = view.findViewById(R.id.tvSettings);
-        tvName.setText(categoryArrayList.get(position).getCategoryName());
-        return view;
+        public CategoryViewHolder(@NonNull View itemView) {
+            super(itemView);
+            textViewCategoryName = itemView.findViewById(R.id.textViewCategoryName);
+        }
+
+        public void bind(Category category) {
+            textViewCategoryName.setText("Nước ngọt " + category.getTenDM());
+        }
     }
 }

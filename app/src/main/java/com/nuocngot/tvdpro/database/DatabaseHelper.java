@@ -19,36 +19,30 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "user_database";
     private static final int DATABASE_VERSION = 1;
-
-    // Tạo bảng Tài khoản để lưu thông tin đăng nhập và phân quyền
     private static final String CREATE_TABLE_TAI_KHOAN =
             "CREATE TABLE TaiKhoan (" +
                     "maTK INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "maKH INTEGER REFERENCES KhachHang(maKH)," + // Thêm khóa ngoại để liên kết với bảng KhachHang
+                    "maKH INTEGER REFERENCES KhachHang(maKH)," +
                     "tenDN TEXT NOT NULL," +
                     "matKhau TEXT NOT NULL," +
                     "Email TEXT NOT NULL," +
-                    "SDT TEXT NOT NULL," + // Đổi kiểu dữ liệu của SDT thành TEXT để hỗ trợ các định dạng số điện thoại khác nhau
+                    "SDT TEXT NOT NULL," +
                     "role TEXT NOT NULL," +
                     "userId INTEGER DEFAULT -1," +
                     "isLogin INTEGER DEFAULT 0)";
-    // Tạo bảng Khách hàng để lưu thông tin người dùng
     private static final String CREATE_TABLE_KHACH_HANG =
             "CREATE TABLE KhachHang (" +
                     "maKH INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "maTK INTEGER REFERENCES TaiKhoan(maTK)," + // Thêm khóa ngoại để liên kết với bảng Tài Khoản
                     "tenKH TEXT NOT NULL," +
                     "Email TEXT NOT NULL," +
                     "SDT TEXT NOT NULL," +
                     "diaChi TEXT NOT NULL," +
                     "capTV TEXT NOT NULL," +
                     "hinhAnh TEXT NOT NULL)";
-
-    // Tạo bảng Admin để lưu thông tin admin
     private static final String CREATE_TABLE_ADMIN =
             "CREATE TABLE Admin (" +
                     "maAdmin INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "maTK INTEGER REFERENCES TaiKhoan(maTK)," + // Thêm khóa ngoại để liên kết với bảng Tài Khoản
+                    "maTK INTEGER REFERENCES TaiKhoan(maTK)," +
                     "tenAdmin TEXT NOT NULL," +
                     "hinhAnh TEXT NOT NULL)";
 

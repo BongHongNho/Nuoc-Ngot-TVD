@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
+import com.nuocngot.tvdpro.getContext.GetContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,7 +128,7 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.GioHangV
     }
 
     private void updateQuantityInDatabase(int maSP, int soLuong) {
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        DatabaseHelper dbHelper = new DatabaseHelper(GetContext.createAppContext());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String selection = "maSP = ?";
         String[] selectionArgs = {String.valueOf(maSP)};
@@ -137,9 +138,9 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.GioHangV
         db.close();
         dbHelper.close();
         if (updatedRows > 0) {
-            Toast.makeText(context, "Cập nhật số lượng thành công", Toast.LENGTH_SHORT).show();
+
         } else {
-            Toast.makeText(context, "Cập nhật số lêch này", Toast.LENGTH_SHORT).show();
+
         }
     }
 

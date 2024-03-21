@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.nuocngot.tvdpro.R;
@@ -23,6 +24,7 @@ public class ChiTietSPActivity extends AppCompatActivity {
     private int maSP;
     private TextView textViewProductName, textViewProductOrigin, textViewProductInfo, textViewProductPrice, textViewProductQuantity;
     private ImageView imageViewProduct;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,15 @@ public class ChiTietSPActivity extends AppCompatActivity {
         imageViewProduct = findViewById(R.id.imageViewProduct);
         textViewProductPrice = findViewById(R.id.textViewProductPrice);
         textViewProductQuantity = findViewById(R.id.textViewProductQualaty);
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Chi tiết sản phẩm");
+        toolbar.setNavigationIcon(R.drawable.back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+            });
         Button buttonAddToCart = findViewById(R.id.buttonAddToCart); // Lấy tham chiếu đến nút "Thêm vào giỏ hàng"
         Intent intent = getIntent();
         maSP = intent.getIntExtra("maSP", -1);

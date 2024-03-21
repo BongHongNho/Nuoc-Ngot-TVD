@@ -7,6 +7,6 @@
             android:bottomLeftRadius="28dp"
             android:bottomRightRadius="28dp"/>
         <solid
-            android:color="?colorSurface" />
+            android:color="@color/m3_appbar_overlay_color" />
     </shape>
 </inset>

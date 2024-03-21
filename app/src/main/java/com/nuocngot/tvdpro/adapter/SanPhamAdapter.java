@@ -10,8 +10,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,36 +61,42 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
         SanPham sanPham = sanPhamList.get(position);
         holder.tenSP.setText(sanPham.getTenSP());
         holder.giaSP.setText(String.valueOf(sanPham.getGia()) + " VNĐ");
-        Glide.with(holder.hinhAnh.getContext()).load(sanPham.getHinhAnh()).placeholder(R.drawable.placeholder).into(holder.hinhAnh);
-        holder.slKho.setText("Kho: " + String.valueOf(sanPham.getSoLuong()));
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(holder.itemView.getContext(), ChiTietSPActivity.class);
-                intent.putExtra("maSP", sanPham.getMaSP());
-                holder.itemView.getContext().startActivity(intent);
-            }
-        });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Context context = v.getContext();
-                if (context != null) {
-                    SharedPreferences sharedPreferences = context.getSharedPreferences("login_status", Context.MODE_PRIVATE);
-                    String username = sharedPreferences.getString("username", "");
-                    if (checkAdminRole(v.getContext(), username)) {
-                        showAdminDialog(v.getContext(), position);
-                    } else {
-                        Toast.makeText(context, "Bạn không phải ADMIN", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-
+        if (sanPham.getSoLuong() == 0) {
+            holder.hinhAnh.setImageResource(R.drawable.sold_out);
+            holder.itemView.setOnClickListener(null);
+            holder.itemView.setClickable(true);
+            holder.slKho.setText("Hết hàng");
+        } else {
+            Glide.with(holder.hinhAnh.getContext()).load(sanPham.getHinhAnh()).placeholder(R.drawable.placeholder).into(holder.hinhAnh);
+            holder.slKho.setText("Kho: " + String.valueOf(sanPham.getSoLuong()));
+            holder.itemView.setClickable(true);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(holder.itemView.getContext(), ChiTietSPActivity.class);
+                    intent.putExtra("maSP", sanPham.getMaSP());
+                    holder.itemView.getContext().startActivity(intent);
                 }
-                return true;
-            }
-        });
-
+            });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Context context = v.getContext();
+                    if (context != null) {
+                        SharedPreferences sharedPreferences = context.getSharedPreferences("login_status", Context.MODE_PRIVATE);
+                        String username = sharedPreferences.getString("username", "");
+                        if (checkAdminRole(v.getContext(), username)) {
+                            showAdminDialog(v.getContext(), position);
+                        } else {
+                            Toast.makeText(context, "Bạn không phải ADMIN", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    return true;
+                }
+            });
+        }
     }
+
 
     public boolean checkAdminRole(Context context, String username) {
         boolean isAdmin = false;
@@ -140,7 +148,7 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
         int productId_edit = sanPhamList.get(position).getMaSP();
         DatabaseHelper dbHelper_edit = new DatabaseHelper(context);
         SQLiteDatabase db_edit = dbHelper_edit.getReadableDatabase();
-        String[] projection = {"tenSP", "gia", "soLuong", "hinhAnh"};
+        String[] projection = {"tenSP", "gia", "soLuong", "hinhAnh", "maDM"}; // Thêm cột maDM vào projection
         String selection_edit = "maSP = ?";
         String[] selectionArgs_edit = {String.valueOf(productId_edit)};
         Cursor cursorSanPham = db_edit.query(
@@ -170,9 +178,10 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
             int gia = cursorSanPham.getInt(cursorSanPham.getColumnIndexOrThrow("gia"));
             int soLuong = cursorSanPham.getInt(cursorSanPham.getColumnIndexOrThrow("soLuong"));
             String hinhAnh = cursorSanPham.getString(cursorSanPham.getColumnIndexOrThrow("hinhAnh"));
+            int maDM = cursorSanPham.getInt(cursorSanPham.getColumnIndexOrThrow("maDM")); // Lấy maDM từ cột maDM
             String xuatXu = cursorChiTiet.getString(cursorChiTiet.getColumnIndexOrThrow("xuatXu"));
             String thongTinSP = cursorChiTiet.getString(cursorChiTiet.getColumnIndexOrThrow("thongTinSP"));
-            showEditProductDialog(context, productId_edit, tenSP, gia, soLuong, hinhAnh, xuatXu, thongTinSP);
+            showEditProductDialog(context, productId_edit, tenSP, gia, soLuong, hinhAnh, maDM, xuatXu, thongTinSP); // Sửa tham số truyền vào
         }
         if (cursorSanPham != null) {
             cursorSanPham.close();
@@ -184,53 +193,7 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
         dbHelper_edit.close();
     }
 
-    private void showDeleteProductDialog(Context context, int position) {
-        int productId = sanPhamList.get(position).getMaSP();
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cursor = db.query(
-                "GioHang",
-                null,
-                "maSP = ?",
-                new String[]{String.valueOf(productId)},
-                null,
-                null,
-                null
-        );
-
-        if (cursor != null && cursor.getCount() > 0) {
-            String selection = "maSP = ?";
-            String[] selectionArgs = {String.valueOf(productId)};
-            int deletedRows = db.delete("GioHang", selection, selectionArgs);
-//            if (deletedRows > 0) {
-//                Toast.makeText(context, "Đã xóa sản phẩm khỏi giỏ hàng", Toast.LENGTH_SHORT).show();
-//            } else {
-//                Toast.makeText(context, "Xóa sản phẩm khỏi giỏ hàng thất bại", Toast.LENGTH_SHORT).show();
-//            }
-        }
-
-        String selectionSanPham = "maSP = ?";
-        String[] selectionArgsSanPham = {String.valueOf(productId)};
-        int deletedRowsSanPham = db.delete("SanPham", selectionSanPham, selectionArgsSanPham);
-        if (deletedRowsSanPham > 0) {
-            Toast.makeText(context, "Đã xóa sản phẩm thành công", Toast.LENGTH_SHORT).show();
-            loadData(context);
-            notifyDataSetChanged();
-        } else {
-            Toast.makeText(context, "Xóa sản phẩm thất bại", Toast.LENGTH_SHORT).show();
-        }
-
-        // Đóng các đối tượng Cursor và Database khi đã sử dụng xong
-        if (cursor != null) {
-            cursor.close();
-        }
-        db.close();
-        dbHelper.close();
-    }
-
-
-
-    private void showEditProductDialog(Context context, int productId, String tenSP, int gia, int soLuong, String hinhAnh, String xuatXu, String thongTinSP) {
+    private void showEditProductDialog(Context context, int productId, String tenSP, int gia, int soLuong, String hinhAnh, int maDM, String xuatXu, String thongTinSP) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.edit_sp_dialog, null);
@@ -243,15 +206,24 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
         TextInputEditText imageViewProduct = dialogView.findViewById(R.id.imageViewProduct);
         TextInputEditText editTextXuatXu = dialogView.findViewById(R.id.editTextXuatxu);
         TextInputEditText editTextThongTinSP = dialogView.findViewById(R.id.editTextThongTin);
-
+        Spinner spinnerDanhMuc = dialogView.findViewById(R.id.spinnerDanhMuc); // Thêm Spinner danh mục
         editTextProductName.setText(tenSP);
         editTextProductPrice.setText(String.valueOf(gia));
         editTextProductQuantity.setText(String.valueOf(soLuong));
         imageViewProduct.setText(hinhAnh);
         editTextXuatXu.setText(xuatXu);
         editTextThongTinSP.setText(thongTinSP);
-
-        builder.setPositiveButton("Cập nhật", new DialogInterface.OnClickListener() {
+        ArrayList<Category> danhMucList = loadDanhMucList(context);
+        ArrayAdapter<Category> spinnerAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, danhMucList);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDanhMuc.setAdapter(spinnerAdapter);
+        for (int i = 0; i < danhMucList.size(); i++) {
+            if (danhMucList.get(i).getMaDM() == maDM) { // Set giá trị mặc định cho Spinner danh mục
+                spinnerDanhMuc.setSelection(i);
+                break;
+            }
+        }
+        builder.setPositiveButton("Cập nhật", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String productName = editTextProductName.getText().toString();
@@ -260,19 +232,18 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
                 String productImage = imageViewProduct.getText().toString();
                 String xuatXu = editTextXuatXu.getText().toString();
                 String thongTinSP = editTextThongTinSP.getText().toString();
-
+                int maDanhMuc = danhMucList.get(spinnerDanhMuc.getSelectedItemPosition()).getMaDM(); // Lấy maDM từ Spinner danh mục
                 DatabaseHelper dbHelper = new DatabaseHelper(context);
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
-
                 ContentValues valuesSanPham = new ContentValues();
                 valuesSanPham.put("tenSP", productName);
                 valuesSanPham.put("gia", Integer.parseInt(productPrice));
                 valuesSanPham.put("soLuong", Integer.parseInt(productQuantity));
                 valuesSanPham.put("hinhAnh", productImage);
+                valuesSanPham.put("maDM", maDanhMuc); // Thêm maDM vào ContentValues
                 String selectionSanPham = "maSP = ?";
                 String[] selectionArgsSanPham = {String.valueOf(productId)};
                 int rowsUpdatedSanPham = db.update("SanPham", valuesSanPham, selectionSanPham, selectionArgsSanPham);
-
                 ContentValues valuesChiTiet = new ContentValues();
                 valuesChiTiet.put("tenSP", productName);
                 valuesChiTiet.put("gia", Integer.parseInt(productPrice));
@@ -294,74 +265,154 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
                 dbHelper.close();
             }
         });
-
         builder.setNegativeButton("Hủy bỏ", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        builder.show();
     }
 
-public void loadData(Context context) {
-    sanPhamList.clear();
-    DatabaseHelper dbHelper = new DatabaseHelper(context);
-    SQLiteDatabase db = dbHelper.getReadableDatabase();
-    String[] projection = {
-            "maSP",
-            "tenSP",
-            "gia",
-            "soLuong",
-            "hinhAnh"
-    };
-    Cursor cursor = db.query(
-            "SanPham",
-            projection,
-            null,
-            null,
-            null,
-            null,
-            null
-    );
-    if (cursor != null && cursor.moveToFirst()) {
-        do {
-            int maSP = cursor.getInt(cursor.getColumnIndexOrThrow("maSP"));
-            String tenSP = cursor.getString(cursor.getColumnIndexOrThrow("tenSP"));
-            int gia = cursor.getInt(cursor.getColumnIndexOrThrow("gia"));
-            int soLuong = cursor.getInt(cursor.getColumnIndexOrThrow("soLuong"));
-            String hinhAnh = cursor.getString(cursor.getColumnIndexOrThrow("hinhAnh"));
-            sanPhamList.add(new SanPham(maSP, hinhAnh, tenSP, soLuong, gia));
-        } while (cursor.moveToNext());
-        cursor.close();
+    private ArrayList<Category> loadDanhMucList(Context context) {
+        ArrayList<Category> danhMucList = new ArrayList<>();
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String[] projection = {"maDM", "tenDM"};
+        Cursor cursor = db.query("DanhMuc", projection, null, null, null, null, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int maDM = cursor.getInt(cursor.getColumnIndexOrThrow("maDM"));
+                String tenDM = cursor.getString(cursor.getColumnIndexOrThrow("tenDM"));
+                Category category = new Category(maDM, tenDM);
+                danhMucList.add(category);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        db.close();
+        dbHelper.close();
+        return danhMucList;
     }
-    db.close();
-    dbHelper.close();
-    notifyDataSetChanged(); // Cập nhật RecyclerView sau khi tải dữ liệu mới
-}
 
 
-@Override
-public int getItemCount() {
-    return sanPhamList.size();
-}
+    private void showDeleteProductDialog(Context context, int position) {
+        new AlertDialog.Builder(context)
+                .setTitle("Xác nhận xóa")
+                .setMessage("Bạn có chắc chắn muốn xóa sản phẩm này?")
+                .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        int productId = sanPhamList.get(position).getMaSP();
+                        DatabaseHelper dbHelper = new DatabaseHelper(context);
+                        SQLiteDatabase db = dbHelper.getWritableDatabase();
+                        Cursor cursor = db.query(
+                                "GioHang",
+                                null,
+                                "maSP = ?",
+                                new String[]{String.valueOf(productId)},
+                                null,
+                                null,
+                                null
+                        );
 
-public static class SanPhamViewHolder extends RecyclerView.ViewHolder {
-    ImageView hinhAnh;
-    TextView tenSP, giaSP, slKho;
+                        if (cursor != null && cursor.getCount() > 0) {
+                            String selection = "maSP = ?";
+                            String[] selectionArgs = {String.valueOf(productId)};
+                            int deletedRows = db.delete("GioHang", selection, selectionArgs);
+//            if (deletedRows > 0) {
+//                Toast.makeText(context, "Đã xóa sản phẩm khỏi giỏ hàng", Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(context, "Xóa sản phẩm khỏi giỏ hàng thất bại", Toast.LENGTH_SHORT).show();
+//            }
+                        }
 
-    public SanPhamViewHolder(@NonNull View itemView) {
-        super(itemView);
-        hinhAnh = itemView.findViewById(R.id.imageViewSanPham);
-        tenSP = itemView.findViewById(R.id.textViewTenSP);
-        giaSP = itemView.findViewById(R.id.textViewGiaSP);
-        slKho = itemView.findViewById(R.id.textViewKho);
+                        String selectionSanPham = "maSP = ?";
+                        String[] selectionArgsSanPham = {String.valueOf(productId)};
+                        int deletedRowsSanPham = db.delete("SanPham", selectionSanPham, selectionArgsSanPham);
+                        if (deletedRowsSanPham > 0) {
+                            Toast.makeText(context, "Đã xóa sản phẩm thành công", Toast.LENGTH_SHORT).show();
+                            loadData(context);
+                            notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(context, "Xóa sản phẩm thất bại", Toast.LENGTH_SHORT).show();
+                        }
+
+                        // Đóng các đối tượng Cursor và Database khi đã sử dụng xong
+                        if (cursor != null) {
+                            cursor.close();
+                        }
+                        db.close();
+                        dbHelper.close();
+                    }
+                })
+                .setNegativeButton("Hủy bỏ", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+
     }
-}
 
-public interface OnItemClickListener {
-    void onItemClick(int position);
-}
+
+    public void loadData(Context context) {
+        sanPhamList.clear();
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String[] projection = {
+                "maSP",
+                "tenSP",
+                "gia",
+                "soLuong",
+                "hinhAnh"
+        };
+        Cursor cursor = db.query(
+                "SanPham",
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int maSP = cursor.getInt(cursor.getColumnIndexOrThrow("maSP"));
+                String tenSP = cursor.getString(cursor.getColumnIndexOrThrow("tenSP"));
+                int gia = cursor.getInt(cursor.getColumnIndexOrThrow("gia"));
+                int soLuong = cursor.getInt(cursor.getColumnIndexOrThrow("soLuong"));
+                String hinhAnh = cursor.getString(cursor.getColumnIndexOrThrow("hinhAnh"));
+                sanPhamList.add(new SanPham(maSP, hinhAnh, tenSP, soLuong, gia));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        db.close();
+        dbHelper.close();
+        notifyDataSetChanged(); // Cập nhật RecyclerView sau khi tải dữ liệu mới
+    }
+
+
+    @Override
+    public int getItemCount() {
+        return sanPhamList.size();
+    }
+
+    public static class SanPhamViewHolder extends RecyclerView.ViewHolder {
+        ImageView hinhAnh;
+        TextView tenSP, giaSP, slKho;
+
+        public SanPhamViewHolder(@NonNull View itemView) {
+            super(itemView);
+            hinhAnh = itemView.findViewById(R.id.imageViewSanPham);
+            tenSP = itemView.findViewById(R.id.textViewTenSP);
+            giaSP = itemView.findViewById(R.id.textViewGiaSP);
+            slKho = itemView.findViewById(R.id.textViewKho);
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
 }

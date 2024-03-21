@@ -31,12 +31,12 @@
         android:layout_marginBottom="25dp"
         android:src="@drawable/add"></com.google.android.material.floatingactionbutton.FloatingActionButton>
 
-    <ListView
-        android:id="@+id/listViewCa"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewCategory"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/searchBarInclude"
-        android:layout_marginTop="-5dp"></ListView>
+        android:layout_marginTop="-5dp"></androidx.recyclerview.widget.RecyclerView>
 </RelativeLayout>

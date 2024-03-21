@@ -1,17 +1,31 @@
 package com.nuocngot.tvdpro.adapter;
 
 public class Category {
-    public String categoryName;
+    private int maDM;
+    private String tenDM;
 
-    public Category(String categoryName) {
-        this.categoryName = categoryName;
+    public void setMaDM(int maDM) {
+        this.maDM = maDM;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public void setTenDM(String tenDM) {
+        this.tenDM = tenDM;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public Category(int maDM, String tenDM) {
+        this.maDM = maDM;
+        this.tenDM = tenDM;
+    }
+
+    public int getMaDM() {
+        return maDM;
+    }
+
+    public String getTenDM() {
+        return tenDM;
+    }
+    @Override
+    public String toString() {
+        return tenDM; // hoặc bất kỳ thuộc tính nào bạn muốn hiển thị
     }
 }

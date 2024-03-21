@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="8dp">
 
     <com.google.android.material.card.MaterialCardView
@@ -12,12 +13,17 @@
             android:orientation="vertical"
             android:layout_width="120dp"
             android:layout_height="200dp">
-            <ImageView
-                android:id="@+id/imageViewSanPham"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:scaleType="centerCrop" />
-
+          <com.google.android.material.card.MaterialCardView
+              android:layout_width="wrap_content"
+              app:strokeWidth="0dp"
+              android:layout_height="wrap_content">
+              <ImageView
+                  android:src="@drawable/img_avatar_nam"
+                  android:id="@+id/imageViewSanPham"
+                  android:layout_width="match_parent"
+                  android:layout_height="100dp"
+                  android:scaleType="centerCrop" />
+          </com.google.android.material.card.MaterialCardView>
             <TextView
                 android:id="@+id/textViewTenSP"
                 android:textStyle="bold"

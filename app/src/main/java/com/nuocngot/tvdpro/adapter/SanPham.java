@@ -15,6 +15,14 @@ public class SanPham {
         this.gia = gia;
     }
 
+    public SanPham(int maSP, String tenSP, int gia, String hinhAnh, int soLuong) {
+        this.maSP = maSP;
+        this.tenSP = tenSP;
+        this.gia = gia;
+        this.hinhAnh = hinhAnh;
+        this.soLuong = soLuong;
+    }
+
     public int getMaSP() {
         return maSP;
     }

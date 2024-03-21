@@ -1,9 +1,14 @@
 package com.nuocngot.tvdpro.activity;
 
+import android.content.ContentValues;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +38,8 @@ public class GioHangActivity extends AppCompatActivity {
     private ArrayList<GioHangItem> gioHangItemList = new ArrayList<>();
     private GioHangAdapter gioHangAdapter;
 
+    private Button btnBuy;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +51,7 @@ public class GioHangActivity extends AppCompatActivity {
         toolbar.setTitle("Giỏ hàng");
         toolbar.setNavigationIcon(R.drawable.back);
         toolbar.setNavigationOnClickListener(v -> finish());
+        btnBuy = findViewById(R.id.btnBuy);
         SharedPreferences sharedPreferences = getSharedPreferences("login_status", MODE_PRIVATE);
         int maKH = sharedPreferences.getInt("maKH", -1);
         if (maKH != -1) {
@@ -61,9 +69,44 @@ public class GioHangActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         calculateAndDisplayTotalPrice();
+        btnBuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPreferences = getSharedPreferences("login_status", MODE_PRIVATE);
+                int maKH = sharedPreferences.getInt("maKH", -1);
+                if (maKH != -1) {
+                    if (gioHangItemList != null && gioHangItemList.size() > 0) { // Sử dụng danh sách sản phẩm từ giỏ hàng hiện tại
+                        DatabaseHelper dbHelper = new DatabaseHelper(GioHangActivity.this);
+                        SQLiteDatabase db = dbHelper.getWritableDatabase();
+                        ContentValues values = new ContentValues();
+                        for (GioHangItem item : gioHangItemList) { // Sử dụng gioHangItemList thay vì gioHangItems
+                            values.clear();
+                            values.put("maKH", maKH);
+                            values.put("maSP", item.getMaSP());
+                            values.put("soLuong", item.getSoLuong());
+                            values.put("tongTien", item.getSoLuong() * item.getGia());
+                            long result = db.insert("DonMua", null, values);
+                            if (result == -1) {
+                                // Xử lý khi không thêm được vào bảng DonMua
+                            }
+                        }
+                        db.close();
+                        dbHelper.close();
+                        Intent intent = new Intent(GioHangActivity.this, ThanhToanActivity.class);
+                        intent.putParcelableArrayListExtra("gio_hang_items", gioHangItemList);
+                        startActivity(intent);
+
+                    } else {
+                        Toast.makeText(GioHangActivity.this, "Giỏ hàng trống. Vui lòng thêm sản phẩm vào giỏ hàng trước khi mua.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(GioHangActivity.this, "Khách hàng không tồn tại. Vui lòng đăng nhập lại.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
-    private void loadGioHangData(int maKH) {
+        private void loadGioHangData(int maKH) {
         String maKHString = String.valueOf(maKH); // Chuyển maKH từ int sang String
 
         DatabaseHelper dbHelper = new DatabaseHelper(this);
@@ -114,16 +157,40 @@ public class GioHangActivity extends AppCompatActivity {
     private void updateQuantity(int position, int newQuantity) {
         GioHangItem gioHangItem = gioHangItemList.get(position);
         gioHangItem.setSoLuong(newQuantity);
+        updateQuantityInDatabase(gioHangItem.getMaSP(), newQuantity);
         calculateAndDisplayTotalPrice();
-        gioHangAdapter.notifyDataSetChanged();
     }
+
+    private void updateQuantityInDatabase(int maSP, int newQuantity) {
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("soLuong", newQuantity);
+        String selection = "maSP = ?";
+        String[] selectionArgs = {String.valueOf(maSP)};
+        db.update("GioHang", values, selection, selectionArgs);
+        db.close();
+        dbHelper.close();
+    }
+
 
 
     private void calculateAndDisplayTotalPrice() {
         int totalPrice = 0;
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
         for (GioHangItem gioHangItem : gioHangItemList) {
-            totalPrice += gioHangItem.getSoLuong() * gioHangItem.getGia();
+            int maSP = gioHangItem.getMaSP();
+            int soLuong = gioHangItem.getSoLuong();
+            Cursor cursor = db.rawQuery("SELECT gia FROM SanPham WHERE maSP = ?", new String[]{String.valueOf(maSP)});
+            if (cursor != null && cursor.moveToFirst()) {
+                int gia = cursor.getInt(cursor.getColumnIndexOrThrow("gia"));
+                totalPrice += gia * soLuong;
+                cursor.close();
+            }
         }
+        db.close();
+        dbHelper.close();
         textViewTotalPrice.setText("Tổng tiền: " + totalPrice + " VNĐ");
     }
 }
