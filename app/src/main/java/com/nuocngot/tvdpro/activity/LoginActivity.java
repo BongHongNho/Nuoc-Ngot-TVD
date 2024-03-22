@@ -64,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String[] projection = {
                 "maTK",
+                "maKH", // Thêm cột maKH vào projection
                 "tenDN",
                 "matKhau"
         };
@@ -80,10 +81,10 @@ public class LoginActivity extends AppCompatActivity {
         );
         if (cursor.moveToFirst()) {
             int maTK = cursor.getInt(cursor.getColumnIndexOrThrow("maTK"));
+            int maKH = cursor.getInt(cursor.getColumnIndexOrThrow("maKH")); // Lấy maKH từ cursor
             String storedPassword = cursor.getString(cursor.getColumnIndexOrThrow("matKhau"));
             if (password.equals(storedPassword)) {
-                saveLoginStatus(true, username);
-                saveCustomerID(maTK);
+                saveLoginStatus(true, maTK, maKH, username); // Lưu trạng thái đăng nhập cùng với maTK và maKH
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -125,13 +126,16 @@ public class LoginActivity extends AppCompatActivity {
         dbHelper.close();
     }
 
-    private void saveLoginStatus(boolean isLoggedIn, String username) {
+    private void saveLoginStatus(boolean isLoggedIn, int maTK, int maKH, String role) {
         SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("isLoggedIn", isLoggedIn);
-        editor.putString("username", username); // Lưu tên đăng nhập vào SharedPreferences
+        editor.putInt("maTK", maTK);
+        editor.putInt("maKH", maKH);
+        editor.putString("username", role); // Lưu vai trò vào SharedPreferences
         editor.apply();
     }
+
 
     private void forgotPassword() {
         View view = LayoutInflater.from(this).inflate(R.layout.reset_password, null);

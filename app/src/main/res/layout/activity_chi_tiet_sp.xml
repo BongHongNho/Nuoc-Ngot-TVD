@@ -54,13 +54,25 @@
             android:textSize="16dp"
             android:text="Xuất sứ: Việt Nam"></TextView>
 
-        <TextView
-            android:id="@+id/textViewProductInfo"
-            android:textSize="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Thông tin sản phẩm"></TextView>
+     <com.google.android.material.card.MaterialCardView
+         android:layout_width="match_parent"
+         app:strokeWidth="0dp"
+         android:layout_height="wrap_content">
+         <LinearLayout
+             android:background="@drawable/m3_appbar_background"
+             android:layout_width="match_parent"
+             android:paddingBottom="10dp"
+             android:paddingTop="10dp"
+             android:layout_height="match_parent">
+             <TextView
+                 android:id="@+id/textViewProductInfo"
+                 android:textSize="16dp"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_margin="10dp"
+                 android:text="Thông tin sản phẩm"></TextView>
+         </LinearLayout>
+     </com.google.android.material.card.MaterialCardView>
         <TextView
             android:id="@+id/textViewProductQualaty"
             android:layout_width="wrap_content"

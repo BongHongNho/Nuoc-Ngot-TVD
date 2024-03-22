@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:id="@+id/lnDiaChi"
         app:strokeWidth="0dp"
+        android:layout_margin="10dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginTop="15dp"
@@ -61,7 +62,7 @@
 
     <ScrollView
         android:id="@+id/sclView"
-        android:layout_marginTop="20dp"
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/lnDiaChi">
@@ -73,29 +74,35 @@
         </androidx.recyclerview.widget.RecyclerView>
     </ScrollView>
 
-    <LinearLayout
-        android:id="@+id/lnPTTT"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/lnPTTT"
+        app:strokeWidth="0dp"
+        android:layout_margin="10dp"
         android:layout_below="@id/sclView"
-        android:layout_marginTop="20dp"
-        android:orientation="vertical"
-        android:padding="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="@drawable/m3_appbar_background"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="Phương thức thanh toán"
-            android:textSize="16dp"
-            android:textStyle="bold"></TextView>
+            android:orientation="vertical"
+            android:padding="10dp">
 
-        <TextView
-            android:id="@+id/textViewPhuongThucThanhToan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Thanh toán khi nhận hàng"></TextView>
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Phương thức thanh toán"
+                android:textSize="16dp"
+                android:textStyle="bold"></TextView>
+
+            <TextView
+                android:id="@+id/textViewPhuongThucThanhToan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thanh toán khi nhận hàng"></TextView>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
         android:id="@+id/lnTTT"
@@ -195,8 +202,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/lnTTT"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/m3_appbar_background"
+        android:layout_margin="10dp"
+        android:background="@drawable/background_radius"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="@+id/toolbar"

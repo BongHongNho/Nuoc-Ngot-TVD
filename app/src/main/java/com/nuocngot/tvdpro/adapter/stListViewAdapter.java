@@ -38,7 +38,7 @@ public class stListViewAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_settings, parent, false);
-        TextView stText = view.findViewById(R.id.tvSettings);
+        TextView stText = view.findViewById(R.id.functionNameTextView);
         stText.setText(stAdpaters.get(position).getNameSettings());
         return view;
     }

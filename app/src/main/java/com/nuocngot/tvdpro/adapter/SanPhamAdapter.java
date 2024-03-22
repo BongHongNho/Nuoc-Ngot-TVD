@@ -88,7 +88,7 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
                         if (checkAdminRole(v.getContext(), username)) {
                             showAdminDialog(v.getContext(), position);
                         } else {
-                            Toast.makeText(context, "Bạn không phải ADMIN", Toast.LENGTH_SHORT).show();
+
                         }
                     }
                     return true;

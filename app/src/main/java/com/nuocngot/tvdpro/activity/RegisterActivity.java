@@ -65,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
-    private boolean checkUsernameExists(String username) {
+    private boolean checkUsernameExists (String username){
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String query = "SELECT * FROM TaiKhoan WHERE tenDN = ?";
@@ -75,11 +75,13 @@ public class RegisterActivity extends AppCompatActivity {
         db.close();
         return exists;
     }
-    private boolean isEmail(String str) {
+
+    private boolean isEmail (String str){
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         return str.matches(emailPattern);
     }
-    private boolean isPhoneNumber(String str) {
+
+    private boolean isPhoneNumber (String str){
         String phonePattern = "[0-9]{10,11}";
         return str.matches(phonePattern);
     }
@@ -88,24 +90,32 @@ public class RegisterActivity extends AppCompatActivity {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         boolean success = false;
-        ContentValues values = new ContentValues();
-        values.put("tenDN", username);
-        values.put("matKhau", password);
-        if (isEmail(emailOrPhone)) {
-            values.put("Email", emailOrPhone);
-            values.put("SDT", (String) null); // Đặt giá trị null cho trường SDT nếu là email
-        } else if (isPhoneNumber(emailOrPhone)) {
-            values.put("SDT", Long.parseLong(emailOrPhone)); // Chuyển đổi số điện thoại sang kiểu long
-            values.put("Email", (String) null); // Đặt giá trị null cho trường Email nếu là số điện thoại
-        } else {
-            values.putNull("Email");
-            values.putNull("SDT");
+        ContentValues taiKhoanValues = new ContentValues();
+        taiKhoanValues.put("tenDN", username);
+        taiKhoanValues.put("matKhau", password);
+        taiKhoanValues.put("Email", isEmail(emailOrPhone) ? emailOrPhone : "");
+        taiKhoanValues.put("SDT", isPhoneNumber(emailOrPhone) ? emailOrPhone : "");
+        taiKhoanValues.put("role", "user");
+        taiKhoanValues.put("userId", -1);
+        taiKhoanValues.put("isLogin", 0);
+        long maTK = db.insert("TaiKhoan", null, taiKhoanValues);
+        if (maTK != -1) {
+            ContentValues khachHangValues = new ContentValues();
+            khachHangValues.put("maTK", maTK);
+            khachHangValues.put("tenKH", username);
+            khachHangValues.put("Email", isEmail(emailOrPhone) ? emailOrPhone : "");
+            khachHangValues.put("SDT", isPhoneNumber(emailOrPhone) ? emailOrPhone : "");
+            khachHangValues.put("diaChi", "");
+            khachHangValues.put("capTV", "");
+            khachHangValues.put("hinhAnh", "");
+            long khachHangId = db.insert("KhachHang", null, khachHangValues);
+            if (khachHangId != -1) {
+                success = true;
+            } else {
+                db.delete("TaiKhoan", "maTK = ?", new String[]{String.valueOf(maTK)});
+            }
         }
-        values.put("loaiTK", "user");
-        long result = db.insert("TaiKhoan", null, values);
-        if (result != -1) {
-            success = true;
-        }
+
         db.close();
         return success;
     }

@@ -100,7 +100,7 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.GioHangV
 
         public void bind(GioHangItem gioHangItem) {
             textViewProductName.setText(gioHangItem.getTenSP());
-            textViewProductPrice.setText("Đơn giá: " + String.valueOf(gioHangItem.getGia()));
+            textViewProductPrice.setText("Giá: " + String.valueOf(gioHangItem.getGia()) + "VND");
             textViewQuantity.setText(String.valueOf(gioHangItem.getSoLuong()));
             Glide.with(imageViewProduct.getContext())
                     .load(gioHangItem.getAnhSP())

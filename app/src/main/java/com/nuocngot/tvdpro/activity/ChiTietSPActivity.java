@@ -76,7 +76,7 @@ public class ChiTietSPActivity extends AppCompatActivity {
             productOrigin = "Xuất xứ: " + origin;
             productInfo = "Thông tin sản phẩm: " + cursor.getString(cursor.getColumnIndex("thongTinSP"));
             imageURL = cursor.getString(cursor.getColumnIndex("hinhAnh"));
-            productPrice = "Giá: " + cursor.getString(cursor.getColumnIndex("gia")) + " VND";
+            productPrice = "Giá sản phẩm: " + cursor.getString(cursor.getColumnIndex("gia")) + " VND";
             productQuantity = "Số lượng: " + cursor.getString(cursor.getColumnIndex("soLuong"));
         }
         cursor.close();
