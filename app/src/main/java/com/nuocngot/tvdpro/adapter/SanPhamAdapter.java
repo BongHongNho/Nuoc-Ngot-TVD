@@ -84,8 +84,8 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
                     Context context = v.getContext();
                     if (context != null) {
                         SharedPreferences sharedPreferences = context.getSharedPreferences("login_status", Context.MODE_PRIVATE);
-                        String username = sharedPreferences.getString("username", "");
-                        if (checkAdminRole(v.getContext(), username)) {
+                        int maTK = sharedPreferences.getInt("maTK", -1);
+                        if (checkAdminRole(v.getContext(), maTK)) {
                             showAdminDialog(v.getContext(), position);
                         } else {
 
@@ -98,12 +98,12 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
     }
 
 
-    public boolean checkAdminRole(Context context, String username) {
+    public boolean checkAdminRole(Context context, int maTK) {
         boolean isAdmin = false;
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String query = "SELECT role FROM TaiKhoan WHERE tenDN = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{username});
+        String query = "SELECT role FROM TaiKhoan WHERE maTK = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(maTK)});
         if (cursor != null && cursor.moveToFirst()) {
             String role = cursor.getString(cursor.getColumnIndex("role"));
             if (role.equals("admin")) {
@@ -117,11 +117,12 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
         return isAdmin;
     }
 
+
     private void showAdminDialog(Context context, int position) {
         String[] options = {"Xóa sản phẩm", "Sửa sản phẩm"};
 
         new AlertDialog.Builder(context)
-                .setTitle("Chức năng ADMIN")
+                .setTitle("Chức năng sản phẩm")
                 .setItems(options, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

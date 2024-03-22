@@ -10,7 +10,6 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@drawable/m3_appbar_background"
         app:layout_constraintTop_toTopOf="parent"
-        app:menu="@menu/toolbar_menu"
         app:title="@string/app_name"></androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.card.MaterialCardView

@@ -1,25 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:orientation="horizontal"
-    android:layout_marginTop="5dp"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
-    android:background="@drawable/background_radius"
-    android:layout_height="wrap_content">
+<!-- item_sanpham.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="8dp">
 
-    <ImageView
-        android:layout_gravity="center"
-        android:src="@drawable/drink"
-        android:layout_marginStart="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></ImageView>
-    <TextView
-        android:id="@+id/textViewCategoryName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:textStyle="bold"
-        android:text="Coca Cola" />
-
-</LinearLayout>
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="120dp"
+        app:cardCornerRadius="10dp"
+        app:strokeWidth="0dp"
+        android:layout_height="100dp">
+        <LinearLayout
+            android:padding="10dp"
+            android:layout_gravity="center"
+            android:background="@drawable/background_radius"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/textViewCategoryName"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imageViewSanPham"
+                android:textSize="14sp"
+                android:singleLine="true"
+                android:layout_gravity="center"
+                android:text="Tên Sản Phẩm" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</RelativeLayout>

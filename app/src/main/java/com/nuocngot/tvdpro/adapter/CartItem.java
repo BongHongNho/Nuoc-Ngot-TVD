@@ -1,16 +1,16 @@
 package com.nuocngot.tvdpro.adapter;
 
 public class CartItem {
-    private int id; // Mã số của mục trong giỏ hàng
-    private int customerId; // Mã số của khách hàng
-    private String customerName; // Tên của khách hàng
-    private int productId; // Mã số của sản phẩm
-    private String productName; // Tên của sản phẩm
-    private String productImage; // URL hình ảnh của sản phẩm
-    private int productPrice; // Giá của sản phẩm
-    private int productQuantity; // Số lượng sản phẩm trong giỏ hàng
-    private int quantityInStock; // Số lượng sản phẩm có sẵn
-    private String totalAmount; // Tổng số tiền của mục trong giỏ hàng
+    private int id;
+    private int customerId;
+    private String customerName;
+    private int productId;
+    private String productName;
+    private String productImage;
+    private int productPrice;
+    private int productQuantity;
+    private int quantityInStock;
+    private String totalAmount;
 
     public CartItem(int productId, String productName, String productImage, int productPrice, int productQuantity) {
         this.productId = productId;

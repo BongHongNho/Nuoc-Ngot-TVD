@@ -64,9 +64,10 @@ public class LoginActivity extends AppCompatActivity {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String[] projection = {
                 "maTK",
-                "maKH", // Thêm cột maKH vào projection
+                "maKH",
                 "tenDN",
-                "matKhau"
+                "matKhau",
+                "role" // Thêm cột role vào projection
         };
         String selection = "tenDN = ?";
         String[] selectionArgs = {username};
@@ -81,10 +82,11 @@ public class LoginActivity extends AppCompatActivity {
         );
         if (cursor.moveToFirst()) {
             int maTK = cursor.getInt(cursor.getColumnIndexOrThrow("maTK"));
-            int maKH = cursor.getInt(cursor.getColumnIndexOrThrow("maKH")); // Lấy maKH từ cursor
+            int maKH = cursor.getInt(cursor.getColumnIndexOrThrow("maKH"));
             String storedPassword = cursor.getString(cursor.getColumnIndexOrThrow("matKhau"));
+            String role = cursor.getString(cursor.getColumnIndexOrThrow("role")); // Lấy vai trò từ cursor
             if (password.equals(storedPassword)) {
-                saveLoginStatus(true, maTK, maKH, username); // Lưu trạng thái đăng nhập cùng với maTK và maKH
+                saveLoginStatus(true, maTK, maKH, role); // Lưu trạng thái đăng nhập cùng với maTK, maKH và vai trò
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -98,43 +100,16 @@ public class LoginActivity extends AppCompatActivity {
         dbHelper.close();
     }
 
-    private void saveCustomerID(int maTK) {
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] projection = {
-                "maKH"
-        };
-        String selection = "maTK = ?";
-        String[] selectionArgs = {String.valueOf(maTK)};
-        Cursor cursor = db.query(
-                "KhachHang",
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
-        );
-        if (cursor.moveToFirst()) {
-            int maKH = cursor.getInt(cursor.getColumnIndexOrThrow("maKH")); // Lấy mã khách hàng từ cơ sở dữ liệu
-            SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putInt("maKH", maKH);
-            editor.apply();
-        }
-        cursor.close();
-        dbHelper.close();
-    }
-
     private void saveLoginStatus(boolean isLoggedIn, int maTK, int maKH, String role) {
         SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("isLoggedIn", isLoggedIn);
         editor.putInt("maTK", maTK);
         editor.putInt("maKH", maKH);
-        editor.putString("username", role); // Lưu vai trò vào SharedPreferences
+        editor.putString("role", role); // Lưu vai trò vào SharedPreferences
         editor.apply();
     }
+
 
 
     private void forgotPassword() {

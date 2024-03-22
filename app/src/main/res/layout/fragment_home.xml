@@ -10,7 +10,7 @@
         android:padding="8dp"
         android:clipToPadding="false"
         android:clipChildren="false"
-        android:background="@android:color/white"
+
         android:scrollbars="none" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -30,7 +30,6 @@ public class CategoryActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private Toolbar toolbar;
     private int maDM;
-
     private TextView textViewNoItem;
 
     @Override

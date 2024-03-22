@@ -86,7 +86,7 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.GioHangV
     public class GioHangViewHolder extends RecyclerView.ViewHolder {
         ImageView imageViewProduct;
         TextView textViewProductName, textViewProductPrice, textViewQuantity;
-        Button buttonDecrease, buttonIncrease;
+        TextView buttonDecrease, buttonIncrease;
 
         public GioHangViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -100,7 +100,7 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.GioHangV
 
         public void bind(GioHangItem gioHangItem) {
             textViewProductName.setText(gioHangItem.getTenSP());
-            textViewProductPrice.setText("Giá: " + String.valueOf(gioHangItem.getGia()) + "VND");
+            textViewProductPrice.setText("Giá: " + String.valueOf(gioHangItem.getGia()) + " VND");
             textViewQuantity.setText(String.valueOf(gioHangItem.getSoLuong()));
             Glide.with(imageViewProduct.getContext())
                     .load(gioHangItem.getAnhSP())

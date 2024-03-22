@@ -19,18 +19,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.nuocngot.tvdpro.activity.LoginActivity;
-import com.nuocngot.tvdpro.adapter.Admin;
+import com.nuocngot.tvdpro.adapter.BuyAcitivyAdapter;
+import com.nuocngot.tvdpro.adapter.BuyActivityItem;
 import com.nuocngot.tvdpro.adapter.FunctionAdapter;
 import com.nuocngot.tvdpro.adapter.TaiKhoan;
-import com.nuocngot.tvdpro.adapter.stAdpater;
 import com.nuocngot.tvdpro.R;
-import com.nuocngot.tvdpro.adapter.stListViewAdapter;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
 
 import java.util.ArrayList;
@@ -43,7 +41,9 @@ public class SettingsFragment extends Fragment {
     private TextView sdtTextView;
     private TextView roleTextView;
 
-    private RecyclerView functionRecyclerView;
+    private Button btnLogOut;
+
+    private RecyclerView functionRecyclerView,historyRecyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,7 +54,10 @@ public class SettingsFragment extends Fragment {
         sdtTextView = view.findViewById(R.id.sdtTextView);
         roleTextView = view.findViewById(R.id.roleTextView);
         avatarImageView = view.findViewById(R.id.avatarImageView);
+        historyRecyclerView = view.findViewById(R.id.historyRecyclerView);
         functionRecyclerView = view.findViewById(R.id.functionRecyclerView);
+        btnLogOut = view.findViewById(R.id.btnLogOut);
+        setUpFunctionRecyclerView();
         setUpRecyclerView();
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("login_status", Context.MODE_PRIVATE);
         int maTK = sharedPreferences.getInt("maTK", -1);
@@ -71,6 +74,35 @@ public class SettingsFragment extends Fragment {
                 avatarImageView.setImageResource(R.drawable.img_avatar_nam);
             }
         }
+        btnLogOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Xác nhận đăng xuất")
+                        .setMessage("Bạn có chắc chắn muốn đăng xuất không?")
+                        .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences sharedPreferences = getContext().getSharedPreferences("login_status", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putBoolean("isLoggedIn", false);
+                                editor.apply();
+                                Intent intent = new Intent(getContext(), LoginActivity.class);
+                                startActivity(intent);
+                                getActivity().finish();
+                                Toast.makeText(getContext(), "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("Hủy bỏ", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+            }
+        });
+
         return view;
     }
 
@@ -187,17 +219,43 @@ public class SettingsFragment extends Fragment {
             }
         }
     }
+    private void setUpFunctionRecyclerView() {
+        ArrayList<BuyActivityItem> functionList = new ArrayList<>();
+        functionList.add(new BuyActivityItem(R.drawable.wait_confirm, "Chờ xác nhận"));
+        functionList.add(new BuyActivityItem(R.drawable.wait_get_package, "Chờ lấy hàng"));
+        functionList.add(new BuyActivityItem(R.drawable.delivering, "Đang giao"));
+        functionList.add(new BuyActivityItem(R.drawable.delivered, "Đã giao"));
+        functionList.add(new BuyActivityItem(R.drawable.delivered, "Đã hủy"));
+
+        BuyAcitivyAdapter adapter = new BuyAcitivyAdapter(getContext());
+        adapter.setBuyActivityItems(functionList);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        historyRecyclerView.setLayoutManager(layoutManager);
+        historyRecyclerView.setAdapter(adapter);
+    }
+
+
 
     private void setUpRecyclerView() {
         ArrayList<String> functionList = new ArrayList<>();
-        functionList.add("Đổi ảnh đại diện");
-        functionList.add("Đổi tên người dùng");
-        functionList.add("Đổi mật khẩu");
-        functionList.add("Nâng cấp tài khoản");
-        functionList.add("Chức năng ADMIN");
+        functionList.add("Đánh giá của tôi");
+        functionList.add("Quản lý tài khoản");
+        if(isAdmin()) {
+            functionList.add("Chức năng quản trị viên");
+        }
+        else {
+            functionList.add("Hỗ trợ" );
+        }
+        functionList.add("Báo lỗi ứng dụng?");
+        functionList.add("Thông tin phiên bản");
         FunctionAdapter adapter = new FunctionAdapter(functionList);
         functionRecyclerView.setAdapter(adapter);
         functionRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
-
+    private boolean isAdmin() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("login_status", Context.MODE_PRIVATE);
+        String role = sharedPreferences.getString("role", "");
+        return role.equals("admin");
+    }
 }

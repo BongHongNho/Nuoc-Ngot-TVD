@@ -61,9 +61,9 @@ public class HomeFragment extends Fragment {
         database = dbHelper.getReadableDatabase();
         loadSanPhamData();
         SharedPreferences sharedPreferences = rootView.getContext().getSharedPreferences("login_status", Context.MODE_PRIVATE);
-        String username = sharedPreferences.getString("username", "");
-        sanPhamAdapter.checkAdminRole(rootView.getContext(), username);
-        if (adapter.checkAdminRole(rootView.getContext(), username)) {
+        int maTK = sharedPreferences.getInt("maTK", -1);
+        sanPhamAdapter.checkAdminRole(rootView.getContext(), maTK);
+        if (adapter.checkAdminRole(rootView.getContext(), maTK)) {
             floatingActionButton.setVisibility(View.VISIBLE);
         } else {
             floatingActionButton.setVisibility(View.GONE);
