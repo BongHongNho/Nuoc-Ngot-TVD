@@ -105,6 +105,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "tongTien TEXT NOT NULL," +
                     "diaChi TEXT NOT NULL)";
 
+    private static final String CREATE_TABLE_PHUONGTHUC_THANHTOAN =
+            "CREATE TABLE PhuongThucThanhToan (maPTT INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "tenPTT TEXT NOT NULL)";
+
+
     private static final String CREATE_TABLE_THANH_TOAN =
             "CREATE TABLE ThanhToan (maTToan INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "maKH INTEGER REFERENCES KhachHang(maKH)," +
@@ -120,6 +125,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "maSP INTEGER REFERENCES SanPham(maSP)," +
                     "soLuong INTEGER NOT NULL," +
                     "tongTien INTEGER NOT NULL)";
+
+    //Bổ sung Chi tiết đơn hàng
+
+
+
+//    private static String CREATE_TABLE_TRANGTHAI_DONHANG =
+//            "CREATE TABLE TrangThaiDonHang (maTTHD INTERGER PRIMARY KEY AUTOINCREMENT, " +
+//                    "maKH INTERGER REFERENCES KhachHang(maKH))";
 
 
     private static final String COLUMN_HINH_ANH = "hinhAnh";
@@ -279,9 +292,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        db.execSQL("INSERT INTO DonMua (maSP, soLuong, tongTien) VALUES (1, 1, 10000)");
 //        db.execSQL("INSERT INTO DonMua (maSP, soLuong, tongTien) VALUES (2, 2, 40000)");
 
+        db.execSQL(CREATE_TABLE_PHUONGTHUC_THANHTOAN);
+        db.execSQL("INSERT INTO PhuongThucThanhToan (maPTT, tenPTT) VALUES (1, 'Thanh toán khi nhận hàng')");
+        db.execSQL("INSERT INTO PhuongThucThanhToan (maPTT, tenPTT) VALUES (2, 'Thanh toán qua ngân hàng')");
+
+
+
         db.execSQL(CREATE_TABLE_THANH_TOAN);
         db.execSQL("INSERT INTO ThanhToan (maKH, maSP, phuongThucTT, tongTienTT, tongTienPhiVC, tongThanhToan) VALUES (1, 1, 'Thanh toán khi nhận hàng', 20000, 5000, 25000)");
         db.execSQL("INSERT INTO ThanhToan (maKH, maSP, phuongThucTT, tongTienTT, tongTienPhiVC, tongThanhToan) VALUES (2, 2, 'Thanh toán online', 40000, 5000, 45000)");
+
+
 
     }
 

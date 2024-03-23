@@ -225,7 +225,7 @@ public class SettingsFragment extends Fragment {
         functionList.add(new BuyActivityItem(R.drawable.wait_get_package, "Chờ lấy hàng"));
         functionList.add(new BuyActivityItem(R.drawable.delivering, "Đang giao"));
         functionList.add(new BuyActivityItem(R.drawable.delivered, "Đã giao"));
-        functionList.add(new BuyActivityItem(R.drawable.delivered, "Đã hủy"));
+        functionList.add(new BuyActivityItem(R.drawable.cancel_box, "Đã hủy"));
 
         BuyAcitivyAdapter adapter = new BuyAcitivyAdapter(getContext());
         adapter.setBuyActivityItems(functionList);

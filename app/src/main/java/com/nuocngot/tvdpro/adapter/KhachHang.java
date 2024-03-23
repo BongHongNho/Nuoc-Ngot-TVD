@@ -9,7 +9,7 @@ public class KhachHang {
     private String capTV;
     private String hinhAnh;
 
-    public KhachHang(int maKH, String tenKH, String email, String sdt, String diaChi, String capTV, String hinhAnh) {
+    public KhachHang(int maKH, String tenKH, String email, String sdt, String diaChi, String capTV) {
         this.maKH = maKH;
         this.tenKH = tenKH;
         this.email = email;

@@ -1,14 +1,17 @@
 package com.nuocngot.tvdpro.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,6 +28,8 @@ import java.util.ArrayList;
 public class ThanhToanActivity extends AppCompatActivity {
     private TextView textViewDiaChi;
     private RecyclerView recyclerViewSanPham;
+
+    private LinearLayout selectPTTT;
 
     private Toolbar toolbar;
     private TextView textViewPhuongThucThanhToan;
@@ -45,6 +50,7 @@ public class ThanhToanActivity extends AppCompatActivity {
         textViewTongTienHang = findViewById(R.id.textViewTongTienHang);
         textViewPhiVanChuyen = findViewById(R.id.textViewPhiVanChuyen);
         textViewTongThanhToan = findViewById(R.id.textViewTongThanhToan);
+        selectPTTT = findViewById(R.id.selectPTTT);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Thanh toán");
         toolbar.setNavigationIcon(R.drawable.back);
@@ -75,24 +81,27 @@ public class ThanhToanActivity extends AppCompatActivity {
                 finish();
             }
         });
-        loadDonMuaData(); // Thêm phương thức loadDonMuaData() vào onCreate() để hiển thị thông tin đơn mua
+        loadDonMuaData();
+        selectPTTT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadPhuongThucThanhToan();
+            }
+        });
     }
 
     private void loadDonMuaData() {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        // Thực hiện truy vấn dữ liệu từ bảng KhachHang
         Cursor cursor = db.query(
                 "KhachHang",
-                null, // Truy vấn tất cả các cột
+                null,
                 null,
                 null,
                 null,
                 null,
                 null
         );
-
         if (cursor != null && cursor.moveToFirst()) {
             int tongTienDonHang = 0;
             do {
@@ -101,11 +110,9 @@ public class ThanhToanActivity extends AppCompatActivity {
                 String email = cursor.getString(cursor.getColumnIndex("Email"));
                 String sdt = cursor.getString(cursor.getColumnIndex("SDT"));
                 String diaChi = cursor.getString(cursor.getColumnIndex("diaChi"));
-                String capTV = cursor.getString(cursor.getColumnIndex("capTV"));
                 String hinhAnh = cursor.getString(cursor.getColumnIndex("hinhAnh"));
-                KhachHang khachHang = new KhachHang(maKH, tenKH, email, sdt, diaChi, capTV, hinhAnh);
+                KhachHang khachHang = new KhachHang(maKH, tenKH, email, sdt, diaChi, hinhAnh);
                 textViewDiaChi.setText("Địa chỉ mua hàng: " + diaChi);
-                textViewPhuongThucThanhToan.setText("Phương thức thanh toán: " + capTV);
                 textViewTongThanhToan.setText(tongTienDonHang + " VNĐ");
                 textViewPhiVanChuyen.setText( 0 + " VNĐ");
                 textViewTongTienHang.setText(tongTienDonHang + " VNĐ");
@@ -113,11 +120,26 @@ public class ThanhToanActivity extends AppCompatActivity {
                 textViewNguoiNhan.setText("Người nhận: " + tenKH);
 
             } while (cursor.moveToNext());
-            cursor.close(); // Đóng con trỏ sau khi sử dụng
+            cursor.close();
         }
 
-        db.close(); // Đóng cơ sở dữ liệu sau khi sử dụng
+        db.close();
         dbHelper.close();
+    }
+
+    private void loadPhuongThucThanhToan() {
+        String[] phuongThucThanhToan = {"Thanh toán khi nhận hàng", "Thanh toán qua ngân hàng"};
+        new AlertDialog.Builder(this)
+                .setTitle("Phương thức thanh toán")
+                .setMessage("Vui lý chọn phương thức thanh toán")
+                .setItems(phuongThucThanhToan, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        textViewPhuongThucThanhToan.setText(phuongThucThanhToan[which]);
+                    }
+                })
+                .show();
+
     }
 
 }
