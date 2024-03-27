@@ -36,6 +36,7 @@ public class CNQuanTriVien extends AppCompatActivity {
         ArrayList<String> functionList = new ArrayList<>();
         functionList.add("Quản lý sản phẩm");
         functionList.add("Quản lý người dùng");
+        functionList.add("Quản lý đơn hàng");
         functionList.add("Quản lý danh mục");
         functionList.add("Thống kê doanh số");
         functionList.add("Hỗ trợ khách hàng");

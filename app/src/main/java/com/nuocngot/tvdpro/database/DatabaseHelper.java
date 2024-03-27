@@ -96,6 +96,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "soLuong INTEGER NOT NULL," +
                     "tongTien INTEGER NOT NULL)";
 
+
     private static final String CREATE_TABLE_HOA_DON =
             "CREATE TABLE HoaDon (maHD INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "maKH INTEGER REFERENCES KhachHang(maKH)," +

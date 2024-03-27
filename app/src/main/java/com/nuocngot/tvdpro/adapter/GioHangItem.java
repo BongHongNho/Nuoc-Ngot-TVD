@@ -4,11 +4,21 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class GioHangItem implements Parcelable {
-    private int maSP;
+    private static int maSP;
     private String tenSP;
     private int soLuong;
     private int gia;
     private String anhSP;
+
+    public boolean isSelected;
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 
     protected GioHangItem(Parcel in) {
         maSP = in.readInt();
@@ -45,7 +55,7 @@ public class GioHangItem implements Parcelable {
         this.anhSP = anhSP;
     }
 
-    public int getMaSP() {
+    public static int getMaSP() {
         return maSP;
     }
 
@@ -108,4 +118,5 @@ public class GioHangItem implements Parcelable {
         dest.writeInt(gia);
         dest.writeString(anhSP);
     }
+
 }

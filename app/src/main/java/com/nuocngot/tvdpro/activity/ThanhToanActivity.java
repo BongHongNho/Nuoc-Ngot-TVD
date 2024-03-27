@@ -63,12 +63,12 @@ public class ThanhToanActivity extends AppCompatActivity {
         btnDatHang = findViewById(R.id.btnDatHang);
         String diaChi = "123 Đường ABC, Quận XYZ, Thành phố HCM";
         textViewDiaChi.setText("Địa chỉ mua hàng: " + diaChi);
-        ArrayList<GioHangItem> gioHangItems = getIntent().getParcelableArrayListExtra("gio_hang_items");
-        GioHangAdapter gioHangAdapter = new GioHangAdapter(gioHangItems);
+        ArrayList<GioHangItem> selectedItems = getIntent().getParcelableArrayListExtra("selected_items");
+        GioHangAdapter gioHangAdapter = new GioHangAdapter(selectedItems);
         recyclerViewSanPham.setAdapter(gioHangAdapter);
         recyclerViewSanPham.setLayoutManager(new LinearLayoutManager(this));
         int tongTienHang = 0;
-        for (GioHangItem item : gioHangItems) {
+        for (GioHangItem item : selectedItems) { // Sử dụng selectedItems thay vì gioHangItems
             tongTienHang += item.getSoLuong() * item.getGia();
         }
         textViewTongTienHang.setText("Tổng tiền hàng: " + tongTienHang + " VNĐ");
@@ -94,30 +94,42 @@ public class ThanhToanActivity extends AppCompatActivity {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(
-                "KhachHang",
+                "GioHang",
                 null,
-                null,
-                null,
+                "isSelected = ?",
+                new String[]{"1"},
                 null,
                 null,
                 null
         );
+        int tongTienDonHang = 0;
         if (cursor != null && cursor.moveToFirst()) {
-            int tongTienDonHang = 0;
             do {
                 int maKH = cursor.getInt(cursor.getColumnIndex("maKH"));
-                String tenKH = cursor.getString(cursor.getColumnIndex("tenKH"));
-                String email = cursor.getString(cursor.getColumnIndex("Email"));
-                String sdt = cursor.getString(cursor.getColumnIndex("SDT"));
-                String diaChi = cursor.getString(cursor.getColumnIndex("diaChi"));
-                String hinhAnh = cursor.getString(cursor.getColumnIndex("hinhAnh"));
-                KhachHang khachHang = new KhachHang(maKH, tenKH, email, sdt, diaChi, hinhAnh);
-                textViewDiaChi.setText("Địa chỉ mua hàng: " + diaChi);
-                textViewTongThanhToan.setText(tongTienDonHang + " VNĐ");
-                textViewPhiVanChuyen.setText( 0 + " VNĐ");
-                textViewTongTienHang.setText(tongTienDonHang + " VNĐ");
-                textViewSDT.setText("Số điện thoại: " + sdt);
-                textViewNguoiNhan.setText("Người nhận: " + tenKH);
+                int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
+                tongTienDonHang += tongTien;
+                Cursor khCursor = db.query(
+                        "KhachHang",
+                        null,
+                        "maKH = ?",
+                        new String[]{String.valueOf(maKH)},
+                        null,
+                        null,
+                        null
+                );
+                if (khCursor != null && khCursor.moveToFirst()) {
+                    String tenKH = khCursor.getString(khCursor.getColumnIndex("tenKH"));
+                    String sdt = khCursor.getString(khCursor.getColumnIndex("SDT"));
+                    String diaChi = khCursor.getString(khCursor.getColumnIndex("diaChi"));
+                    textViewDiaChi.setText("Địa chỉ mua hàng: " + diaChi);
+                    textViewTongThanhToan.setText(tongTienDonHang + " VNĐ");
+                    textViewPhiVanChuyen.setText("0 VNĐ"); // Có thể cần lấy dữ liệu phí vận chuyển từ bảng nếu có
+                    textViewTongTienHang.setText(tongTienDonHang + " VNĐ");
+                    textViewSDT.setText("Số điện thoại: " + sdt);
+                    textViewNguoiNhan.setText("Người nhận: " + tenKH);
+
+                    khCursor.close();
+                }
 
             } while (cursor.moveToNext());
             cursor.close();
@@ -126,6 +138,7 @@ public class ThanhToanActivity extends AppCompatActivity {
         db.close();
         dbHelper.close();
     }
+
 
     private void loadPhuongThucThanhToan() {
         String[] phuongThucThanhToan = {"Thanh toán khi nhận hàng", "Thanh toán qua ngân hàng"};

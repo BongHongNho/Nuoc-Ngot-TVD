@@ -104,6 +104,10 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this, GioHangActivity.class);
                     startActivity(intent);
                 }
+                if(itemId == R.id.nav_menu_settings){
+                   fragmentManager.beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
+                }
+                drawerLayout.closeDrawer(navigationView);
                 return false;
             }
         });

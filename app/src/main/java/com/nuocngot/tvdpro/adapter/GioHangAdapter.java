@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
 import com.nuocngot.tvdpro.getContext.GetContext;
@@ -83,20 +85,61 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.GioHangV
         return gioHangItemList.size();
     }
 
+    public ArrayList<GioHangItem> getSelectedItems() {
+        ArrayList<GioHangItem> selectedItems = new ArrayList<>();
+        for (GioHangItem item : gioHangItemList) {
+            if (item.isSelected()) {
+                selectedItems.add(item);
+            }
+        }
+        return selectedItems;
+    }
+
     public class GioHangViewHolder extends RecyclerView.ViewHolder {
         ImageView imageViewProduct;
         TextView textViewProductName, textViewProductPrice, textViewQuantity;
         TextView buttonDecrease, buttonIncrease;
 
+        MaterialCheckBox cbSelectItem;
+
         public GioHangViewHolder(@NonNull View itemView) {
             super(itemView);
+            cbSelectItem = itemView.findViewById(R.id.cbSelectItem);
             imageViewProduct = itemView.findViewById(R.id.imageViewProduct);
             textViewProductName = itemView.findViewById(R.id.textViewProductName);
             textViewProductPrice = itemView.findViewById(R.id.textViewProductPrice);
             textViewQuantity = itemView.findViewById(R.id.textViewQuantity);
             buttonDecrease = itemView.findViewById(R.id.buttonDecrease);
             buttonIncrease = itemView.findViewById(R.id.buttonIncrease);
+            cbSelectItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    int position = getAdapterPosition(); // Lấy vị trí của mục trong danh sách
+                    if (position != RecyclerView.NO_POSITION) {
+                        GioHangItem gioHangItem = gioHangItemList.get(position); // Lấy mục từ danh sách dựa trên vị trí// Lưu trạng thái đã chọn trong mục giỏ hàng
+                        updateSelectionInDatabase(gioHangItem.getMaSP(), isChecked); // Cập nhật cơ sở dữ liệu
+                    }
+                }
+            });
         }
+
+        private void updateSelectionInDatabase(int maSP, boolean selected) {
+            DatabaseHelper dbHelper = new DatabaseHelper(GetContext.createAppContext());
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("isSelected", selected ? 1 : 0);
+            String selection = "maSP = ?";
+            String[] selectionArgs = {String.valueOf(maSP)};
+            int updatedRows = db.update("GioHang", values, selection, selectionArgs);
+            db.close();
+            dbHelper.close();
+            if (updatedRows > 0) {
+
+            } else {
+
+            }
+        }
+
 
         public void bind(GioHangItem gioHangItem) {
             textViewProductName.setText(gioHangItem.getTenSP());
@@ -143,6 +186,8 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.GioHangV
 
         }
     }
+
+
 
     public interface OnItemChangeListener {
         void onItemChanged(int position, int newQuantity);

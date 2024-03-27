@@ -92,8 +92,9 @@ public class GioHangActivity extends AppCompatActivity {
                         }
                         db.close();
                         dbHelper.close();
+                        ArrayList<GioHangItem> selectedItems = gioHangItemList;
                         Intent intent = new Intent(GioHangActivity.this, ThanhToanActivity.class);
-                        intent.putParcelableArrayListExtra("gio_hang_items", gioHangItemList);
+                        intent.putParcelableArrayListExtra("selected_items", selectedItems);
                         startActivity(intent);
 
                     } else {
@@ -105,6 +106,7 @@ public class GioHangActivity extends AppCompatActivity {
             }
         });
     }
+
 
         private void loadGioHangData(int maKH) {
         String maKHString = String.valueOf(maKH); // Chuyển maKH từ int sang String
@@ -158,7 +160,6 @@ public class GioHangActivity extends AppCompatActivity {
         GioHangItem gioHangItem = gioHangItemList.get(position);
         gioHangItem.setSoLuong(newQuantity);
         updateQuantityInDatabase(gioHangItem.getMaSP(), newQuantity);
-        calculateAndDisplayTotalPrice();
     }
 
     private void updateQuantityInDatabase(int maSP, int newQuantity) {

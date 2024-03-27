@@ -7,12 +7,16 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,8 +31,11 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.adapter.Category;
 import com.nuocngot.tvdpro.adapter.CategoryAdapter;
+import com.nuocngot.tvdpro.adapter.FunctionAdapter;
 import com.nuocngot.tvdpro.adapter.SanPham;
 import com.nuocngot.tvdpro.adapter.SanPhamAdapter;
+import com.nuocngot.tvdpro.adapter.SelectTab;
+import com.nuocngot.tvdpro.adapter.SelectTabAdapter;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
 
 import java.util.ArrayList;
@@ -41,9 +48,14 @@ public class HomeFragment extends Fragment {
     private SanPhamAdapter adapter;
     private SQLiteDatabase database;
 
+    private ImageSwitcher imageSwitcher;
+
     private FloatingActionButton floatingActionButton;
 
+    private RecyclerView selectabRecycale;
+
     public SanPhamAdapter sanPhamAdapter = new SanPhamAdapter(sanPhamList);
+
 
     @Nullable
     @Override
@@ -51,6 +63,8 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         recyclerView = rootView.findViewById(R.id.recyclerViewSanPham);
         floatingActionButton = rootView.findViewById(R.id.fab);
+        selectabRecycale = rootView.findViewById(R.id.selectTabProducts);
+        imageSwitcher = rootView.findViewById(R.id.imageSwitch);
         GridLayoutManager layoutManager = new GridLayoutManager(rootView.getContext(), 3);
         recyclerView.setLayoutManager(layoutManager);
         sanPhamList = new ArrayList<>();
@@ -74,6 +88,28 @@ public class HomeFragment extends Fragment {
                 showAddProductDialog(rootView.getContext());
             }
         });
+        final int[] imageResources = {R.drawable.banner_1, R.drawable.banner_2, R.drawable.banner_3, R.drawable.banner_1};
+        final int[] currentIndex = {0};
+
+        imageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+            @Override
+            public View makeView() {
+                ImageView imageView = new ImageView(rootView.getContext());
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                return imageView;
+            }
+        });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                imageSwitcher.setImageResource(imageResources[currentIndex[0]]);
+                currentIndex[0] = (currentIndex[0] + 1) % imageResources.length;
+                new Handler().postDelayed(this, 2000);
+            }
+        }, 2000);
+
+        setUpRecyclerView();
         return rootView;
     }
 
@@ -89,7 +125,8 @@ public class HomeFragment extends Fragment {
         TextInputEditText editTextProductQuantity = dialogView.findViewById(R.id.editTextProductQuantity);
         TextInputEditText imageViewProduct = dialogView.findViewById(R.id.imageViewProduct);
         TextInputEditText editTextXuatXu = dialogView.findViewById(R.id.editTextXuatxu);
-        TextInputEditText editTextThongTinSP = dialogView.findViewById(R.id.editTextThongTin);Spinner spinnerDanhMuc = dialogView.findViewById(R.id.spinnerDanhMuc); // Thêm Spinner danh mục
+        TextInputEditText editTextThongTinSP = dialogView.findViewById(R.id.editTextThongTin);
+        Spinner spinnerDanhMuc = dialogView.findViewById(R.id.spinnerDanhMuc); // Thêm Spinner danh mục
         ArrayList<Category> danhMucList = loadDanhMucList(context);
         ArrayAdapter<Category> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, danhMucList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -145,6 +182,7 @@ public class HomeFragment extends Fragment {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
     private ArrayList<Category> loadDanhMucList(Context context) {
         ArrayList<Category> danhMucList = new ArrayList<>();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
@@ -225,5 +263,16 @@ public class HomeFragment extends Fragment {
         if (database != null && database.isOpen()) {
             database.close();
         }
+    }
+
+    private void setUpRecyclerView() {
+        ArrayList<SelectTab> selectTabList = new ArrayList<>();
+        selectTabList.add(new SelectTab("Bán chạy nhất"));
+        selectTabList.add(new SelectTab("Sản phẩm mới"));
+        selectTabList.add(new SelectTab("Yêu thích nhiều"));
+        selectTabList.add(new SelectTab("Xem nhiều nhất"));
+        SelectTabAdapter selectTabAdapter = new SelectTabAdapter(getContext(), selectTabList);
+        selectabRecycale.setAdapter(selectTabAdapter);
+        selectabRecycale.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
     }
 }
