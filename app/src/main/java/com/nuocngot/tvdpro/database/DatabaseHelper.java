@@ -9,8 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.nuocngot.tvdpro.adapter.Admin;
-import com.nuocngot.tvdpro.adapter.CartItem;
+import com.nuocngot.tvdpro.model.Admin;
+import com.nuocngot.tvdpro.model.CartItem;
 import com.nuocngot.tvdpro.adapter.productAdapter;
 
 import java.util.ArrayList;
@@ -121,19 +121,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "tongThanhToan INTEGER NOT NULL)";
 
     private static final String CREATE_TABLE_DON_MUA =
-            "CREATE TABLE DonMua (maDMUA INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "CREATE TABLE DonMua (" +
+                    "maDMUA INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "maKH INTEGER REFERENCES KhachHang(maKH)," +
                     "maSP INTEGER REFERENCES SanPham(maSP)," +
+                    "maTTDH INTEGER REFERENCES TrangThaiDonHang(maTTHD)," +
+                    "tenDH TEXT NOT NULL," + // Tên đơn hàng
+                    "tenSPDH TEXT NOT NULL," + // Tên sản phẩm trong đơn hàng
+                    "ngayMua TEXT NOT NULL," +
                     "soLuong INTEGER NOT NULL," +
                     "tongTien INTEGER NOT NULL)";
 
-    //Bổ sung Chi tiết đơn hàng
 
+    private static final String CREATE_TABLE_TRANGTHAI_SANPHAM =
+            "CREATE TABLE TrangThaiSanPham (maTTSP INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    " tenTrangThai TEXT NOT NULL)";
 
-
-//    private static String CREATE_TABLE_TRANGTHAI_DONHANG =
-//            "CREATE TABLE TrangThaiDonHang (maTTHD INTERGER PRIMARY KEY AUTOINCREMENT, " +
-//                    "maKH INTERGER REFERENCES KhachHang(maKH))";
+    private static final String CREATE_TABLE_TRANGTHAI_DONHANG =
+            "CREATE TABLE TrangThaiDonHang (maTTDH INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    " maKH INTEGER REFERENCES KhachHang(maKH)," +
+                    " tenTTDH TEXT NOT NULL)";
 
 
     private static final String COLUMN_HINH_ANH = "hinhAnh";
@@ -290,19 +297,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        db.execSQL("INSERT INTO HoaDon (maKH, maSP, ngayTT, soLuong, tongTien, diaChi) VALUES (2, 2, '2024-03-20', 1, 20000, 'Địa chỉ 2')");
 
         db.execSQL(CREATE_TABLE_DON_MUA);
-//        db.execSQL("INSERT INTO DonMua (maSP, soLuong, tongTien) VALUES (1, 1, 10000)");
-//        db.execSQL("INSERT INTO DonMua (maSP, soLuong, tongTien) VALUES (2, 2, 40000)");
+        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (1, 1, 1, 'Đơn hàng 1', 'Sản phẩm 1', '2024-03-20', 2, 20000)");
+        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (2, 2, 2, 'Đơn hàng 2', 'Sản phẩm 2', '2024-03-20', 1, 20000)");
 
         db.execSQL(CREATE_TABLE_PHUONGTHUC_THANHTOAN);
         db.execSQL("INSERT INTO PhuongThucThanhToan (maPTT, tenPTT) VALUES (1, 'Thanh toán khi nhận hàng')");
         db.execSQL("INSERT INTO PhuongThucThanhToan (maPTT, tenPTT) VALUES (2, 'Thanh toán qua ngân hàng')");
 
-
-
         db.execSQL(CREATE_TABLE_THANH_TOAN);
         db.execSQL("INSERT INTO ThanhToan (maKH, maSP, phuongThucTT, tongTienTT, tongTienPhiVC, tongThanhToan) VALUES (1, 1, 'Thanh toán khi nhận hàng', 20000, 5000, 25000)");
         db.execSQL("INSERT INTO ThanhToan (maKH, maSP, phuongThucTT, tongTienTT, tongTienPhiVC, tongThanhToan) VALUES (2, 2, 'Thanh toán online', 40000, 5000, 45000)");
 
+        db.execSQL(CREATE_TABLE_TRANGTHAI_DONHANG);
+        db.execSQL("INSERT INTO TrangThaiDonHang (maTTDH, tenTTDH) VALUES (1, 'Chờ xác nhận')");
+        db.execSQL("INSERT INTO TrangThaiDonHang (maTTDH, tenTTDH) VALUES (2, 'Chờ lấy hàng')");
+        db.execSQL("INSERT INTO TrangThaiDonHang (maTTDH, tenTTDH) VALUES (3, 'Đang giao')");
+        db.execSQL("INSERT INTO TrangThaiDonHang (maTTDH, tenTTDH) VALUES (4, 'Đã giao')");
+        db.execSQL("INSERT INTO TrangThaiDonHang (maTTDH, tenTTDH) VALUES (5, 'Đã hủy')");
 
 
     }

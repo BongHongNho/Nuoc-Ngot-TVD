@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -26,9 +25,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.activity.ChiTietSPActivity;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
+import com.nuocngot.tvdpro.model.Category;
+import com.nuocngot.tvdpro.model.SanPham;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamViewHolder> {
     private Context context;

@@ -1,4 +1,4 @@
-package com.nuocngot.tvdpro.adapter;
+package com.nuocngot.tvdpro.model;
 
 public class SelectTab {
     private String tabName;

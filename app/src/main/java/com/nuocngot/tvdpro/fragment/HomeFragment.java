@@ -29,17 +29,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.nuocngot.tvdpro.R;
-import com.nuocngot.tvdpro.adapter.Category;
-import com.nuocngot.tvdpro.adapter.CategoryAdapter;
-import com.nuocngot.tvdpro.adapter.FunctionAdapter;
-import com.nuocngot.tvdpro.adapter.SanPham;
+import com.nuocngot.tvdpro.model.Category;
+import com.nuocngot.tvdpro.model.SanPham;
 import com.nuocngot.tvdpro.adapter.SanPhamAdapter;
-import com.nuocngot.tvdpro.adapter.SelectTab;
+import com.nuocngot.tvdpro.model.SelectTab;
 import com.nuocngot.tvdpro.adapter.SelectTabAdapter;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class HomeFragment extends Fragment {
 

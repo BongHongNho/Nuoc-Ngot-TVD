@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +21,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.activity.CategoryActivity;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
+import com.nuocngot.tvdpro.model.Category;
 
 import java.util.ArrayList;
 

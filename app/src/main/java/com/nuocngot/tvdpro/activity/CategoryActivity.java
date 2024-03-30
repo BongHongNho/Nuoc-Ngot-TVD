@@ -4,22 +4,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.GridLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nuocngot.tvdpro.R;
-import com.nuocngot.tvdpro.adapter.SanPham;
+import com.nuocngot.tvdpro.model.SanPham;
 import com.nuocngot.tvdpro.adapter.SanPhamAdapter;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
 

@@ -1,7 +1,9 @@
 package com.nuocngot.tvdpro.activity;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -20,10 +22,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.adapter.GioHangAdapter;
 import com.nuocngot.tvdpro.adapter.GioHangItem;
-import com.nuocngot.tvdpro.adapter.KhachHang;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class ThanhToanActivity extends AppCompatActivity {
     private TextView textViewDiaChi;
@@ -72,15 +76,38 @@ public class ThanhToanActivity extends AppCompatActivity {
             tongTienHang += item.getSoLuong() * item.getGia();
         }
         textViewTongTienHang.setText("Tổng tiền hàng: " + tongTienHang + " VNĐ");
+        int finalTongTienHang = tongTienHang;
         btnDatHang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(ThanhToanActivity.this, "Đặt hàng thành công", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(ThanhToanActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
+                int maKH = sharedPreferences.getInt("maKH", -1); // -1 là giá trị mặc định nếu không tìm thấy
+                int maTTDH = 1;
+                String ngayMua = getCurrentDate();
+                int soLuong = selectedItems.size();
+                int tongTien = finalTongTienHang;
+                DatabaseHelper dbHelper = new DatabaseHelper(ThanhToanActivity.this);
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                ContentValues values = new ContentValues();
+                values.put("maKH", maKH);
+                values.put("maTTDH", maTTDH);
+                values.put("ngayMua", ngayMua);
+                values.put("soLuong", soLuong);
+                values.put("tongTien", tongTien);
+                values.put("maSP", selectedItems.get(0).getMaSP()); // Giả sử lấy maSP của sản phẩm đầu tiên
+                values.put("maTTHD", 1); // Giả sử trạng thái đơn hàng là 1
+
+                long result = db.insert("DonMua", null, values);
+                if (result != -1) {
+                    Toast.makeText(ThanhToanActivity.this, "Đặt hàng thành công", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ThanhToanActivity.this, "Đặt hàng không thành công", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
+
+
         loadDonMuaData();
         selectPTTT.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,14 +117,19 @@ public class ThanhToanActivity extends AppCompatActivity {
         });
     }
 
+    private String getCurrentDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return sdf.format(new Date());
+    }
+
     private void loadDonMuaData() {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(
                 "GioHang",
                 null,
-                "isSelected = ?",
-                new String[]{"1"},
+                null,
+                null, // Thay vì new String[]{"1"}
                 null,
                 null,
                 null

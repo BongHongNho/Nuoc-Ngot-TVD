@@ -1,6 +1,7 @@
 package com.nuocngot.tvdpro.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nuocngot.tvdpro.R;
+import com.nuocngot.tvdpro.activity.DonHangActivity;
 
 import java.util.ArrayList;
 
@@ -44,12 +46,13 @@ public class BuyAcitivyAdapter extends RecyclerView.Adapter<BuyAcitivyAdapter.Bu
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onItemClickCallback != null) {
-                    onItemClickCallback.onItemClicked(buyActivityItem);
-                }
+                Intent intent = new Intent(v.getContext(), DonHangActivity.class);
+                intent.putExtra("selected_tab_position", position);
+                v.getContext().startActivity(intent);
             }
         });
     }
+
 
     @Override
     public int getItemCount() {

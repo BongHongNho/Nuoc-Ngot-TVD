@@ -2,18 +2,11 @@ package com.nuocngot.tvdpro.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.nuocngot.tvdpro.R;
-import com.nuocngot.tvdpro.adapter.Order;
-import com.nuocngot.tvdpro.adapter.OrderDetailsAdapter;
+import com.nuocngot.tvdpro.model.Order;
 
 public class OrderActivity extends AppCompatActivity {
 

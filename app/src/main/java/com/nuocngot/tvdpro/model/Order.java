@@ -1,4 +1,4 @@
-package com.nuocngot.tvdpro.adapter;
+package com.nuocngot.tvdpro.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

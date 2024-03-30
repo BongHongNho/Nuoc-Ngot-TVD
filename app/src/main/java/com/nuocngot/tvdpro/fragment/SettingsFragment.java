@@ -27,7 +27,7 @@ import com.nuocngot.tvdpro.activity.LoginActivity;
 import com.nuocngot.tvdpro.adapter.BuyAcitivyAdapter;
 import com.nuocngot.tvdpro.adapter.BuyActivityItem;
 import com.nuocngot.tvdpro.adapter.FunctionAdapter;
-import com.nuocngot.tvdpro.adapter.TaiKhoan;
+import com.nuocngot.tvdpro.model.TaiKhoan;
 import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
 

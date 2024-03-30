@@ -12,10 +12,10 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.card.MaterialCardView;
 import com.nuocngot.tvdpro.R;
-import com.nuocngot.tvdpro.adapter.CartItem;
+import com.nuocngot.tvdpro.model.CartItem;
 import com.nuocngot.tvdpro.adapter.CartItemAdapter;
 
-import com.nuocngot.tvdpro.adapter.Order;
+import com.nuocngot.tvdpro.model.Order;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
 
 import java.util.ArrayList;

@@ -1,18 +1,13 @@
 package com.nuocngot.tvdpro.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
 import com.nuocngot.tvdpro.R;
-import com.nuocngot.tvdpro.adapter.CartItem;
-import com.nuocngot.tvdpro.database.DatabaseHelper;
 
 public class DetailsActivity extends AppCompatActivity {
         ImageView imgDetais;
