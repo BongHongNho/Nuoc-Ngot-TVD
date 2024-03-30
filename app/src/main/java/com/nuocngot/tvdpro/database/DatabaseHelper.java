@@ -298,8 +298,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        db.execSQL("INSERT INTO HoaDon (maKH, maSP, ngayTT, soLuong, tongTien, diaChi) VALUES (2, 2, '2024-03-20', 1, 20000, 'Địa chỉ 2')");
 
         db.execSQL(CREATE_TABLE_DON_MUA);
-        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (1, 1, 1, 'Đơn hàng 1', 'Sản phẩm 1', '2024-03-20', 2, 20000)");
-        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (2, 2, 2, 'Đơn hàng 2', 'Sản phẩm 2', '2024-03-20', 1, 20000)");
+        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (1, 1, 1, 'Đơn hàng 1', 'soda Schweppes Dry Ginger Ale hương gừng', '2024-03-20', 2, 20000)");
+        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (2, 2, 2, 'Đơn hàng 2', 'Strongbow vị đào', '2024-03-20', 2, 40000)");
+        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (1, 3, 1, 'Đơn hàng 3', 'Coca Cola Plus', '2024-03-21', 1, 20000)");
+        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (2, 4, 2, 'Đơn hàng 4', 'Fanta Hương Soda Kem Trái Cây', '2024-03-20', 2, 40000)");
+        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (1, 5, 3, 'Đơn hàng 5', 'Strongbow dâu đen', '2024-03-24', 1, 20000)");
+        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (2, 6, 4, 'Đơn hàng 6', 'Coca Light', '2024-03-24', 1, 20000)");
+        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (1, 7, 3, 'Đơn hàng 7', 'Thums Up Charged dâu rừng', '2024-03-25', 3, 60000)");
+        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (2, 8, 4, 'Đơn hàng 8', 'Strongbow dâu', '2024-03-26', 1, 20000)");
+        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (1, 9, 5, 'Đơn hàng 9', 'Carabao', '2024-03-27', 1, 20000)");
+        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (2, 10, 6, 'Đơn hàng 10', 'Strongbow vị đào', '2024-03-29', 1, 20000)");
+        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (1, 11, 5, 'Đơn hàng 11', 'Strongbow mật ong', '2024-03-30', 2, 40000)");
+        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (2, 12, 6, 'Đơn hàng 12', '7 Up vị chanh', '2024-04-1', 1, 20000)");
 
         db.execSQL(CREATE_TABLE_PHUONGTHUC_THANHTOAN);
         db.execSQL("INSERT INTO PhuongThucThanhToan (maPTT, tenPTT) VALUES (1, 'Thanh toán khi nhận hàng')");
