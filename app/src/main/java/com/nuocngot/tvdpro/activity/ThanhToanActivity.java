@@ -1,17 +1,15 @@
 package com.nuocngot.tvdpro.activity;
 
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,8 +26,6 @@ import java.util.ArrayList;
 public class ThanhToanActivity extends AppCompatActivity {
     private TextView textViewDiaChi;
     private RecyclerView recyclerViewSanPham;
-
-    private LinearLayout selectPTTT;
 
     private Toolbar toolbar;
     private TextView textViewPhuongThucThanhToan;
@@ -50,7 +46,6 @@ public class ThanhToanActivity extends AppCompatActivity {
         textViewTongTienHang = findViewById(R.id.textViewTongTienHang);
         textViewPhiVanChuyen = findViewById(R.id.textViewPhiVanChuyen);
         textViewTongThanhToan = findViewById(R.id.textViewTongThanhToan);
-        selectPTTT = findViewById(R.id.selectPTTT);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Thanh toán");
         toolbar.setNavigationIcon(R.drawable.back);
@@ -63,12 +58,12 @@ public class ThanhToanActivity extends AppCompatActivity {
         btnDatHang = findViewById(R.id.btnDatHang);
         String diaChi = "123 Đường ABC, Quận XYZ, Thành phố HCM";
         textViewDiaChi.setText("Địa chỉ mua hàng: " + diaChi);
-        ArrayList<GioHangItem> selectedItems = getIntent().getParcelableArrayListExtra("selected_items");
-        GioHangAdapter gioHangAdapter = new GioHangAdapter(selectedItems);
+        ArrayList<GioHangItem> gioHangItems = getIntent().getParcelableArrayListExtra("gio_hang_items");
+        GioHangAdapter gioHangAdapter = new GioHangAdapter(gioHangItems);
         recyclerViewSanPham.setAdapter(gioHangAdapter);
         recyclerViewSanPham.setLayoutManager(new LinearLayoutManager(this));
         int tongTienHang = 0;
-        for (GioHangItem item : selectedItems) { // Sử dụng selectedItems thay vì gioHangItems
+        for (GioHangItem item : gioHangItems) {
             tongTienHang += item.getSoLuong() * item.getGia();
         }
         textViewTongTienHang.setText("Tổng tiền hàng: " + tongTienHang + " VNĐ");
@@ -81,78 +76,50 @@ public class ThanhToanActivity extends AppCompatActivity {
                 finish();
             }
         });
-        loadDonMuaData();
-        selectPTTT.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadPhuongThucThanhToan();
-            }
-        });
+        loadDonMuaData(); // Thêm phương thức loadDonMuaData() vào onCreate() để hiển thị thông tin đơn mua
     }
 
+    @SuppressLint("Range")
     private void loadDonMuaData() {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        // Thực hiện truy vấn dữ liệu từ bảng KhachHang
         Cursor cursor = db.query(
-                "GioHang",
+                "KhachHang",
+                null, // Truy vấn tất cả các cột
                 null,
-                "isSelected = ?",
-                new String[]{"1"},
+                null,
                 null,
                 null,
                 null
         );
-        int tongTienDonHang = 0;
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                int maKH = cursor.getInt(cursor.getColumnIndex("maKH"));
-                int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
-                tongTienDonHang += tongTien;
-                Cursor khCursor = db.query(
-                        "KhachHang",
-                        null,
-                        "maKH = ?",
-                        new String[]{String.valueOf(maKH)},
-                        null,
-                        null,
-                        null
-                );
-                if (khCursor != null && khCursor.moveToFirst()) {
-                    String tenKH = khCursor.getString(khCursor.getColumnIndex("tenKH"));
-                    String sdt = khCursor.getString(khCursor.getColumnIndex("SDT"));
-                    String diaChi = khCursor.getString(khCursor.getColumnIndex("diaChi"));
-                    textViewDiaChi.setText("Địa chỉ mua hàng: " + diaChi);
-                    textViewTongThanhToan.setText(tongTienDonHang + " VNĐ");
-                    textViewPhiVanChuyen.setText("0 VNĐ"); // Có thể cần lấy dữ liệu phí vận chuyển từ bảng nếu có
-                    textViewTongTienHang.setText(tongTienDonHang + " VNĐ");
-                    textViewSDT.setText("Số điện thoại: " + sdt);
-                    textViewNguoiNhan.setText("Người nhận: " + tenKH);
 
-                    khCursor.close();
-                }
+        if (cursor != null && cursor.moveToFirst()) {
+            int tongTienDonHang = 0;
+            do {
+                 int maKH = cursor.getInt(cursor.getColumnIndex("maKH"));
+                String tenKH = cursor.getString(cursor.getColumnIndex("tenKH"));
+                String email = cursor.getString(cursor.getColumnIndex("Email"));
+                String sdt = cursor.getString(cursor.getColumnIndex("SDT"));
+                String diaChi = cursor.getString(cursor.getColumnIndex("diaChi"));
+                String capTV = cursor.getString(cursor.getColumnIndex("capTV"));
+                String hinhAnh = cursor.getString(cursor.getColumnIndex("hinhAnh"));
+                KhachHang khachHang = new KhachHang(maKH, tenKH, email, sdt, diaChi, capTV);
+                textViewDiaChi.setText("Địa chỉ mua hàng: " + diaChi);
+                textViewPhuongThucThanhToan.setText("Phương thức thanh toán: " + capTV);
+                textViewTongThanhToan.setText(tongTienDonHang + " VNĐ");
+                textViewPhiVanChuyen.setText( 0 + " VNĐ");
+                textViewTongTienHang.setText(tongTienDonHang + " VNĐ");
+                textViewSDT.setText("Số điện thoại: " + sdt);
+                textViewNguoiNhan.setText("Người nhận: " + tenKH);
 
             } while (cursor.moveToNext());
-            cursor.close();
+            cursor.close(); // Đóng con trỏ sau khi sử dụng
         }
 
-        db.close();
+        db.close(); // Đóng cơ sở dữ liệu sau khi sử dụng
         dbHelper.close();
-    }
-
-
-    private void loadPhuongThucThanhToan() {
-        String[] phuongThucThanhToan = {"Thanh toán khi nhận hàng", "Thanh toán qua ngân hàng"};
-        new AlertDialog.Builder(this)
-                .setTitle("Phương thức thanh toán")
-                .setMessage("Vui lý chọn phương thức thanh toán")
-                .setItems(phuongThucThanhToan, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        textViewPhuongThucThanhToan.setText(phuongThucThanhToan[which]);
-                    }
-                })
-                .show();
-
     }
 
 }

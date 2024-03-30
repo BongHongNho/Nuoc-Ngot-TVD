@@ -2,6 +2,7 @@ package com.nuocngot.tvdpro.database;
 
 import static android.content.ContentValues.TAG;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -401,6 +402,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    @SuppressLint("Range")
     public CartItem getCartItem(int productId) {
         SQLiteDatabase db = this.getReadableDatabase();
         CartItem cartItem = null;
@@ -427,7 +429,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
 
         if (cursor != null && cursor.moveToFirst()) {
-            int id = cursor.getInt(cursor.getColumnIndex("maSP"));
+             int id = cursor.getInt(cursor.getColumnIndex("maSP"));
             String productName = cursor.getString(cursor.getColumnIndex("tenSP"));
             String productImage = cursor.getString(cursor.getColumnIndex("hinhAnh"));
             int productPrice = cursor.getInt(cursor.getColumnIndex("giaSP"));
@@ -474,6 +476,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return totalPay;
     }
 
+    @SuppressLint("Range")
     public int getProductQuantityInCart(Context context, int productId) {
         int quantity = 0;
         DatabaseHelper dbHelper = new DatabaseHelper(context);
@@ -495,6 +498,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    @SuppressLint("Range")
     public String getAddressFromDatabase(Context context) {
         String diaChi = null;
         DatabaseHelper dbHelper = new DatabaseHelper(context);
