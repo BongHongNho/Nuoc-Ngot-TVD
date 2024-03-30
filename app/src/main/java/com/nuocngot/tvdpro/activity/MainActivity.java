@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
+                .setIcon(R.drawable.back)
                 .setTitle("Nhắc nhở")
                 .setMessage("Bạn muôn thoát khỏi ứng dụng ?")
                 .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
