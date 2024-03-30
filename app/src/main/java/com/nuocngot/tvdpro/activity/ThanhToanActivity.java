@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.adapter.GioHangAdapter;
 import com.nuocngot.tvdpro.adapter.GioHangItem;
-import com.nuocngot.tvdpro.adapter.KhachHang;
+import com.nuocngot.tvdpro.model.KhachHang;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
 
 import java.util.ArrayList;
