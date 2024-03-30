@@ -42,11 +42,11 @@ public class DonHangActivity extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         ViewPager2 viewPager = findViewById(R.id.viewPager);
         toolbar = findViewById(R.id.toolbar);
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Đơn hàng");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        toolbar.setNavigationIcon(R.drawable.back);
+        toolbar.setNavigationOnClickListener(v -> finish());
         int selectedTabPosition = getIntent().getIntExtra("selected_tab_position", 0);
         DonHangPagerAdapter adapter = new DonHangPagerAdapter(this);
         viewPager.setAdapter(adapter);
