@@ -39,6 +39,7 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.ViewHold
         holder.textViewSoLuongSPDH.setText("Số lượng mua: " + donHang.getSoLuongSPDH());
         holder.textViewTongTienDH.setText("Tổng tiền: " + donHang.getTongTienDH() + " VND");
         Glide.with(holder.itemView.getContext()).load(donHang.getAnhDH()).placeholder(R.drawable.placeholder).into(holder.imageView);
+        holder.textViewNgayMua.setText(donHang.getNgayMua());
     }
 
     @Override
@@ -52,6 +53,8 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.ViewHold
         public TextView textViewSoLuongSPDH;
         public TextView textViewTongTienDH;
 
+        public TextView textViewNgayMua;
+
         public ImageView imageView;
 
         public ViewHolder(View itemView) {
@@ -60,6 +63,7 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.ViewHold
             textViewTenSPDH = itemView.findViewById(R.id.textViewTenSPDH);
             textViewSoLuongSPDH = itemView.findViewById(R.id.textViewSoLuongSPDH);
             textViewTongTienDH = itemView.findViewById(R.id.textViewTongTienDH);
+            textViewNgayMua = itemView.findViewById(R.id.textViewNgayMua);
             imageView = itemView.findViewById(R.id.imageViewSPTTDH);
         }
     }

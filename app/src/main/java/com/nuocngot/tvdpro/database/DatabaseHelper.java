@@ -298,7 +298,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        db.execSQL("INSERT INTO HoaDon (maKH, maSP, ngayTT, soLuong, tongTien, diaChi) VALUES (2, 2, '2024-03-20', 1, 20000, 'Địa chỉ 2')");
 
         db.execSQL(CREATE_TABLE_DON_MUA);
-        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (1, 1, 1, 'Đơn hàng 1', 'soda Schweppes Dry Ginger Ale hương gừng', '2024-03-20', 2, 20000)");
         db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (2, 2, 2, 'Đơn hàng 2', 'Strongbow vị đào', '2024-03-20', 2, 40000)");
         db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (1, 3, 1, 'Đơn hàng 3', 'Coca Cola Plus', '2024-03-21', 1, 20000)");
         db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (2, 4, 2, 'Đơn hàng 4', 'Fanta Hương Soda Kem Trái Cây', '2024-03-20', 2, 40000)");

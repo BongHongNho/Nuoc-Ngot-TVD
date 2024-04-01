@@ -1,16 +1,18 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.NuocNgotTVD" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+    <style name="Theme.NuocNgotTVD" parent="Theme.Material3.DynamicColors.Dark">
+        <item name="fontFamily">@font/googlesans</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="materialThemeOverlay">?attr/dynamicColorThemeOverlay</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.Material3.AlertDialog</item>
+        <item name="dialogTheme">@style/ThemeOverlay.Material3.AlertDialog</item>
+    </style>
+    <style name="ThemeOverlay.Material3.AlertDialog" parent="@style/ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:windowBackground">@drawable/m3_alert_dialog_background</item>
     </style>
 </resources>

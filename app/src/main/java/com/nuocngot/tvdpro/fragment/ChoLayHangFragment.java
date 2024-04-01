@@ -40,14 +40,11 @@ public class ChoLayHangFragment extends Fragment {
     }
 
     private void loadDonMuaData(int maKH) {
-        // Xóa các phần tử hiện có trong danh sách
         donHangList.clear();
-
-        // Thực hiện truy vấn cơ sở dữ liệu để lấy dữ liệu đơn hàng của maKH
         DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String selection = "maKH = ?";
-        String[] selectionArgs = {String.valueOf(maKH)};
+        String selection = "maKH = ? AND maTTDH = ?";
+        String[] selectionArgs = {String.valueOf(maKH), "2"}; // Chỉ lấy các đơn mua có maTTDH là 1
         Cursor cursor = db.query(
                 "DonMua",
                 null,
@@ -57,27 +54,19 @@ public class ChoLayHangFragment extends Fragment {
                 null,
                 null
         );
-
-        // Kiểm tra xem có dữ liệu không và thêm vào danh sách nếu có
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                // Lấy thông tin từ cursor
                 String tenDH = cursor.getString(cursor.getColumnIndex("tenDH"));
                 String tenSPDH = cursor.getString(cursor.getColumnIndex("tenSPDH"));
                 int soLuongSPDH = cursor.getInt(cursor.getColumnIndex("soLuong"));
                 int tongTienDH = cursor.getInt(cursor.getColumnIndex("tongTien"));
-
-                // Tạo đối tượng DonHang và thêm vào danh sách
-                DonHang donHang = new DonHang(tenDH, tenSPDH, soLuongSPDH, tongTienDH);
+                String ngayMua = cursor.getString(cursor.getColumnIndex("ngayMua"));
+                DonHang donHang = new DonHang(tenDH, tenSPDH, soLuongSPDH, tongTienDH, ngayMua);
                 donHangList.add(donHang);
             } while (cursor.moveToNext());
-
             cursor.close();
         }
-
-        // Thông báo cho adapter biết dữ liệu đã thay đổi
         adapter.notifyDataSetChanged();
     }
-
 
 }

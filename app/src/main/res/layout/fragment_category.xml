@@ -6,21 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.CategoryFragment">
 
- <com.google.android.material.textfield.TextInputLayout
-     android:layout_width="match_parent"
-     android:id="@+id/searchBarInclude"
-     app:startIconDrawable="@drawable/search"
-     android:layout_height="wrap_content">
-     <com.google.android.material.textfield.TextInputEditText
-         android:layout_width="match_parent"
-         android:id="@+id/searchBar"
-         android:hint="      Tìm kiếm danh mục"
-         android:layout_height="50dp"
-         android:layout_margin="10dp"
-         android:background="@drawable/background_radius">
-     </com.google.android.material.textfield.TextInputEditText>
- </com.google.android.material.textfield.TextInputLayout>
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:id="@+id/fabAdd"
@@ -37,7 +22,6 @@
         android:dividerHeight="0dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/searchBarInclude"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="-5dp"></androidx.recyclerview.widget.RecyclerView>
 </RelativeLayout>

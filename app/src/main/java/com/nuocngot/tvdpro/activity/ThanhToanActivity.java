@@ -1,7 +1,10 @@
 package com.nuocngot.tvdpro.activity;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -21,7 +24,10 @@ import com.nuocngot.tvdpro.adapter.GioHangItem;
 import com.nuocngot.tvdpro.model.KhachHang;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ThanhToanActivity extends AppCompatActivity {
     private TextView textViewDiaChi;
@@ -33,6 +39,8 @@ public class ThanhToanActivity extends AppCompatActivity {
     private TextView textViewPhiVanChuyen;
     private TextView textViewTongThanhToan, textViewSDT,textViewNguoiNhan;
     private Button btnDatHang;
+
+    private int finalTongTienHang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +66,7 @@ public class ThanhToanActivity extends AppCompatActivity {
         btnDatHang = findViewById(R.id.btnDatHang);
         String diaChi = "123 Đường ABC, Quận XYZ, Thành phố HCM";
         textViewDiaChi.setText("Địa chỉ mua hàng: " + diaChi);
-        ArrayList<GioHangItem> gioHangItems = getIntent().getParcelableArrayListExtra("gio_hang_items");
+        ArrayList<GioHangItem> gioHangItems = getIntent().getParcelableArrayListExtra("selected_items");
         GioHangAdapter gioHangAdapter = new GioHangAdapter(gioHangItems);
         recyclerViewSanPham.setAdapter(gioHangAdapter);
         recyclerViewSanPham.setLayoutManager(new LinearLayoutManager(this));
@@ -70,21 +78,51 @@ public class ThanhToanActivity extends AppCompatActivity {
         btnDatHang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(ThanhToanActivity.this, "Đặt hàng thành công", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(ThanhToanActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
+                int maKH = sharedPreferences.getInt("maKH", -1); // Lấy mã khách hàng từ SharedPreferences
+                String tenSPDH = "";
+                int soLuong = 0;
+                int tongTien = finalTongTienHang;
+                for (GioHangItem item : gioHangItems) {
+                    tenSPDH += item.getTenSP() + ", ";
+                    soLuong += item.getSoLuong();
+                }
+                if (tenSPDH.endsWith(", ")) {
+                    tenSPDH = tenSPDH.substring(0, tenSPDH.length() - 2);
+                }
+                String ngayMua = getCurrentDate();
+                DatabaseHelper dbHelper = new DatabaseHelper(ThanhToanActivity.this);
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                ContentValues values = new ContentValues();
+                values.put("maKH", maKH);
+                values.put("maTTDH", 1);
+                values.put("tenDH", "Đơn hàng mới");
+                values.put("tenSPDH", tenSPDH);
+                values.put("ngayMua", ngayMua);
+                values.put("soLuong", soLuong);
+                values.put("tongTien", tongTien);
+                long result = db.insert("DonMua", null, values);
+                if (result != -1) {
+                    Toast.makeText(ThanhToanActivity.this, "Đặt hàng thành công", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(ThanhToanActivity.this, "Đặt hàng không thành công", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-        loadDonMuaData(); // Thêm phương thức loadDonMuaData() vào onCreate() để hiển thị thông tin đơn mua
+        loadDonMuaData();
+    }
+
+    private String getCurrentDate() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        return dateFormat.format(date);
     }
 
     @SuppressLint("Range")
     private void loadDonMuaData() {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        // Thực hiện truy vấn dữ liệu từ bảng KhachHang
         Cursor cursor = db.query(
                 "KhachHang",
                 null, // Truy vấn tất cả các cột

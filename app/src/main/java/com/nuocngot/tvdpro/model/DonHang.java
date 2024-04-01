@@ -5,23 +5,25 @@ public class DonHang {
     private String tenSPDH;
     private int soLuongSPDH;
     private int tongTienDH;
+    private String ngayMua;
+
+    public DonHang(String tenDH, String tenSPDH, int soLuongSPDH, int tongTienDH, String ngayMua) {
+        this.tenDH = tenDH;
+        this.tenSPDH = tenSPDH;
+        this.soLuongSPDH = soLuongSPDH;
+        this.tongTienDH = tongTienDH;
+        this.ngayMua = ngayMua;
+    }
+
+    public String getNgayMua() {
+        return ngayMua;
+    }
+
+    public void setNgayMua(String ngayMua) {
+        this.ngayMua = ngayMua;
+    }
 
     private String anhDH;
-
-    public DonHang(String tenDH, String tenSPDH, int soLuongSPDH, int tongTienDH, String anhDH) {
-        this.tenDH = tenDH;
-        this.tenSPDH = tenSPDH;
-        this.soLuongSPDH = soLuongSPDH;
-        this.tongTienDH = tongTienDH;
-        this.anhDH = anhDH;
-    }
-
-    public DonHang(String tenDH, String tenSPDH, int soLuongSPDH, int tongTienDH) {
-        this.tenDH = tenDH;
-        this.tenSPDH = tenSPDH;
-        this.soLuongSPDH = soLuongSPDH;
-        this.tongTienDH = tongTienDH;
-    }
 
     public String getTenDH() {
         return tenDH;
