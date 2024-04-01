@@ -65,6 +65,7 @@ public class DonHangActivity extends AppCompatActivity {
             tab.setCustomView(customView);
             tabLayout.addTab(tab);
             tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
         }
 
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
