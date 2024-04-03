@@ -8,7 +8,6 @@ public class BuyActivityItem {
         this.imageBuyAcvitity = imageBuyAcvitity;
         this.nameBuyActivity = nameBuyActivity;
     }
-
     public int getImageBuyAcvitity() {
         return imageBuyAcvitity;
     }

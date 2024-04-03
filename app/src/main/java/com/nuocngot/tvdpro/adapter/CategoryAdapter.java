@@ -33,14 +33,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         this.categoryList = categoryList;
         this.context = context;
     }
-
     @NonNull
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category, parent, false);
         return new CategoryViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         Category category = categoryList.get(position);
@@ -79,7 +77,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             }
         });
     }
-
     private void showEditCategoryDialog(Category category) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -106,7 +103,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
-
     private void updateCategoryInDatabase(int maDM, String newCategoryName) {
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -124,7 +120,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         db.close();
         dbHelper.close();
     }
-
     private void loadCategoryList() {
         categoryList.clear();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
@@ -143,13 +138,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         dbHelper.close();
         notifyDataSetChanged();
     }
-
     private boolean isAdmin() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("login_status", Context.MODE_PRIVATE);
         String role = sharedPreferences.getString("role", "");
         return role.equals("admin");
     }
-
     private void showDeleteCategoryDialog(Category category) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Xóa danh mục")
@@ -178,7 +171,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         db.close();
         dbHelper.close();
     }
-
 
     @Override
     public int getItemCount() {

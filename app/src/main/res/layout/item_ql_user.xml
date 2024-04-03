@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:layout_height="wrap_content">
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        app:strokeWidth="0dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:background="@drawable/background_radius"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="match_parent"
+            android:padding="10dp">
+            <RelativeLayout
+                android:layout_gravity="center"
+                android:layout_width="80dp"
+                android:layout_height="80dp">
+
+                <ImageView
+                    android:id="@+id/imageViewAnhKH"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/img_avatar_nam" />
+
+                <ImageView
+                    android:id="@+id/khungVIPImageView"
+                    android:layout_width="80dp"
+                    android:scaleType="centerCrop"
+                    android:layout_height="80dp"
+                    android:src="@drawable/khung_vip_02" />
+
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/textViewTenKH"
+                    android:layout_margin="5dp"
+                    android:singleLine="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tên khách hàng"
+                    android:textStyle="bold">
+                </TextView>
+                <TextView
+                    android:id="@+id/textViewSDTEmail"
+                    android:layout_margin="5dp"
+                    android:singleLine="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="annanguyen220203@gmail.com">
+                </TextView>
+                <TextView
+                    android:id="@+id/textViewDiaChi"
+                    android:layout_margin="5dp"
+                    android:singleLine="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Địa chỉ: ">
+                </TextView>
+                <TextView
+                    android:layout_margin="5dp"
+                    android:textColor="#FF0000"
+                    android:id="@+id/textViewViTri"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Admin">
+                </TextView>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/textViewMaTK"
+                    android:text="Mã TK: 1"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

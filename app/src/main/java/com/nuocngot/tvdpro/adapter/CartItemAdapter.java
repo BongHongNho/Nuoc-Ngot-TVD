@@ -147,7 +147,6 @@ public class CartItemAdapter extends BaseAdapter {
         }
         cursor.close();
         db.close();
-
         return quantity;
     }
 

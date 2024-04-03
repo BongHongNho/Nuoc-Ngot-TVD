@@ -52,8 +52,6 @@ public class BuyAcitivyAdapter extends RecyclerView.Adapter<BuyAcitivyAdapter.Bu
             }
         });
     }
-
-
     @Override
     public int getItemCount() {
         return buyActivityItems.size();
@@ -62,18 +60,15 @@ public class BuyAcitivyAdapter extends RecyclerView.Adapter<BuyAcitivyAdapter.Bu
     public class BuyAcitivyViewHolder extends RecyclerView.ViewHolder {
         public TextView textView;
         public ImageView imageView;
-
         public BuyAcitivyViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.textViewBuyActivity);
             imageView = itemView.findViewById(R.id.imgBuyActivity);
         }
     }
-
     public void setOnItemClickCallback(OnItemClickCallback onItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback;
     }
-
     public interface OnItemClickCallback {
         void onItemClicked(BuyActivityItem buyAcitivy);
     }

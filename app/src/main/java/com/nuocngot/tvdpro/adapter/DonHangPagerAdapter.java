@@ -17,7 +17,6 @@ public class DonHangPagerAdapter extends FragmentStateAdapter {
     public DonHangPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
-
     @NonNull
     @Override
     public Fragment createFragment(int position) {

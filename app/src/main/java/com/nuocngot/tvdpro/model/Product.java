@@ -1,13 +1,13 @@
-package com.nuocngot.tvdpro.adapter;
+package com.nuocngot.tvdpro.model;
 
-public class productAdapter {
+public class Product {
     private int id_product;
     private String itemName;
     private int itemPrice;
     private String itemImage;
     private int itemQuantity;
 
-    public productAdapter(int id_product, String itemName, int itemPrice, String itemImage, int itemQuantity) {
+    public Product(int id_product, String itemName, int itemPrice, String itemImage, int itemQuantity) {
         this.id_product = id_product;
         this.itemName = itemName;
         this.itemPrice = itemPrice;

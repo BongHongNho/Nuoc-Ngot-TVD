@@ -7,14 +7,31 @@ public class DonHang {
     private int tongTienDH;
     private String ngayMua;
     private String anhDH;
+    private int maDM;
 
-    public DonHang(String tenDH, String tenSPDH, int soLuongSPDH, int tongTienDH, String ngayMua, String anhDH) {
+    private int maTTDH;
+
+    public DonHang(String tenDH, String tenSPDH, int soLuongSPDH, int tongTienDH, String ngayMua, String anhDH, int maDM, int maTTDH) {
         this.tenDH = tenDH;
         this.tenSPDH = tenSPDH;
         this.soLuongSPDH = soLuongSPDH;
         this.tongTienDH = tongTienDH;
         this.ngayMua = ngayMua;
         this.anhDH = anhDH;
+        this.maDM = maDM;
+        this.maTTDH = maTTDH;
+    }
+
+    public int getMaTTDH() {
+        return maTTDH;
+    }
+
+    public int getMaDM() {
+        return maDM;
+    }
+
+    public void setMaDM(int maDM) {
+        this.maDM = maDM;
     }
 
     public String getNgayMua() {
@@ -63,5 +80,8 @@ public class DonHang {
 
     public void setAnhDH(String anhDH) {
         this.anhDH = anhDH;
+    }
+
+    public void setMaTTDH(int maTTDH) {
     }
 }

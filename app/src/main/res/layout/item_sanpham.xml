@@ -20,12 +20,27 @@
               android:layout_width="wrap_content"
               app:strokeWidth="0dp"
               android:layout_height="wrap_content">
-              <ImageView
-                  android:src="@drawable/img_avatar_nam"
-                  android:id="@+id/imageViewSanPham"
+              <RelativeLayout
+                  android:id="@+id/imageViewSanPham2"
                   android:layout_width="match_parent"
-                  android:layout_height="100dp"
-                  android:scaleType="centerCrop" />
+                  android:layout_height="match_parent">
+
+                  <ImageView
+                      android:id="@+id/imageViewSanPham"
+                      android:layout_width="wrap_content"
+                      android:layout_height="100dp"
+                      android:layout_centerInParent="true"
+                      android:src="@drawable/img_avatar_nam" />
+
+                  <ImageView
+                      android:id="@+id/imggSoldOut"
+                      android:visibility="gone"
+                      android:layout_width="wrap_content"
+                      android:scaleType="centerCrop"
+                      android:layout_height="100dp"
+                      android:src="@drawable/sold_out" />
+
+              </RelativeLayout>
           </com.google.android.material.card.MaterialCardView>
             <TextView
                 android:id="@+id/textViewTenSP"
@@ -33,7 +48,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/imageViewSanPham"
+                android:layout_below="@id/imageViewSanPham2"
                 android:textSize="14sp"
                 android:singleLine="true"
                 android:layout_gravity="center"

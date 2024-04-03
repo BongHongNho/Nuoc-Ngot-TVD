@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.nuocngot.tvdpro.model.Admin;
 import com.nuocngot.tvdpro.model.CartItem;
-import com.nuocngot.tvdpro.adapter.productAdapter;
+import com.nuocngot.tvdpro.model.Product;
 import com.nuocngot.tvdpro.model.LichSu;
 
 import java.util.ArrayList;
@@ -336,84 +336,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     }
-
-    public List<productAdapter> getAllProducts() {
-        List<productAdapter> productList = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-        try {
-            cursor = db.rawQuery("SELECT * FROM SanPham", null);
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    int idSP = cursor.getInt(cursor.getColumnIndex("maSP"));
-                    String hinhAnh = cursor.getString(cursor.getColumnIndex("hinhAnh"));
-                    String tenSP = cursor.getString(cursor.getColumnIndex("tenSP"));
-                    int soLuongSP = cursor.getInt(cursor.getColumnIndex("soLuongSP"));
-                    int giaSP = cursor.getInt(cursor.getColumnIndex("giaSP"));
-                    productList.add(new productAdapter(idSP, tenSP, giaSP, hinhAnh, soLuongSP));
-                } while (cursor.moveToNext());
-            }
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            db.close();
-        }
-
-        return productList;
-    }
-
-    public Admin getAdminInfo() {
-        Admin admin = null;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-
-        try {
-            String query = "SELECT * FROM Admin";
-            cursor = db.rawQuery(query, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                admin = new Admin();
-                admin.setTenAdmin(cursor.getString(cursor.getColumnIndex("tenAdmin")));
-                admin.setHinhAnh(cursor.getString(cursor.getColumnIndex("hinhAnh")));
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error while fetching admin info: " + e.getMessage());
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-
-        return admin;
-    }
-
-    public void updateAdminAvatar(String imageUrl) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_HINH_ANH, imageUrl);
-        int rowsAffected = db.update(TABLE_ADMIN, values, null, null);
-        db.close();
-        Log.d(TAG, "Number of rows affected: " + rowsAffected);
-    }
-
-    public void addCartItem(CartItem cartItem) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("maKH", cartItem.getCustomerId());
-        values.put("tenKH", cartItem.getCustomerName());
-        values.put("maSP", cartItem.getProductId());
-        values.put("hinhAnh", cartItem.getProductImage());
-        values.put("tenSP", cartItem.getProductName());
-        values.put("giaSP", cartItem.getProductPrice());
-        values.put("soLuong", cartItem.getQuantityInStock());
-        values.put("soLuongSP", cartItem.getProductQuantity());
-        int totalPrice = cartItem.getProductPrice() * cartItem.getProductQuantity();
-        values.put("tongTien", totalPrice);
-        db.insert("GioHang", null, values);
-        db.close();
-    }
-
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS TaiKhoan");

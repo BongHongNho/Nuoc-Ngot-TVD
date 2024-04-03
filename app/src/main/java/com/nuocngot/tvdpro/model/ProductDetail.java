@@ -1,4 +1,4 @@
-package com.nuocngot.tvdpro.adapter;
+package com.nuocngot.tvdpro.model;
 public class ProductDetail {
     private int productId;
     private String imageUrl;
@@ -18,7 +18,6 @@ public class ProductDetail {
         this.info = info;
     }
 
-    // Getters and setters
     public int getProductId() {
         return productId;
     }

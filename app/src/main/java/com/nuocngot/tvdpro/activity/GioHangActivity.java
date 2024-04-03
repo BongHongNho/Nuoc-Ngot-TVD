@@ -50,12 +50,6 @@ public class GioHangActivity extends AppCompatActivity {
         textViewTotalPrice = findViewById(R.id.textViewTotalPrice);
         gioHangAdapter = new GioHangAdapter(gioHangItemList);
         textViewGHEmpty= findViewById(R.id.textViewGHEmpty);
-        if (gioHangItemList.size() == 0) {
-            textViewGHEmpty.setVisibility(View.VISIBLE);
-        }
-        else {
-            textViewGHEmpty.setVisibility(View.GONE);
-        }
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Giỏ hàng");
         toolbar.setNavigationIcon(R.drawable.back);

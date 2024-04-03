@@ -2,6 +2,7 @@ package com.nuocngot.tvdpro.adapter;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -162,13 +163,37 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.GioHangV
             buttonIncrease.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    gioHangItem.increaseQuantity();
-                    textViewQuantity.setText(String.valueOf(gioHangItem.getSoLuong()));
-                    updateQuantityInDatabase(gioHangItem.getMaSP(), gioHangItem.getSoLuong());
+                    int currentQuantity = gioHangItem.getSoLuong();
+                    int availableQuantity = getAvailableQuantityFromDatabase(gioHangItem.getMaSP());
+                    if (currentQuantity < availableQuantity) {
+                        gioHangItem.increaseQuantity();
+                        textViewQuantity.setText(String.valueOf(gioHangItem.getSoLuong()));
+                        updateQuantityInDatabase(gioHangItem.getMaSP(), gioHangItem.getSoLuong());
+                    } else {
+                        Toast.makeText(context, "Số lượng sản phẩm không đủ trong kho", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
         }
+
+        private int getAvailableQuantityFromDatabase(int maSP) {
+            int availableQuantity = 0;
+            DatabaseHelper dbHelper = new DatabaseHelper(GetContext.createAppContext());
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            String[] columns = {"soLuong"};
+            String selection = "maSP = ?";
+            String[] selectionArgs = {String.valueOf(maSP)};
+            Cursor cursor = db.query("SanPham", columns, selection, selectionArgs, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                availableQuantity = cursor.getInt(cursor.getColumnIndex("soLuong"));
+                cursor.close();
+            }
+            db.close();
+            dbHelper.close();
+            return availableQuantity;
+        }
+
     }
 
     private void updateQuantityInDatabase(int maSP, int soLuong) {
@@ -187,8 +212,6 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.GioHangV
 
         }
     }
-
-
 
     public interface OnItemChangeListener {
         void onItemChanged(int position, int newQuantity);

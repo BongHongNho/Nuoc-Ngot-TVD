@@ -61,41 +61,43 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
         SanPham sanPham = sanPhamList.get(position);
         holder.tenSP.setText(sanPham.getTenSP());
         holder.giaSP.setText(String.valueOf(sanPham.getGia()) + " VNĐ");
-        if (sanPham.getSoLuong() == 0) {
-            holder.hinhAnh.setImageResource(R.drawable.sold_out);
-            holder.itemView.setOnClickListener(null);
-            holder.itemView.setClickable(true);
-            holder.slKho.setText("Hết hàng");
-        } else {
-            Glide.with(holder.hinhAnh.getContext()).load(sanPham.getHinhAnh()).placeholder(R.drawable.placeholder).into(holder.hinhAnh);
-            holder.slKho.setText("Kho: " + String.valueOf(sanPham.getSoLuong()));
-            holder.itemView.setClickable(true);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(holder.itemView.getContext(), ChiTietSPActivity.class);
-                    intent.putExtra("maSP", sanPham.getMaSP());
-                    holder.itemView.getContext().startActivity(intent);
-                }
-            });
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Context context = v.getContext();
-                    if (context != null) {
-                        SharedPreferences sharedPreferences = context.getSharedPreferences("login_status", Context.MODE_PRIVATE);
-                        int maTK = sharedPreferences.getInt("maTK", -1);
-                        if (checkAdminRole(v.getContext(), maTK)) {
-                            showAdminDialog(v.getContext(), position);
-                        } else {
 
-                        }
-                    }
-                    return true;
-                }
-            });
+        if (sanPham.getSoLuong() == 0) {
+            holder.soldOut.setVisibility(View.VISIBLE);
+            Glide.with(holder.hinhAnh.getContext()).load(sanPham.getHinhAnh()).placeholder(R.drawable.placeholder).into(holder.hinhAnh);
+        } else {
+            holder.soldOut.setVisibility(View.GONE);
+            Glide.with(holder.hinhAnh.getContext()).load(sanPham.getHinhAnh()).placeholder(R.drawable.placeholder).into(holder.hinhAnh);
         }
+
+        holder.slKho.setText("Kho: " + String.valueOf(sanPham.getSoLuong()));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(holder.itemView.getContext(), ChiTietSPActivity.class);
+                intent.putExtra("maSP", sanPham.getMaSP());
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Context context = v.getContext();
+                if (context != null) {
+                    SharedPreferences sharedPreferences = context.getSharedPreferences("login_status", Context.MODE_PRIVATE);
+                    int maTK = sharedPreferences.getInt("maTK", -1);
+                    if (checkAdminRole(v.getContext(), maTK)) {
+                        showAdminDialog(v.getContext(), position);
+                    } else {
+
+                    }
+                }
+                return true;
+            }
+        });
     }
+
 
 
     public boolean checkAdminRole(Context context, int maTK) {
@@ -401,7 +403,7 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
     }
 
     public static class SanPhamViewHolder extends RecyclerView.ViewHolder {
-        ImageView hinhAnh;
+        ImageView hinhAnh, soldOut;
         TextView tenSP, giaSP, slKho;
 
         public SanPhamViewHolder(@NonNull View itemView) {
@@ -410,6 +412,7 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
             tenSP = itemView.findViewById(R.id.textViewTenSP);
             giaSP = itemView.findViewById(R.id.textViewGiaSP);
             slKho = itemView.findViewById(R.id.textViewKho);
+            soldOut = itemView.findViewById(R.id.imggSoldOut);
         }
     }
 

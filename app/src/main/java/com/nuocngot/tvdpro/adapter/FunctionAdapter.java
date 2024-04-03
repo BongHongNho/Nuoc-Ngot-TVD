@@ -22,6 +22,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.nuocngot.tvdpro.QLTaiKhoanActivity;
 import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.activity.CNQuanTriVien;
+import com.nuocngot.tvdpro.activity.QuanLiDonHangActivity;
 import com.nuocngot.tvdpro.activity.QuanLyUserActivity;
 import com.nuocngot.tvdpro.activity.ThongKeDoanhThuActivity;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
@@ -30,25 +31,18 @@ import com.nuocngot.tvdpro.getContext.GetContext;
 import java.util.ArrayList;
 
 public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.FunctionViewHolder> {
-    private ArrayList<String> functions; // Danh sách các chức năng
+    private ArrayList<String> functions;
     private OnFunctionClickListener listener;
-
-    // Constructor
     public FunctionAdapter(ArrayList<String> functions, OnFunctionClickListener listener) {
         this.functions = functions;
         this.listener = listener;
     }
-
     public FunctionAdapter(ArrayList<String> functionList) {
         this.functions = functionList;
     }
-
-    // Interface cho việc xử lý sự kiện khi người dùng click vào một chức năng
     public interface OnFunctionClickListener {
         void onFunctionClick(int position);
     }
-
-    // ViewHolder cho mỗi mục trong danh sách
     public static class FunctionViewHolder extends RecyclerView.ViewHolder {
         public TextView functionNameTextView;
 
@@ -92,6 +86,10 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
                 }
                 if (selectedFunction.equals("Quản lý người dùng")) {
                     Intent intent = new Intent(v.getContext(), QuanLyUserActivity.class);
+                    v.getContext().startActivity(intent);
+                }
+                if(selectedFunction.equals("Quản lý đơn hàng")){
+                    Intent intent = new Intent(v.getContext(), QuanLiDonHangActivity.class);
                     v.getContext().startActivity(intent);
                 }
                 if (selectedFunction.equals("Đánh giá của tôi")) {
@@ -243,11 +241,8 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
         try {
             DatabaseHelper dbHelper = new DatabaseHelper(context);
             db = dbHelper.getReadableDatabase();
-
-            // Lấy maTK từ SharedPreferences
             SharedPreferences sharedPreferences = context.getSharedPreferences("login_status", Context.MODE_PRIVATE);
-            int maTK = sharedPreferences.getInt("maTK", -1); // -1 là giá trị mặc định nếu không tìm thấy maTK
-
+            int maTK = sharedPreferences.getInt("maTK", -1);
             if (maTK != -1) {
                 String[] projection = {"tenDN"};
                 String selection = "maTK = ?";
@@ -269,8 +264,6 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
         }
         return currentUserName;
     }
-
-
     private void updateUserNameInDatabase(String newUserName, Context context) {
         SQLiteDatabase db = null;
         try {

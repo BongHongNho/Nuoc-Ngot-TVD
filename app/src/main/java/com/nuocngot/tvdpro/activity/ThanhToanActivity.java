@@ -197,6 +197,10 @@ public class ThanhToanActivity extends AppCompatActivity {
             public void onClick(View v) {
                 SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
                 int maKH = sharedPreferences.getInt("maTK", -1);
+                if (textViewPhuongThucThanhToan.getText().toString().equals("Vui lòng chọn phương thức thanh toán")) {
+                    Toast.makeText(ThanhToanActivity.this, "Vui lòng chọn phương thức thanh toán trước khi đặt hàng", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 DatabaseHelper dbHelper = new DatabaseHelper(ThanhToanActivity.this);
                 SQLiteDatabase db = dbHelper.getReadableDatabase();
                 Cursor cursor = db.query(

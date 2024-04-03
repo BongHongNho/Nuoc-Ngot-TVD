@@ -103,19 +103,5 @@ public class DonHangActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void addCustomTabs(TabLayout tabLayout, ArrayList<BuyActivityItem> itemList) {
-        for (BuyActivityItem item : itemList) {
-            TabLayout.Tab tab = tabLayout.newTab();
-            View customView = LayoutInflater.from(DonHangActivity.this).inflate(R.layout.item_activity_cart_buy, null);
-            ImageView tabIcon = customView.findViewById(R.id.textViewBuyActivity);
-            TextView tabText = customView.findViewById(R.id.imgBuyActivity);
-            tabIcon.setImageResource(item.getImageBuyAcvitity());
-            tabText.setText(item.getNameBuyActivity());
-            tab.setCustomView(customView);
-            tabLayout.addTab(tab);
-        }
-    }
-
 }
 

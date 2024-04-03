@@ -34,11 +34,7 @@ public class ChoLayHangFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_cho_lay_hang, container, false);
         recyclerView = rootView.findViewById(R.id.recycaleViewDH);
         textViewEmpty = rootView.findViewById(R.id.textViewGHEmpty);
-        if (donHangList.size() == 0) {
-            textViewEmpty.setVisibility(View.VISIBLE);
-        } else {
-            textViewEmpty.setVisibility(View.GONE);
-        }
+
         adapter = new DonHangAdapter(donHangList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -71,7 +67,9 @@ public class ChoLayHangFragment extends Fragment {
                 int tongTienDH = cursor.getInt(cursor.getColumnIndex("tongTien"));
                 String ngayMua = cursor.getString(cursor.getColumnIndex("ngayMua"));
                 String anhDH = cursor.getString(cursor.getColumnIndex("anhDH"));
-                DonHang donHang = new DonHang(tenDH, tenSPDH, soLuongSPDH, tongTienDH, ngayMua, anhDH);
+                int maDM = cursor.getInt(cursor.getColumnIndex("maDMUA"));
+                int maTTDH = cursor.getInt(cursor.getColumnIndex("maTTDH"));
+                DonHang donHang = new DonHang(tenDH, tenSPDH, soLuongSPDH, tongTienDH, ngayMua, anhDH, maDM, maTTDH);
                 donHangList.add(donHang);
             } while (cursor.moveToNext());
             cursor.close();

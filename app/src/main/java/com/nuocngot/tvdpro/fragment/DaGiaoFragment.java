@@ -39,11 +39,6 @@ public class DaGiaoFragment extends Fragment {
         textViewEmpty = rootView.findViewById(R.id.textViewGHEmpty);
         recyclerView = rootView.findViewById(R.id.recycaleViewDG);
         adapter = new DonHangAdapter(donHangList);
-        if (donHangList.size() == 0) {
-            textViewEmpty.setVisibility(View.VISIBLE);
-        } else {
-            textViewEmpty.setVisibility(View.GONE);
-        }
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("login_status", Context.MODE_PRIVATE);
@@ -75,7 +70,9 @@ public class DaGiaoFragment extends Fragment {
                 int tongTienDH = cursor.getInt(cursor.getColumnIndex("tongTien"));
                 String ngayMua = cursor.getString(cursor.getColumnIndex("ngayMua"));
                 String anhDH = cursor.getString(cursor.getColumnIndex("anhDH"));
-                DonHang donHang = new DonHang(tenDH, tenSPDH, soLuongSPDH, tongTienDH, ngayMua, anhDH);
+                int maDM = cursor.getInt(cursor.getColumnIndex("maDMUA"));
+                int maTTDH = cursor.getInt(cursor.getColumnIndex("maTTDH"));
+                DonHang donHang = new DonHang(tenDH, tenSPDH, soLuongSPDH, tongTienDH, ngayMua, anhDH, maDM, maTTDH);
                 donHangList.add(donHang);
             } while (cursor.moveToNext());
             cursor.close();
