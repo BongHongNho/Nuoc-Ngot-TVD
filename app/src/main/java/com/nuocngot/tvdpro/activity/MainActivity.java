@@ -111,12 +111,41 @@ public class MainActivity extends AppCompatActivity {
                 if (itemId == R.id.nav_menu_cart) {
                     Intent intent = new Intent(MainActivity.this, GioHangActivity.class);
                     startActivity(intent);
+                } else if(itemId == R.id.nav_menu_settings){
+                    fragmentManager.beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
+                    bottomNavigationView.setSelectedItemId(R.id.menu_settings);
+                } else if(itemId == R.id.nav_menu_category){
+                    fragmentManager.beginTransaction().replace(R.id.fragment_container, new CategoryFragment()).commit();
+                    bottomNavigationView.setSelectedItemId(R.id.menu_category);
                 }
-                if(itemId == R.id.nav_menu_settings){
-                   fragmentManager.beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
+                else if(itemId == R.id.nav_menu_noti){
+                    fragmentManager.beginTransaction().replace(R.id.fragment_container, new NotiFragment()).commit();
+                    bottomNavigationView.setSelectedItemId(R.id.menu_noti);
+                }
+                else if(itemId == R.id.nav_menu_home){
+                    fragmentManager.beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+                    bottomNavigationView.setSelectedItemId(R.id.menu_converterhome);
+                }
+                else if(itemId == R.id.nav_info){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Thông tin phiên bản");
+                    builder.setMessage("Sinh viên: Nguyễn Huy Phước Tấn\nMã sinh viên: PH28818\nSinh viên: Vi Văn Hậu\nMã sinh viên: PH38983");
+                    builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.setNegativeButton("Hủy bỏ", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.show();
                 }
                 drawerLayout.closeDrawer(navigationView);
-                return false;
+                return true;
             }
         });
     }

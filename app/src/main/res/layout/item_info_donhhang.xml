@@ -17,17 +17,22 @@
         android:orientation="horizontal"
         android:layout_height="match_parent"
         android:padding="10dp">
-        <ImageView
-            android:layout_gravity="center"
-            android:id="@+id/imageViewSPTTDH"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/img_avatar_nam">
-        </ImageView>
+
+ <com.google.android.material.card.MaterialCardView
+     android:layout_width="wrap_content"
+     android:layout_gravity="center"
+     app:strokeWidth="0dp"
+     android:layout_height="wrap_content">
+     <ImageView
+         android:id="@+id/imageViewSPTTDH"
+         android:layout_width="80dp"
+         android:layout_height="80dp"
+         android:src="@drawable/img_avatar_nam"></ImageView>
+ </com.google.android.material.card.MaterialCardView>
         <LinearLayout
             android:layout_gravity="center"
             android:layout_marginStart="20dp"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
@@ -60,6 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tổng tiền: 10000 VND"
+                android:singleLine="true"
                 android:textStyle="bold">
             </TextView>
         </LinearLayout>
@@ -79,6 +85,7 @@
             <TextView
                 android:id="@+id/textViewNgayMua"
                 android:text="29/05/2003"
+                android:singleLine="true"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">

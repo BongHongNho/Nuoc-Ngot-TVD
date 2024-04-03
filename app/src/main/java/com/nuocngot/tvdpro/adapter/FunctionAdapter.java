@@ -22,6 +22,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.nuocngot.tvdpro.QLTaiKhoanActivity;
 import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.activity.CNQuanTriVien;
+import com.nuocngot.tvdpro.activity.QuanLyUserActivity;
+import com.nuocngot.tvdpro.activity.ThongKeDoanhThuActivity;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
 import com.nuocngot.tvdpro.getContext.GetContext;
 
@@ -88,6 +90,10 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
                     Intent intent = new Intent(v.getContext(), CNQuanTriVien.class);
                     v.getContext().startActivity(intent);
                 }
+                if (selectedFunction.equals("Quản lý người dùng")) {
+                    Intent intent = new Intent(v.getContext(), QuanLyUserActivity.class);
+                    v.getContext().startActivity(intent);
+                }
                 if (selectedFunction.equals("Đánh giá của tôi")) {
 
                 } else if (selectedFunction.equals("Quản lý tài khoản")) {
@@ -98,7 +104,26 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
                 } else if (selectedFunction.equals("Báo lỗi ứng dụng")) {
 
                 } else if (selectedFunction.equals("Thông tin phiên bản")) {
-
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                    builder.setTitle("Thông tin phiên bản");
+                    builder.setMessage("Sinh viên: Nguyễn Huy Phước Tấn\nMã sinh viên: PH28818\nSinh viên: Vi Văn Hậu\nMã sinh viên: PH38983");
+                    builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.setNegativeButton("Hủy bỏ", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.show();
+                }
+                else if(selectedFunction.equals("Thống kê doanh số")){
+                    Intent intent = new Intent(v.getContext(), ThongKeDoanhThuActivity.class);
+                    v.getContext().startActivity(intent);
                 }
             }
         });

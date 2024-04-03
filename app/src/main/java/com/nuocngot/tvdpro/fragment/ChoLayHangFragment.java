@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import com.nuocngot.tvdpro.R;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,6 +25,7 @@ public class ChoLayHangFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private DonHangAdapter adapter;
+    private TextView textViewEmpty;
     private ArrayList<DonHang> donHangList = new ArrayList<>();
 
     @Nullable
@@ -30,6 +33,12 @@ public class ChoLayHangFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_cho_lay_hang, container, false);
         recyclerView = rootView.findViewById(R.id.recycaleViewDH);
+        textViewEmpty = rootView.findViewById(R.id.textViewGHEmpty);
+        if (donHangList.size() == 0) {
+            textViewEmpty.setVisibility(View.VISIBLE);
+        } else {
+            textViewEmpty.setVisibility(View.GONE);
+        }
         adapter = new DonHangAdapter(donHangList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -61,7 +70,8 @@ public class ChoLayHangFragment extends Fragment {
                 int soLuongSPDH = cursor.getInt(cursor.getColumnIndex("soLuong"));
                 int tongTienDH = cursor.getInt(cursor.getColumnIndex("tongTien"));
                 String ngayMua = cursor.getString(cursor.getColumnIndex("ngayMua"));
-                DonHang donHang = new DonHang(tenDH, tenSPDH, soLuongSPDH, tongTienDH, ngayMua);
+                String anhDH = cursor.getString(cursor.getColumnIndex("anhDH"));
+                DonHang donHang = new DonHang(tenDH, tenSPDH, soLuongSPDH, tongTienDH, ngayMua, anhDH);
                 donHangList.add(donHang);
             } while (cursor.moveToNext());
             cursor.close();

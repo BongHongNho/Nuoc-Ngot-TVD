@@ -93,38 +93,49 @@ public class ChiTietSPActivity extends AppCompatActivity {
     private void addToCartAndNavigateToCartActivity(int maSP) {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM SanPham WHERE maSP = ?", new String[]{String.valueOf(maSP)});
-        if (cursor.moveToFirst()) {
-            String tenSP = cursor.getString(cursor.getColumnIndex("tenSP"));
-            String hinhAnh = cursor.getString(cursor.getColumnIndex("hinhAnh"));
-            int giaSP = cursor.getInt(cursor.getColumnIndex("gia"));
-            int soLuong = 1;
-            int tongTien = soLuong * giaSP;
-            SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
-            int maKH = sharedPreferences.getInt("maKH", -1);
-            if (maKH != -1) {
+        SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
+        int maKH = sharedPreferences.getInt("maKH", -1);
+        if (maKH != -1) {
+            // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng hay chưa
+            Cursor cursor = db.rawQuery("SELECT * FROM GioHang WHERE maSP = ? AND maKH = ?", new String[]{String.valueOf(maSP), String.valueOf(maKH)});
+            if (cursor.moveToFirst()) {
+                // Nếu sản phẩm đã tồn tại, cập nhật số lượng của nó
+                int soLuongHienTai = cursor.getInt(cursor.getColumnIndex("soLuong"));
+                int soLuongMoi = soLuongHienTai + 1;
                 ContentValues values = new ContentValues();
-                values.put("tenSP", tenSP);
-                values.put("hinhAnh", hinhAnh);
-                values.put("maKH", maKH);
-                values.put("maSP", maSP);
-                values.put("soLuong", soLuong);
-                values.put("tongTien", tongTien);
-                long newRowId = db.insert("GioHang", null, values);
-
-                if (newRowId != -1) {
-                    Toast.makeText(this, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "Thêm sản phẩm vào giỏ hàng thất bại", Toast.LENGTH_SHORT).show();
-                }
+                values.put("soLuong", soLuongMoi);
+                db.update("GioHang", values, "maSP = ? AND maKH = ?", new String[]{String.valueOf(maSP), String.valueOf(maKH)});
             } else {
-                Toast.makeText(this, "Không tìm thấy thông tin khách hàng", Toast.LENGTH_SHORT).show();
+                // Nếu sản phẩm chưa tồn tại, thêm sản phẩm mới vào giỏ hàng
+                Cursor cursorSanPham = db.rawQuery("SELECT * FROM SanPham WHERE maSP = ?", new String[]{String.valueOf(maSP)});
+                if (cursorSanPham.moveToFirst()) {
+                    String tenSP = cursorSanPham.getString(cursorSanPham.getColumnIndex("tenSP"));
+                    String hinhAnh = cursorSanPham.getString(cursorSanPham.getColumnIndex("hinhAnh"));
+                    int giaSP = cursorSanPham.getInt(cursorSanPham.getColumnIndex("gia"));
+                    int soLuong = 1;
+                    int tongTien = soLuong * giaSP;
+
+                    ContentValues values = new ContentValues();
+                    values.put("tenSP", tenSP);
+                    values.put("hinhAnh", hinhAnh);
+                    values.put("maKH", maKH);
+                    values.put("maSP", maSP);
+                    values.put("soLuong", soLuong);
+                    values.put("tongTien", tongTien);
+                    db.insert("GioHang", null, values);
+                }
+                cursorSanPham.close();
             }
+            cursor.close();
+            Toast.makeText(this, "Thêm sản phẩm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
+            Intent gioHangIntent = new Intent(this, GioHangActivity.class);
+            startActivity(gioHangIntent);
+        } else {
+            Toast.makeText(this, "Không tìm thấy thông tin khách hàng", Toast.LENGTH_SHORT).show();
         }
-        cursor.close();
+        db.close();
         dbHelper.close();
-        Intent gioHangIntent = new Intent(this, GioHangActivity.class);
-        startActivity(gioHangIntent);
     }
+
 
 }

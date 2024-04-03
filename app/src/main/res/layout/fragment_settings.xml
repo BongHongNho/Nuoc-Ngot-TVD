@@ -27,6 +27,7 @@
             <ImageView
                 android:id="@+id/khungVIPImageView"
                 android:layout_width="80dp"
+                android:scaleType="centerCrop"
                 android:layout_height="80dp"
                 android:src="@drawable/khung_vip_02" />
 
@@ -70,6 +71,7 @@
                    android:layout_height="wrap_content"
                    android:text="Loại thành viên" />
                <ImageView
+                   android:id="@+id/veryfied"
                    android:layout_marginStart="5dp"
                    android:layout_gravity="center"
                    android:layout_width="15dp"
@@ -109,6 +111,7 @@
         </LinearLayout>
        <LinearLayout
            android:layout_width="160dp"
+           android:id="@+id/btnLichSuMua"
            android:background="@drawable/background_radius_reduce"
            android:layout_gravity="center|right"
            android:layout_marginStart="100dp"

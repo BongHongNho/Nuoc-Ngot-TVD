@@ -19,10 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.nuocngot.tvdpro.activity.LichSuMuaHangActivity;
 import com.nuocngot.tvdpro.activity.LoginActivity;
 import com.nuocngot.tvdpro.adapter.BuyAcitivyAdapter;
 import com.nuocngot.tvdpro.adapter.BuyActivityItem;
@@ -40,11 +42,10 @@ public class SettingsFragment extends Fragment {
     private TextView emailTextView;
     private TextView sdtTextView;
     private TextView roleTextView;
-
+    private ImageView veryfied ,khungVIPImageView;
     private Button btnLogOut;
-
+    private LinearLayout btnLichSuMua;
     private RecyclerView functionRecyclerView,historyRecyclerView;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,15 +53,34 @@ public class SettingsFragment extends Fragment {
         tenTextView = view.findViewById(R.id.tenTextView);
         emailTextView = view.findViewById(R.id.emailTextView);
         sdtTextView = view.findViewById(R.id.sdtTextView);
+        veryfied = view.findViewById(R.id.veryfied);
+        khungVIPImageView = view.findViewById(R.id.khungVIPImageView);
         roleTextView = view.findViewById(R.id.roleTextView);
         avatarImageView = view.findViewById(R.id.avatarImageView);
         historyRecyclerView = view.findViewById(R.id.historyRecyclerView);
         functionRecyclerView = view.findViewById(R.id.functionRecyclerView);
+        btnLichSuMua = view.findViewById(R.id.btnLichSuMua);
+        btnLichSuMua.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), LichSuMuaHangActivity.class);
+                startActivity(intent);
+            }
+        });
         btnLogOut = view.findViewById(R.id.btnLogOut);
         setUpFunctionRecyclerView();
         setUpRecyclerView();
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("login_status", Context.MODE_PRIVATE);
         int maTK = sharedPreferences.getInt("maTK", -1);
+        String role = sharedPreferences.getString("role", "");
+        if(role.equals("admin")) {
+            veryfied.setVisibility(View.VISIBLE);
+            khungVIPImageView.setImageDrawable(getContext().getResources().getDrawable(R.drawable.khung_vip_02));
+        }
+        else {
+            veryfied.setVisibility(View.INVISIBLE);
+            khungVIPImageView.setImageDrawable(getContext().getResources().getDrawable(R.drawable.khung_vip_03));
+        }
         TaiKhoan taiKhoan = queryTaiKhoanFromDatabase(maTK);
         if (taiKhoan != null) {
             tenTextView.setText("Tên đăng nhập: " + taiKhoan.getTenDN());

@@ -9,10 +9,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.nuocngot.tvdpro.model.Admin;
 import com.nuocngot.tvdpro.model.CartItem;
 import com.nuocngot.tvdpro.adapter.productAdapter;
+import com.nuocngot.tvdpro.model.LichSu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,15 +44,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "SDT TEXT NOT NULL," +
                     "diaChi TEXT NOT NULL," +
                     "capTV TEXT NOT NULL," +
+                    "trangThai INTEGER REFERENCES TrangThaiTK(maTTTK)," +
                     "hinhAnh TEXT NOT NULL)";
 
-    // Tạo bảng Admin để lưu thông tin admin
-    private static final String CREATE_TABLE_ADMIN =
-            "CREATE TABLE Admin (" +
-                    "maAdmin INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "maTK INTEGER REFERENCES TaiKhoan(maTK)," + // Thêm khóa ngoại để liên kết với bảng Tài Khoản
-                    "tenAdmin TEXT NOT NULL," +
-                    "hinhAnh TEXT NOT NULL)";
+    private static final String CREATE_TABLE_TRANGTHAIATKH =
+            "CREATE TABLE TrangThaiTK (" +
+                    "maTTTK INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "tenTT TEXT NOT NULL)";
 
     private static final String CREATE_TABLE_SAN_PHAM =
             "CREATE TABLE SanPham (maSP INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -128,10 +128,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "maSP INTEGER REFERENCES SanPham(maSP)," +
                     "maTTDH INTEGER REFERENCES TrangThaiDonHang(maTTHD)," +
                     "tenDH TEXT NOT NULL," + // Tên đơn hàng
-                    "tenSPDH TEXT NOT NULL," + // Tên sản phẩm trong đơn hàng
+                    "tenSPDH TEXT NOT NULL," + //
+                    "anhDH TEXT NOT NULL," +
                     "ngayMua TEXT NOT NULL," +
                     "soLuong INTEGER NOT NULL," +
                     "tongTien INTEGER NOT NULL)";
+    private int getDoanhThuTheoNgay(String ngay, Context context) {
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        int doanhThu = 0;
+
+        Cursor cursor = db.rawQuery("SELECT SUM(tongTien) AS total FROM DonMua WHERE ngayMua = ?", new String[]{ngay});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            doanhThu = cursor.getInt(cursor.getColumnIndex("tongTien"));
+            cursor.close();
+        } else {
+            Toast.makeText(context, "Không có dữ liệu doanh thu cho ngày này", Toast.LENGTH_SHORT).show();
+        }
+
+        return doanhThu;
+    }
+
 
 
     private static final String CREATE_TABLE_TRANGTHAI_SANPHAM =
@@ -154,15 +172,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL(CREATE_TABLE_ADMIN);
-        db.execSQL("INSERT INTO Admin (maTK, tenAdmin, hinhAnh) VALUES (1, 'Admin1', 'https://media.istockphoto.com/id/1223671392/vector/default-profile-picture-avatar-photo-placeholder-vector-illustration.jpg?s=612x612&w=0&k=20&c=s0aTdmT5aU6b8ot7VKm11DeID6NctRCpB755rA1BIP0=')");
-        db.execSQL("INSERT INTO Admin (maTK, tenAdmin, hinhAnh) VALUES (2, 'Admin2', 'https://media.istockphoto.com/id/1223671392/vector/default-profile-picture-avatar-photo-placeholder-vector-illustration.jpg?s=612x612&w=0&k=20&c=s0aTdmT5aU6b8ot7VKm11DeID6NctRCpB755rA1BIP0=')");
-
         db.execSQL(CREATE_TABLE_TAI_KHOAN);
-        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (1, 1, 'admin', 'admin', 'tannhpph28818@fpt.edu.vn', 0359762830, 'admin')");
+        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (1, 1, 'adminpt', 'adminpt', 'tannhpph28818@fpt.edu.vn', 0359762830, 'admin')");
+        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (2, 2, 'adminpl', 'adminpl', 'annanguyen220203@gmail.com', 0337922095, 'admin')");
+        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (3, 3, 'admindk', 'admindk', 'khoind150822@gmail.com', 0989898989, 'admin')");
+        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (4, 4, 'user', 'user', 'hanguyen293@gmai.com', 0917382948, 'user')");
 
         db.execSQL(CREATE_TABLE_KHACH_HANG);
-        db.execSQL("INSERT INTO KhachHang (maTK, tenKH, Email, SDT, diaChi, capTV, hinhAnh) VALUES (1, 'Nguyen Huy Phuoc Tan', 'tannhpph28818@fpt.edu.vn', '0359762830', 'Phương Canh - Nam Từ Liêm - Hà Nội', 'VIP', 'https://tea-3.lozi.vn/v1/ship/resized/losupply-quan-tan-phu-quan-tan-phu-ho-chi-minh-1618467447167540212-nuoc-ngot-coca-cola-lon-320ml-0-1626403242?w=480&type=o')");
+        db.execSQL("INSERT INTO KhachHang (maTK, tenKH, Email, SDT, diaChi, capTV, hinhAnh, trangThai) VALUES (1, 'Nguyễn Huy Phước Tấn', 'tannhpph28818@fpt.edu.vn', '0359762830', 'Phương Canh - Nam Từ Liêm - Hà Nội', 'Admin', 'https://bizweb.dktcdn.net/100/438/408/files/avatar-anime-cho-nam-6.jpg?v=1699239545678', 1)");
+        db.execSQL("INSERT INTO KhachHang (maTK, tenKH, Email, SDT, diaChi, capTV, hinhAnh, trangThai) VALUES (2, 'Nguyễn Thị Phương Lan', 'annanguyen220203@gmail.com', '0337922095', 'Cầu Giấy - Hà Nội', 'Admin', 'https://cdn.alongwalk.info/info/wp-content/uploads/2022/11/16190612/image-99-hinh-avatar-cute-ngau-ca-tinh-de-thuong-nhat-cho-nam-nu-8e7c7ad12ae964526b65b74b5de19112.jpg', 1)");
+        db.execSQL("INSERT INTO KhachHang (maTK, tenKH, Email, SDT, diaChi, capTV, hinhAnh, trangThai) VALUES (3, 'Nguyễn Đăng Khôi', 'khoind150822@gmail.com', '0989898989', 'Hà Đông - Hà Nội', 'Admin', 'https://bizweb.dktcdn.net/100/438/408/files/avatar-anime-cho-nam-13.jpg?v=1699239551927',1 )");
+        db.execSQL("INSERT INTO KhachHang (maTK, tenKH, Email, SDT, diaChi, capTV, hinhAnh, trangThai) VALUES (4, 'Nguyễn Nhật Hạ', 'hanguyen293@gmail.com', '0917382948', 'Đan Phượng - Hà Nội', 'Thường', 'https://cdn.alongwalk.info/info/wp-content/uploads/2022/11/16190609/image-99-hinh-avatar-cute-ngau-ca-tinh-de-thuong-nhat-cho-nam-nu-345edb2001a254d794b8f6cddade1698.jpg', 0)");
 
         db.execSQL(CREATE_TABLE_SAN_PHAM);
         db.execSQL("INSERT INTO SanPham (maSP, maDM, hinhAnh, tenSP, soLuong, gia) VALUES (1, 1, 'https://tea-3.lozi.vn/v1/ship/resized/losupply-quan-tan-phu-quan-tan-phu-ho-chi-minh-1618467447167540212-nuoc-ngot-coca-cola-lon-320ml-0-1626403242?w=480&type=o', 'Coca Cola', 420, 15000)");
@@ -298,17 +318,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        db.execSQL("INSERT INTO HoaDon (maKH, maSP, ngayTT, soLuong, tongTien, diaChi) VALUES (2, 2, '2024-03-20', 1, 20000, 'Địa chỉ 2')");
 
         db.execSQL(CREATE_TABLE_DON_MUA);
-        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (2, 2, 2, 'Đơn hàng 2', 'Strongbow vị đào', '2024-03-20', 2, 40000)");
-        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (1, 3, 1, 'Đơn hàng 3', 'Coca Cola Plus', '2024-03-21', 1, 20000)");
-        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (2, 4, 2, 'Đơn hàng 4', 'Fanta Hương Soda Kem Trái Cây', '2024-03-20', 2, 40000)");
-        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (1, 5, 3, 'Đơn hàng 5', 'Strongbow dâu đen', '2024-03-24', 1, 20000)");
-        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (2, 6, 4, 'Đơn hàng 6', 'Coca Light', '2024-03-24', 1, 20000)");
-        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (1, 7, 3, 'Đơn hàng 7', 'Thums Up Charged dâu rừng', '2024-03-25', 3, 60000)");
-        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (2, 8, 4, 'Đơn hàng 8', 'Strongbow dâu', '2024-03-26', 1, 20000)");
-        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (1, 9, 5, 'Đơn hàng 9', 'Carabao', '2024-03-27', 1, 20000)");
-        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (2, 10, 6, 'Đơn hàng 10', 'Strongbow vị đào', '2024-03-29', 1, 20000)");
-        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (1, 11, 5, 'Đơn hàng 11', 'Strongbow mật ong', '2024-03-30', 2, 40000)");
-        db.execSQL("INSERT INTO DonMua (maKH, maSP, maTTDH, tenDH, tenSPDH, ngayMua, soLuong, tongTien) VALUES (2, 12, 6, 'Đơn hàng 12', '7 Up vị chanh', '2024-04-1', 1, 20000)");
 
         db.execSQL(CREATE_TABLE_PHUONGTHUC_THANHTOAN);
         db.execSQL("INSERT INTO PhuongThucThanhToan (maPTT, tenPTT) VALUES (1, 'Thanh toán khi nhận hàng')");
@@ -517,20 +526,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete("GioHang", selection, selectionArgs);
         db.close();
     }
-
-    @SuppressLint("Range")
-    public String getAddressFromDatabase(Context context) {
-        String diaChi = null;
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT diaChi FROM KhachHang LIMIT 1", null);
-        if (cursor != null && cursor.moveToFirst()) {
-            diaChi = cursor.getString(cursor.getColumnIndex("diaChi"));
-            cursor.close();
+    public ArrayList<LichSu> getLichSuMuaHang(int maKhachHang) {
+        ArrayList<LichSu> lichSuMuaHang = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM DonMua WHERE maKH = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(maKhachHang)});
+        if (cursor.moveToFirst()) {
+            do {
+                LichSu donMua = new LichSu();
+                donMua.setMaDonMua(cursor.getInt(cursor.getColumnIndex("maDMUA")));
+                donMua.setMaKhachHang(cursor.getInt(cursor.getColumnIndex("maKH")));
+                donMua.setMaSanPham(cursor.getInt(cursor.getColumnIndex("maSP")));
+                donMua.setMaTrangThaiDonHang(cursor.getInt(cursor.getColumnIndex("maTTDH")));
+                donMua.setTenDonHang(cursor.getString(cursor.getColumnIndex("tenDH")));
+                donMua.setTenSanPham(cursor.getString(cursor.getColumnIndex("tenSPDH")));
+                donMua.setAnhSanPham(cursor.getString(cursor.getColumnIndex("anhDH")));
+                donMua.setNgayMua(cursor.getString(cursor.getColumnIndex("ngayMua")));
+                donMua.setSoLuong(cursor.getInt(cursor.getColumnIndex("soLuong")));
+                donMua.setTongTien(cursor.getInt(cursor.getColumnIndex("tongTien")));
+                lichSuMuaHang.add(donMua);
+            } while (cursor.moveToNext());
         }
-        db.close();
-        return diaChi;
+        cursor.close();
+        return lichSuMuaHang;
     }
+
 
 }
 

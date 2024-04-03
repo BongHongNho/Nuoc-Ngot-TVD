@@ -96,7 +96,6 @@ public class HomeFragment extends Fragment {
                 return imageView;
             }
         });
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -104,7 +103,7 @@ public class HomeFragment extends Fragment {
                 currentIndex[0] = (currentIndex[0] + 1) % imageResources.length;
                 new Handler().postDelayed(this, 2000);
             }
-        }, 2000);
+        }, 500);
 
         setUpRecyclerView();
         return rootView;

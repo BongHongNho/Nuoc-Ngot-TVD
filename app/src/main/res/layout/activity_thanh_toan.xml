@@ -23,6 +23,7 @@
         android:layout_below="@id/toolbar"
         android:layout_height="wrap_content">
         <LinearLayout
+            android:id="@+id/linearDCNH"
             android:background="@drawable/m3_appbar_background"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,14 +43,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:text="Người nhận: Nguyễn Huy Phước Tấn"></TextView>
+                android:text="Người nhận: "></TextView>
 
             <TextView
                 android:id="@+id/textViewDiaChi"
                 android:layout_width="wrap_content"
+                android:singleLine="true"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:text="Phường Phương Canh - Quận Nam Từ Liêm - Hà Nội"></TextView>
+                android:text="Hà Nội"></TextView>
 
             <TextView
                 android:id="@+id/textViewSDT"
@@ -59,11 +61,11 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/sclView"
         android:layout_margin="5dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:layout_below="@+id/lnDiaChi">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -71,14 +73,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </androidx.recyclerview.widget.RecyclerView>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/textViewTongSL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_below="@id/sclView"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:text="Số lượng sản phẩm"></TextView>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:id="@+id/lnPTTT"
         app:strokeWidth="0dp"
         android:layout_margin="10dp"
-        android:layout_below="@id/sclView"
+        android:layout_below="@id/textViewTongSL"
         android:layout_height="wrap_content">
         <LinearLayout
             android:id="@+id/selectPTTT"
@@ -109,7 +121,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/lnPTTT"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -141,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="123456 VND"
+                android:text="0 VND"
                 android:textColor="#FF0000"
                 android:textStyle="bold"></TextView>
         </LinearLayout>
@@ -166,7 +178,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:id="@+id/textViewPhiVanChuyen"
-                android:text="123456 VND"
+                android:text="0 VND"
                 android:textColor="#FF0000"
                 android:textStyle="bold"></TextView>
         </LinearLayout>
@@ -190,7 +202,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="123456 VND"
+                android:text="0 VND"
                 android:id="@+id/textViewTongThanhToan"
                 android:textColor="#FF0000"
                 android:textStyle="bold"></TextView>
@@ -230,7 +242,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
-                android:text="100000 VNĐ"
+                android:text="0 VNĐ"
                 android:textColor="#FF0000"
                 android:textStyle="bold"></TextView>
         </LinearLayout>

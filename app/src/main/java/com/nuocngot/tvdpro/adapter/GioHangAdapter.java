@@ -80,6 +80,7 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.GioHangV
         });
     }
 
+
     @Override
     public int getItemCount() {
         return gioHangItemList.size();

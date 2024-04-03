@@ -6,13 +6,15 @@ public class DonHang {
     private int soLuongSPDH;
     private int tongTienDH;
     private String ngayMua;
+    private String anhDH;
 
-    public DonHang(String tenDH, String tenSPDH, int soLuongSPDH, int tongTienDH, String ngayMua) {
+    public DonHang(String tenDH, String tenSPDH, int soLuongSPDH, int tongTienDH, String ngayMua, String anhDH) {
         this.tenDH = tenDH;
         this.tenSPDH = tenSPDH;
         this.soLuongSPDH = soLuongSPDH;
         this.tongTienDH = tongTienDH;
         this.ngayMua = ngayMua;
+        this.anhDH = anhDH;
     }
 
     public String getNgayMua() {
@@ -22,8 +24,6 @@ public class DonHang {
     public void setNgayMua(String ngayMua) {
         this.ngayMua = ngayMua;
     }
-
-    private String anhDH;
 
     public String getTenDH() {
         return tenDH;

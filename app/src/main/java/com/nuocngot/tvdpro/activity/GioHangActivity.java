@@ -38,6 +38,8 @@ public class GioHangActivity extends AppCompatActivity {
     private ArrayList<GioHangItem> gioHangItemList = new ArrayList<>();
     private GioHangAdapter gioHangAdapter;
 
+    private TextView textViewGHEmpty;
+
     private Button btnBuy;
 
     @Override
@@ -47,6 +49,13 @@ public class GioHangActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewGioHang);
         textViewTotalPrice = findViewById(R.id.textViewTotalPrice);
         gioHangAdapter = new GioHangAdapter(gioHangItemList);
+        textViewGHEmpty= findViewById(R.id.textViewGHEmpty);
+        if (gioHangItemList.size() == 0) {
+            textViewGHEmpty.setVisibility(View.VISIBLE);
+        }
+        else {
+            textViewGHEmpty.setVisibility(View.GONE);
+        }
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Giỏ hàng");
         toolbar.setNavigationIcon(R.drawable.back);
@@ -110,7 +119,6 @@ public class GioHangActivity extends AppCompatActivity {
 
         private void loadGioHangData(int maKH) {
         String maKHString = String.valueOf(maKH); // Chuyển maKH từ int sang String
-
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String[] projection = {
