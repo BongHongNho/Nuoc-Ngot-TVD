@@ -1,0 +1,219 @@
+package com.nuocngot.tvdpro.adapter;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.google.android.material.checkbox.MaterialCheckBox;
+import com.nuocngot.tvdpro.R;
+import com.nuocngot.tvdpro.database.DatabaseHelper;
+import com.nuocngot.tvdpro.getContext.GetContext;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.GioHangViewHolder> {
+    private Context context;
+    private ArrayList<GioHangItem> gioHangItemList;
+    private OnItemChangeListener listener;
+
+    public GioHangAdapter(Context context, ArrayList<GioHangItem> gioHangItemList, OnItemChangeListener listener) {
+        this.context = context;
+        this.gioHangItemList = gioHangItemList;
+        this.listener = listener;
+    }
+
+    public GioHangAdapter(ArrayList<GioHangItem> gioHangItemList) {
+        this.gioHangItemList = gioHangItemList;
+    }
+
+    @NonNull
+    @Override
+    public GioHangViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_gio_hang, parent, false);
+        return new GioHangViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull GioHangViewHolder holder, int position) {
+        GioHangItem gioHangItem = gioHangItemList.get(position);
+        holder.bind(gioHangItem);
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                new AlertDialog.Builder(context)
+                        .setTitle("Xóa sản phẩm")
+                        .setMessage("Bạn có chắc chắn muốn xóa sản phẩm này không?")
+                        .setPositiveButton("Đồng ý", (dialog, which) -> {
+                            DatabaseHelper dbHelper = new DatabaseHelper(context);
+                            SQLiteDatabase db = dbHelper.getWritableDatabase();
+                            String selection = "maSP = ?";
+                            String[] selectionArgs = {String.valueOf(gioHangItemList.get(position).getMaSP())};
+                            int deletedRows = db.delete("GioHang", selection, selectionArgs);
+                            if (deletedRows > 0) {
+                                gioHangItemList.remove(position);
+                                notifyDataSetChanged();
+                                Toast.makeText(context, "Xóa sản phẩm thành công", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "Xóa sản phẩm thất bại", Toast.LENGTH_SHORT).show();
+                            }
+                            db.close();
+                            dbHelper.close();
+                        })
+                        .setNegativeButton("Hủy bỏ", null)
+                        .show();
+                return true;
+            }
+        });
+    }
+
+
+    @Override
+    public int getItemCount() {
+        return gioHangItemList.size();
+    }
+
+    public ArrayList<GioHangItem> getSelectedItems() {
+        ArrayList<GioHangItem> selectedItems = new ArrayList<>();
+        for (GioHangItem item : gioHangItemList) {
+            if (item.isSelected()) {
+                selectedItems.add(item);
+            }
+        }
+        return selectedItems;
+    }
+
+    public class GioHangViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageViewProduct;
+        TextView textViewProductName, textViewProductPrice, textViewQuantity;
+        TextView buttonDecrease, buttonIncrease;
+
+        MaterialCheckBox cbSelectItem;
+
+        public GioHangViewHolder(@NonNull View itemView) {
+            super(itemView);
+            cbSelectItem = itemView.findViewById(R.id.cbSelectItem);
+            imageViewProduct = itemView.findViewById(R.id.imageViewProduct);
+            textViewProductName = itemView.findViewById(R.id.textViewProductName);
+            textViewProductPrice = itemView.findViewById(R.id.textViewProductPrice);
+            textViewQuantity = itemView.findViewById(R.id.textViewQuantity);
+            buttonDecrease = itemView.findViewById(R.id.buttonDecrease);
+            buttonIncrease = itemView.findViewById(R.id.buttonIncrease);
+            cbSelectItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    int position = getAdapterPosition(); // Lấy vị trí của mục trong danh sách
+                    if (position != RecyclerView.NO_POSITION) {
+                        GioHangItem gioHangItem = gioHangItemList.get(position); // Lấy mục từ danh sách dựa trên vị trí// Lưu trạng thái đã chọn trong mục giỏ hàng
+                        updateSelectionInDatabase(gioHangItem.getMaSP(), isChecked); // Cập nhật cơ sở dữ liệu
+                    }
+                }
+            });
+        }
+
+        private void updateSelectionInDatabase(int maSP, boolean selected) {
+            DatabaseHelper dbHelper = new DatabaseHelper(GetContext.createAppContext());
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("isSelected", selected ? 1 : 0);
+            String selection = "maSP = ?";
+            String[] selectionArgs = {String.valueOf(maSP)};
+            int updatedRows = db.update("GioHang", values, selection, selectionArgs);
+            db.close();
+            dbHelper.close();
+            if (updatedRows > 0) {
+
+            } else {
+
+            }
+        }
+
+
+        public void bind(GioHangItem gioHangItem) {
+            textViewProductName.setText(gioHangItem.getTenSP());
+            textViewProductPrice.setText("Giá: " + String.valueOf(gioHangItem.getGia()) + " VND");
+            textViewQuantity.setText(String.valueOf(gioHangItem.getSoLuong()));
+            Glide.with(imageViewProduct.getContext())
+                    .load(gioHangItem.getAnhSP())
+                    .placeholder(R.drawable.placeholder)
+                    .into(imageViewProduct);
+            buttonDecrease.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gioHangItem.decreaseQuantity();
+                    textViewQuantity.setText(String.valueOf(gioHangItem.getSoLuong())); // Cập nhật số lượng mới trên giao diện
+                    updateQuantityInDatabase(gioHangItem.getMaSP(), gioHangItem.getSoLuong());
+                }
+            });
+
+            buttonIncrease.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int currentQuantity = gioHangItem.getSoLuong();
+                    int availableQuantity = getAvailableQuantityFromDatabase(gioHangItem.getMaSP());
+                    if (currentQuantity < availableQuantity) {
+                        gioHangItem.increaseQuantity();
+                        textViewQuantity.setText(String.valueOf(gioHangItem.getSoLuong()));
+                        updateQuantityInDatabase(gioHangItem.getMaSP(), gioHangItem.getSoLuong());
+                    } else {
+                        Toast.makeText(context, "Số lượng sản phẩm không đủ trong kho", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        }
+
+        private int getAvailableQuantityFromDatabase(int maSP) {
+            int availableQuantity = 0;
+            DatabaseHelper dbHelper = new DatabaseHelper(GetContext.createAppContext());
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            String[] columns = {"soLuong"};
+            String selection = "maSP = ?";
+            String[] selectionArgs = {String.valueOf(maSP)};
+            Cursor cursor = db.query("SanPham", columns, selection, selectionArgs, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                availableQuantity = cursor.getInt(cursor.getColumnIndex("soLuong"));
+                cursor.close();
+            }
+            db.close();
+            dbHelper.close();
+            return availableQuantity;
+        }
+
+    }
+
+    private void updateQuantityInDatabase(int maSP, int soLuong) {
+        DatabaseHelper dbHelper = new DatabaseHelper(GetContext.createAppContext());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String selection = "maSP = ?";
+        String[] selectionArgs = {String.valueOf(maSP)};
+        ContentValues values = new ContentValues();
+        values.put("soLuong", soLuong);
+        int updatedRows = db.update("GioHang", values, selection, selectionArgs);
+        db.close();
+        dbHelper.close();
+        if (updatedRows > 0) {
+
+        } else {
+
+        }
+    }
+
+    public interface OnItemChangeListener {
+        void onItemChanged(int position, int newQuantity);
+    }
+}

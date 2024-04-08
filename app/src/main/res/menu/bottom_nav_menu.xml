@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/menu_converter"
-        android:title="Homepage"
+        android:id="@+id/menu_converterhome"
+        android:title="Trang chủ"
         android:icon="@drawable/store" />
     <item
-        android:id="@+id/menu_reverser"
-        android:title="Category"
+        android:id="@+id/menu_category"
+        android:title="Danh mục"
         android:icon="@drawable/category" />
     <item
-        android:id="@+id/menu_about"
-        android:title="Notifications"
+        android:id="@+id/menu_noti"
+        android:title="Thông báo"
         android:icon="@drawable/notifications" />
     <item android:id="@+id/menu_settings"
-        android:title="Settings"
+        android:title="Cài đặt"
         android:icon="@drawable/settings"/>
 </menu>

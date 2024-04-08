@@ -17,15 +17,62 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NuocNgotTVD"
+        android:windowSoftInputMode="adjustResize|stateHidden"
         tools:targetApi="31">
         <activity
-            android:name=".LoginActivity"
+            android:name=".activity.QuanLiDonHangActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.ThongKeDoanhThuActivity"
+            android:exported="false"
+            android:theme="@style/Theme.NuocNgotTVD" />
+        <activity
+            android:name=".activity.LichSuMuaHangActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".activity.QuanLyUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.DonHangActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CNQuanTriVien"
+            android:exported="false" />
+        <activity
+            android:name=".activity.QLTaiKhoanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ThanhToanActivity"
+            android:exported="false"
+            android:theme="@style/Theme.NuocNgotTVD" />
+        <activity
+            android:name=".activity.GioHangActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CategoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.OrderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CartActivity"
+            android:exported="false"
+            android:theme="@style/Theme.NuocNgotTVD" />
+        <activity
+            android:name=".activity.ChiTietSPActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:exported="false" />
+        <activity
+            android:name=".activity.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

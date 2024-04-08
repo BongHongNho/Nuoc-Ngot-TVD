@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:orientation="horizontal"
+    android:padding="15dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="5dp"
+    android:background="@drawable/background_radius"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        app:cardCornerRadius="50dp"
+        android:layout_gravity="center"
+        app:strokeWidth="0dp"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/imgAvatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/img_avatar_nam">
+        </ImageView>
+    </com.google.android.material.card.MaterialCardView>
+    <LinearLayout
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/textViewTenNguoiBinhLuan"
+                android:layout_width="wrap_content"
+                android:textStyle="bold"
+                android:layout_margin="2dp"
+                android:layout_height="wrap_content"
+                android:text="Nguyễn Huy Phước Tấn">
+            </TextView>
+            <ImageView
+                android:id="@+id/veryfied"
+                android:layout_marginStart="5dp"
+                android:layout_gravity="center"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/veryfied">
+            </ImageView>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/textViewBinhLuan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:singleLine="true"
+            android:text="Sản phẩm tốt, uống rất ngon">
+        </TextView>
+        <TextView
+            android:id="@+id/textViewNgayBinhLuan"
+            android:layout_width="wrap_content"
+            android:layout_margin="2dp"
+            android:textSize="10dp"
+            android:layout_gravity="right"
+            android:layout_height="wrap_content"
+            android:text="2024/04/06 - 11:11 AM">
+        </TextView>
+    </LinearLayout>
+</LinearLayout>

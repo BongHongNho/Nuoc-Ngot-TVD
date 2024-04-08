@@ -1,117 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:background="@drawable/bg1"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    android:layout_height="match_parent">
+
     <LinearLayout
-        android:id="@+id/layout_login"
-        android:background="@drawable/background_radius"
-        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
+        android:layout_gravity="center"
         android:layout_margin="10dp"
-        android:orientation="vertical">
+        android:background="@drawable/background_radius"
+        android:orientation="vertical"
+        android:padding="15dp">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="LOGIN TO TDV SOFT DRINK"
-            android:textSize="20dp"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
-            android:layout_gravity="center"
-            android:textStyle="bold">
-        </TextView>
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:id="@+id/edUsenameLG"
-                android:layout_height="wrap_content"
-                android:hint="Username">
-            </com.google.android.material.textfield.TextInputEditText>
-        </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:id="@+id/edPasswordLG"
-                android:inputType="textPassword"
-                android:layout_height="wrap_content"
-                android:hint="Password">
-            </com.google.android.material.textfield.TextInputEditText>
-        </com.google.android.material.textfield.TextInputLayout>
-       <LinearLayout
-           android:layout_marginTop="10dp"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal">
-           <com.google.android.material.checkbox.MaterialCheckBox
-               android:layout_width="0dp"
-               android:layout_height="wrap_content"
-               android:text="Remember me"
-               android:layout_gravity="center"
-               android:layout_weight="1">
-           </com.google.android.material.checkbox.MaterialCheckBox>
-           <TextView
-               android:id="@+id/tvForget"
-               android:textColor="#FF0000"
-               android:layout_width="0dp"
-               android:layout_weight="1"
-               android:layout_gravity="center"
-               android:gravity="right"
-               android:layout_height="wrap_content"
-               android:text="Forget password..?">
-           </TextView>
-       </LinearLayout>
-        <Button
-            android:text="Login"
+            android:text="Đăng nhập"
             android:textAllCaps="true"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
+            android:textSize="30dp"
+            android:textStyle="bold"></TextView>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        </Button>
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Tên đăng nhập" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/editTextUsername"
+                android:hint="Mật khẩu"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkBoxRemember"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/editTextPassword"
+                android:layout_weight="1"
+                android:text="Ghi nhớ" />
+
+            <TextView
+                android:id="@+id/textViewForgotPassword"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/editTextPassword"
+                android:layout_alignParentEnd="true"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="Quên mật khẩu?" />
+        </LinearLayout>
+
         <TextView
-            android:id="@+id/tvResgiter"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center"
+            android:id="@+id/textViewRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Not have account..? Please register here">
-        </TextView>
-        <com.google.android.material.card.MaterialCardView
+            android:layout_gravity="center"
+            android:text="Chưa có tài khoản...? Đăng ký tại đây"></TextView>
+
+        <Button
+            android:id="@+id/buttonLogin"
             android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            app:strokeWidth="0dp"
-            android:id="@+id/cvLogin"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:padding="10dp"
-                android:background="@drawable/m3_appbar_background"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <ImageView
-                    android:src="@drawable/icon_google"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp">
-                </ImageView>
-                <TextView
-                    android:layout_gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Login with Google">
-                </TextView>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewForgotPassword"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="16dp"
+            android:text="Đăng nhập" />
     </LinearLayout>
 
 </LinearLayout>
