@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextInputEditText editTextUsername, editTextPassword;
     private CheckBox checkBoxRemember;
+
+    private boolean checkBoxChecked = false;
     private Button buttonLogin;
     private TextView textViewForgotPassword, textViewRegister;
 
@@ -39,7 +42,48 @@ public class LoginActivity extends AppCompatActivity {
         buttonLogin = findViewById(R.id.buttonLogin);
         textViewRegister = findViewById(R.id.textViewRegister);
         textViewForgotPassword = findViewById(R.id.textViewForgotPassword);
-        buttonLogin.setOnClickListener(view -> loginUser());
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (editTextUsername.getText().toString().isEmpty() || editTextPassword.getText().toString().isEmpty()) {
+                    Toast.makeText(LoginActivity.this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+                } else if (editTextPassword.getText().toString().length() < 6) {
+                    Toast.makeText(LoginActivity.this, "Mật khẩu quá ngắn", Toast.LENGTH_SHORT).show();
+                } else if (editTextUsername.getText().toString().length() < 6) {
+                    Toast.makeText(LoginActivity.this, "Username quá ngắn", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    loginUser();
+                }
+            }
+        });
+        CheckBox checkBoxRemember = findViewById(R.id.checkBoxRemember);
+        checkBoxRemember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("checkbox", isChecked);
+                if (isChecked) {
+                    editor.putString("username", editTextUsername.getText().toString());
+                    editor.putString("password", editTextPassword.getText().toString());
+                } else {
+                    editor.remove("username");
+                    editor.remove("password");
+                }
+                editor.apply();
+            }
+        });
+        SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
+        boolean checkboxChecked = sharedPreferences.getBoolean("checkbox", false);
+        checkBoxRemember.setChecked(checkboxChecked);
+        if (checkboxChecked) {
+            String savedUsername = sharedPreferences.getString("username", "");
+            String savedPassword = sharedPreferences.getString("password", "");
+            editTextUsername.setText(savedUsername);
+            editTextPassword.setText(savedPassword);
+        }
+
         textViewForgotPassword.setOnClickListener(view -> forgotPassword());
         checkLoginStatus();
         textViewForgotPassword.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                 "maKH",
                 "tenDN",
                 "matKhau",
-                "role" // Thêm cột role vào projection
+                "role"
         };
         String selection = "tenDN = ?";
         String[] selectionArgs = {username};
@@ -84,9 +128,9 @@ public class LoginActivity extends AppCompatActivity {
             int maTK = cursor.getInt(cursor.getColumnIndexOrThrow("maTK"));
             int maKH = cursor.getInt(cursor.getColumnIndexOrThrow("maKH"));
             String storedPassword = cursor.getString(cursor.getColumnIndexOrThrow("matKhau"));
-            String role = cursor.getString(cursor.getColumnIndexOrThrow("role")); // Lấy vai trò từ cursor
+            String role = cursor.getString(cursor.getColumnIndexOrThrow("role"));
             if (password.equals(storedPassword)) {
-                saveLoginStatus(true, maTK, maKH, role); // Lưu trạng thái đăng nhập cùng với maTK, maKH và vai trò
+                saveLoginStatus(true, maTK, maKH, role);
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -106,10 +150,9 @@ public class LoginActivity extends AppCompatActivity {
         editor.putBoolean("isLoggedIn", isLoggedIn);
         editor.putInt("maTK", maTK);
         editor.putInt("maKH", maKH);
-        editor.putString("role", role); // Lưu vai trò vào SharedPreferences
+        editor.putString("role", role);
         editor.apply();
     }
-
 
 
     private void forgotPassword() {

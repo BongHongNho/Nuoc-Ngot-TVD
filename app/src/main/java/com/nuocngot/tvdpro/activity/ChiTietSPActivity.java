@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,16 +16,37 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.textfield.TextInputEditText;
 import com.nuocngot.tvdpro.R;
+import com.nuocngot.tvdpro.adapter.BinhLuanAdapter;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
+import com.nuocngot.tvdpro.model.BinhLuan;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public class ChiTietSPActivity extends AppCompatActivity {
     private int maSP;
     private TextView textViewProductName, textViewProductOrigin, textViewProductInfo, textViewProductPrice, textViewProductQuantity;
     private ImageView imageViewProduct;
     private Toolbar toolbar;
+
+    private ArrayList<BinhLuan> arrayList = new ArrayList<>();
+
+    BinhLuanAdapter binhLuanAdapter = new BinhLuanAdapter(this, arrayList);
+
+    private RecyclerView recycleBinhLuan;
+
+    private TextView textViewNoBL;
+
+    private TextInputEditText editTextBinhLuan;
+
+    private Button btnBinhLuan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +58,10 @@ public class ChiTietSPActivity extends AppCompatActivity {
         imageViewProduct = findViewById(R.id.imageViewProduct);
         textViewProductPrice = findViewById(R.id.textViewProductPrice);
         textViewProductQuantity = findViewById(R.id.textViewProductQualaty);
+        recycleBinhLuan = findViewById(R.id.recycleBinhLuan);
+        editTextBinhLuan = findViewById(R.id.editTextNoiDung);
+        btnBinhLuan = findViewById(R.id.btnBinhLuan);
+        textViewNoBL = findViewById(R.id.textViewNoBL);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Chi tiết sản phẩm");
         toolbar.setNavigationIcon(R.drawable.back);
@@ -44,8 +70,8 @@ public class ChiTietSPActivity extends AppCompatActivity {
             public void onClick(View v) {
                 onBackPressed();
             }
-            });
-        Button buttonAddToCart = findViewById(R.id.buttonAddToCart); // Lấy tham chiếu đến nút "Thêm vào giỏ hàng"
+        });
+        Button buttonAddToCart = findViewById(R.id.buttonAddToCart);
         Intent intent = getIntent();
         maSP = intent.getIntExtra("maSP", -1);
         if (maSP != -1) {
@@ -59,7 +85,86 @@ public class ChiTietSPActivity extends AppCompatActivity {
                 addToCartAndNavigateToCartActivity(maSP);
             }
         });
+
+        btnBinhLuan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               if(editTextBinhLuan.getText().toString().isEmpty()){
+                   Toast.makeText(ChiTietSPActivity.this, "Vui lòng không để trống bình luận", Toast.LENGTH_SHORT).show();
+               }else{
+                   addBinhLuan();
+               }
+            }
+        });
+        recycleBinhLuan.setAdapter(binhLuanAdapter);
+        recycleBinhLuan.setLayoutManager(new LinearLayoutManager(this));
+        loadBinhLuan();
     }
+
+    private void addBinhLuan() {
+        SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
+        int maKH = sharedPreferences.getInt("maKH", -1);
+        if (maKH == -1) {
+            Toast.makeText(this, "Không tìm thấy thông tin khách hàng", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String tenND = "";
+        String anhBL = "";
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+        Cursor cursor = database.rawQuery("SELECT tenKH, hinhAnh FROM KhachHang WHERE maKH = ?", new String[]{String.valueOf(maKH)});
+        if (cursor.moveToFirst()) {
+            tenND = cursor.getString(cursor.getColumnIndex("tenKH"));
+            anhBL = cursor.getString(cursor.getColumnIndex("hinhAnh"));
+        }
+        cursor.close();
+        int maSP = getIntent().getIntExtra("maSP", -1);
+        if (maSP == -1) {
+            Toast.makeText(this, "Không tìm thấy mã sản phẩm", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String binhLuan = editTextBinhLuan.getText().toString().trim();
+        String thoiGian = getCurrentDateTime();
+        String query = "INSERT INTO BinhLuan (maKH, maSP, tenND, anhBL, binhLuan, thoiGian) VALUES (?, ?, ?, ?, ?, ?)";
+        database.execSQL(query, new Object[]{maKH, maSP, tenND, anhBL, binhLuan, thoiGian});
+        Toast.makeText(this, "Thêm bình luận thành công", Toast.LENGTH_SHORT).show();
+        editTextBinhLuan.setText("");
+        arrayList.clear();
+        loadBinhLuan();
+    }
+
+    private void loadBinhLuan() {
+        SQLiteDatabase database = new DatabaseHelper(this).getReadableDatabase();
+        int maSP = getIntent().getIntExtra("maSP", -1);
+        String query = "SELECT * FROM BinhLuan WHERE maSP = ?";
+        Cursor cursor = database.rawQuery(query, new String[]{String.valueOf(maSP)});
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                String tenND = cursor.getString(cursor.getColumnIndex("tenND"));
+                String binhLuan = cursor.getString(cursor.getColumnIndex("binhLuan"));
+                String thoiGian = cursor.getString(cursor.getColumnIndex("thoiGian"));
+                String anhBL = cursor.getString(cursor.getColumnIndex("anhBL"));
+                int maKH = cursor.getInt(cursor.getColumnIndex("maKH")); // Lấy maKH từ cột maKH
+                BinhLuan binhLuanObj = new BinhLuan(tenND, binhLuan, thoiGian, anhBL, maKH);
+                arrayList.add(binhLuanObj);
+            } while (cursor.moveToNext());
+            cursor.close();
+            binhLuanAdapter.notifyDataSetChanged();
+        }
+    }
+
+
+
+    private String getCurrentDateTime() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            return currentDateTime.format(formatter);
+        } else {
+            return "";
+        }
+    }
+
     private void showProductDetails() {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -136,6 +241,4 @@ public class ChiTietSPActivity extends AppCompatActivity {
         db.close();
         dbHelper.close();
     }
-
-
 }

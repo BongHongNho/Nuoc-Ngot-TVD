@@ -39,7 +39,7 @@
             android:name=".activity.CNQuanTriVien"
             android:exported="false" />
         <activity
-            android:name=".QLTaiKhoanActivity"
+            android:name=".activity.QLTaiKhoanActivity"
             android:exported="false" />
         <activity
             android:name=".activity.ThanhToanActivity"
@@ -60,6 +60,7 @@
             android:theme="@style/Theme.NuocNgotTVD" />
         <activity
             android:name=".activity.ChiTietSPActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"
             android:exported="false" />
         <activity
             android:name=".activity.RegisterActivity"

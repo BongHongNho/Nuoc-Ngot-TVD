@@ -253,6 +253,8 @@ public class ThanhToanActivity extends AppCompatActivity {
                             maKH = sh.getInt("maTK", -1);
                             xoaGioHangTheoMaKH(maKH);
                             gioHangAdapter.notifyDataSetChanged();
+                            Intent intent = new Intent(ThanhToanActivity.this, MainActivity.class);
+                            startActivity(intent);
                             finish();
                         } else {
                             Toast.makeText(ThanhToanActivity.this, "Đặt hàng không thành công", Toast.LENGTH_SHORT).show();

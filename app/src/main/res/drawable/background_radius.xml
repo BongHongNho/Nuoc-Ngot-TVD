@@ -4,7 +4,7 @@
     <shape
         android:shape="rectangle">
         <corners
-            android:radius="@dimen/m3_alert_dialog_corner_size" />
+            android:radius="20dp" />
         <solid
             android:color="@color/m3_appbar_overlay_color" />
     </shape>

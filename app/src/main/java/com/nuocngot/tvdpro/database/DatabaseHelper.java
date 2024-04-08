@@ -47,11 +47,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "trangThai INTEGER REFERENCES TrangThaiTK(maTTTK)," +
                     "hinhAnh TEXT NOT NULL)";
 
-    private static final String CREATE_TABLE_TRANGTHAIATKH =
-            "CREATE TABLE TrangThaiTK (" +
-                    "maTTTK INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "tenTT TEXT NOT NULL)";
-
     private static final String CREATE_TABLE_SAN_PHAM =
             "CREATE TABLE SanPham (maSP INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "maDM INTEGER REFERENCES DanhMuc(maDM)," +
@@ -127,43 +122,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "maKH INTEGER REFERENCES KhachHang(maKH)," +
                     "maSP INTEGER REFERENCES SanPham(maSP)," +
                     "maTTDH INTEGER REFERENCES TrangThaiDonHang(maTTHD)," +
-                    "tenDH TEXT NOT NULL," + // Tên đơn hàng
-                    "tenSPDH TEXT NOT NULL," + //
+                    "tenDH TEXT NOT NULL," +
+                    "tenSPDH TEXT NOT NULL," +
                     "anhDH TEXT NOT NULL," +
                     "ngayMua TEXT NOT NULL," +
                     "soLuong INTEGER NOT NULL," +
                     "tongTien INTEGER NOT NULL)";
-    private int getDoanhThuTheoNgay(String ngay, Context context) {
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        int doanhThu = 0;
-
-        Cursor cursor = db.rawQuery("SELECT SUM(tongTien) AS total FROM DonMua WHERE ngayMua = ?", new String[]{ngay});
-
-        if (cursor != null && cursor.moveToFirst()) {
-            doanhThu = cursor.getInt(cursor.getColumnIndex("tongTien"));
-            cursor.close();
-        } else {
-            Toast.makeText(context, "Không có dữ liệu doanh thu cho ngày này", Toast.LENGTH_SHORT).show();
-        }
-
-        return doanhThu;
-    }
-
-
 
     private static final String CREATE_TABLE_TRANGTHAI_SANPHAM =
             "CREATE TABLE TrangThaiSanPham (maTTSP INTEGER PRIMARY KEY AUTOINCREMENT," +
                     " tenTrangThai TEXT NOT NULL)";
+
+    private static final String CREATE_TABLE_BINH_LUAN =
+            "CREATE TABLE BinhLuan (maBL INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "maKH INTEGER REFERENCES KhachHang(maKH)," +
+                    "maSP INTEGER REFERENCES SanPham(maSP)," +
+                    "tenND TEXT NOT NULL," +
+                    "anhBL TEXT NOT NULL," +
+                    "binhLuan TEXT NOT NULL," +
+                    "thoiGian TEXT NOT NULL)";
 
     private static final String CREATE_TABLE_TRANGTHAI_DONHANG =
             "CREATE TABLE TrangThaiDonHang (maTTDH INTEGER PRIMARY KEY AUTOINCREMENT," +
                     " maKH INTEGER REFERENCES KhachHang(maKH)," +
                     " tenTTDH TEXT NOT NULL)";
 
-
-    private static final String COLUMN_HINH_ANH = "hinhAnh";
-    private static final String TABLE_ADMIN = "Admin";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -314,15 +297,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(CREATE_TABLE_GIO_HANG);
         db.execSQL(CREATE_TABLE_HOA_DON);
-//        db.execSQL("INSERT INTO HoaDon (maKH, maSP, ngayTT, soLuong, tongTien, diaChi) VALUES (1, 1, '2024-03-20', 2, 20000, 'Địa chỉ 1')");
-//        db.execSQL("INSERT INTO HoaDon (maKH, maSP, ngayTT, soLuong, tongTien, diaChi) VALUES (2, 2, '2024-03-20', 1, 20000, 'Địa chỉ 2')");
-
         db.execSQL(CREATE_TABLE_DON_MUA);
-
         db.execSQL(CREATE_TABLE_PHUONGTHUC_THANHTOAN);
         db.execSQL("INSERT INTO PhuongThucThanhToan (maPTT, tenPTT) VALUES (1, 'Thanh toán khi nhận hàng')");
         db.execSQL("INSERT INTO PhuongThucThanhToan (maPTT, tenPTT) VALUES (2, 'Thanh toán qua ngân hàng')");
-
         db.execSQL(CREATE_TABLE_THANH_TOAN);
         db.execSQL("INSERT INTO ThanhToan (maKH, maSP, phuongThucTT, tongTienTT, tongTienPhiVC, tongThanhToan) VALUES (1, 1, 'Thanh toán khi nhận hàng', 20000, 5000, 25000)");
         db.execSQL("INSERT INTO ThanhToan (maKH, maSP, phuongThucTT, tongTienTT, tongTienPhiVC, tongThanhToan) VALUES (2, 2, 'Thanh toán online', 40000, 5000, 45000)");
@@ -334,7 +312,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO TrangThaiDonHang (maTTDH, tenTTDH) VALUES (4, 'Đã giao')");
         db.execSQL("INSERT INTO TrangThaiDonHang (maTTDH, tenTTDH) VALUES (5, 'Đã hủy')");
 
+        db.execSQL(CREATE_TABLE_TRANGTHAI_SANPHAM);
+        db.execSQL("INSERT INTO TrangThaiSanPham (maTTSP, tenTrangThai) VALUES (1, 'Bán chạy nhất')");
+        db.execSQL("INSERT INTO TrangThaiSanPham (maTTSP, tenTrangThai) VALUES (2, 'Sản phẩm mới')");
+        db.execSQL("INSERT INTO TrangThaiSanPham (maTTSP, tenTrangThai) VALUES (3, 'Yêu thích nhiều')");
+        db.execSQL("INSERT INTO TrangThaiSanPham (maTTSP, tenTrangThai) VALUES (4, 'Xem nhiều nhất')");
 
+        db.execSQL(CREATE_TABLE_BINH_LUAN);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

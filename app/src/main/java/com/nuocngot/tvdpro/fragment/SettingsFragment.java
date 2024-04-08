@@ -44,7 +44,7 @@ public class SettingsFragment extends Fragment {
     private TextView roleTextView;
     private ImageView veryfied ,khungVIPImageView;
     private Button btnLogOut;
-    private LinearLayout btnLichSuMua;
+    private LinearLayout btnLichSuMua, linearDonMua;
     private RecyclerView functionRecyclerView,historyRecyclerView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,11 +60,18 @@ public class SettingsFragment extends Fragment {
         historyRecyclerView = view.findViewById(R.id.historyRecyclerView);
         functionRecyclerView = view.findViewById(R.id.functionRecyclerView);
         btnLichSuMua = view.findViewById(R.id.btnLichSuMua);
+        linearDonMua = view.findViewById(R.id.linearDonMua);
         btnLichSuMua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), LichSuMuaHangActivity.class);
                 startActivity(intent);
+            }
+        });
+        linearDonMua.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(requireContext(), "Đơn mua :))", Toast.LENGTH_SHORT).show();
             }
         });
         btnLogOut = view.findViewById(R.id.btnLogOut);
