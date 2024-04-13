@@ -51,38 +51,42 @@ public class BinhLuanAdapter extends RecyclerView.Adapter<BinhLuanAdapter.BinhLu
     @Override
     public void onBindViewHolder(@NonNull BinhLuanAdapter.BinhLuanViewHolder holder, int position) {
         BinhLuan binhLuan = listBinhLuan.get(position);
+
+        // Load ảnh đại diện bình luận
         Glide.with(holder.itemView.getContext()).load(binhLuan.getAnhDaiDien()).into(holder.imageAvatar);
+
+        // Hiển thị tên người bình luận, nội dung bình luận và thời gian
         holder.textViewTenNguoiBinhLuan.setText(binhLuan.getTenNguoiDung());
         holder.textViewBinhLuan.setText(binhLuan.getNoiDung());
         holder.textViewNgayBinhLuan.setText(binhLuan.getThoiGian());
+
+        // Lấy mã người đăng nhập hiện tại từ SharedPreferences
         SharedPreferences sharedPreferences = holder.itemView.getContext().getSharedPreferences("login_status", Context.MODE_PRIVATE);
-        int savedMaKH = sharedPreferences.getInt("maKH", -1);
-        boolean isAdmin = isUserAdminShare(holder.itemView.getContext());
-        String binhLuanMaKH = String.valueOf(binhLuan.getMaKH());
-        if (binhLuanMaKH.equals(String.valueOf(savedMaKH)) || isAdmin) {
+        int savedMaND = sharedPreferences.getInt("maND", -1);
+
+        // Kiểm tra vai trò của người đăng nhập và người đăng bình luận
+        boolean isCurrentUserAdmin = isUserAdmin(savedMaND, holder.itemView.getContext());
+        boolean isCommentOwner = binhLuan.getMaKH() == savedMaND;
+
+        // Hiển thị biểu tượng xác thực nếu là chủ bình luận hoặc là quản trị viên
+        if (isCommentOwner || isCurrentUserAdmin) {
             holder.veryfied.setVisibility(View.VISIBLE);
+
+            // Xử lý sự kiện long click để hiển thị dialog chỉnh sửa hoặc xóa
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    if (binhLuanMaKH.equals(String.valueOf(savedMaKH))) {
-                        showEditDeleteDialog(holder.itemView.getContext(), binhLuan);
-                    } else if (isAdmin) {
-                        showEditDeleteDialog(holder.itemView.getContext(), binhLuan);
-                    }
+                    showEditDeleteDialog(holder.itemView.getContext(), binhLuan);
                     return true;
                 }
             });
         } else {
+            // Ẩn biểu tượng xác thực và không xử lý sự kiện long click
             holder.veryfied.setVisibility(View.GONE);
             holder.itemView.setOnLongClickListener(null);
         }
-        boolean isAdminCommented = isUserAdmin(binhLuan.getMaKH(), holder.itemView.getContext());
-        if (isAdminCommented) {
-            holder.veryfied.setVisibility(View.VISIBLE);
-        } else {
-            holder.veryfied.setVisibility(View.GONE);
-        }
     }
+
 
     private void showEditDeleteDialog(Context context, BinhLuan binhLuan) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -194,15 +198,14 @@ public class BinhLuanAdapter extends RecyclerView.Adapter<BinhLuanAdapter.BinhLu
         String role = sharedPreferences.getString("role", "");
         return role.equals("admin");
     }
-
-    private boolean isUserAdmin(int maKH, Context context) {
+    private boolean isUserAdmin(int maND, Context context) {
         boolean isAdmin = false;
         SQLiteDatabase database = new DatabaseHelper(context).getReadableDatabase();
-        String query = "SELECT role FROM TaiKhoan WHERE maKH = ?";
-        Cursor cursor = database.rawQuery(query, new String[]{String.valueOf(maKH)});
+        String query = "SELECT role FROM NguoiDung WHERE maND = ?";
+        Cursor cursor = database.rawQuery(query, new String[]{String.valueOf(maND)});
         if (cursor != null && cursor.moveToFirst()) {
-            String role = cursor.getString(cursor.getColumnIndex("role"));
-            if (role != null && role.equals("admin")) {
+            String vaiTro = cursor.getString(cursor.getColumnIndex("role"));
+            if (vaiTro != null && vaiTro.equals("admin")) {
                 isAdmin = true;
             }
             cursor.close();

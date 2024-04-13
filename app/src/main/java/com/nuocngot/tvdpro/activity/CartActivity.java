@@ -61,14 +61,18 @@ public class CartActivity extends AppCompatActivity {
         int userId = -1;
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT maTK FROM TaiKhoan WHERE isLogin = 1", null); // Lấy ID của người dùng đang đăng nhập
+
+        Cursor cursor = db.rawQuery("SELECT maND FROM NguoiDung WHERE isLogin = 1", null);
+
         if (cursor.moveToFirst()) {
-            userId = cursor.getInt(cursor.getColumnIndex("maTK"));
+            userId = cursor.getInt(cursor.getColumnIndex("maND"));
         }
+
         cursor.close();
         db.close();
         return userId;
     }
+
 
 
     public ArrayList<CartItem> getCartItems(int userId) {

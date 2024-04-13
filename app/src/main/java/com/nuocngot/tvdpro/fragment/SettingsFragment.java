@@ -30,6 +30,7 @@ import com.nuocngot.tvdpro.activity.LoginActivity;
 import com.nuocngot.tvdpro.adapter.BuyAcitivyAdapter;
 import com.nuocngot.tvdpro.adapter.BuyActivityItem;
 import com.nuocngot.tvdpro.adapter.FunctionAdapter;
+import com.nuocngot.tvdpro.model.NguoiDung;
 import com.nuocngot.tvdpro.model.TaiKhoan;
 import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
@@ -62,6 +63,7 @@ public class SettingsFragment extends Fragment {
         functionRecyclerView = view.findViewById(R.id.functionRecyclerView);
         btnLichSuMua = view.findViewById(R.id.btnLichSuMua);
         linearDonMua = view.findViewById(R.id.linearDonMua);
+        btnLogOut = view.findViewById(R.id.btnLogOut);
         btnLichSuMua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,27 +78,25 @@ public class SettingsFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        btnLogOut = view.findViewById(R.id.btnLogOut);
-        setUpFunctionRecyclerView();
-        setUpRecyclerView();
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("login_status", Context.MODE_PRIVATE);
-        int maTK = sharedPreferences.getInt("maTK", -1);
+        int maND = sharedPreferences.getInt("maND", -1);
         String role = sharedPreferences.getString("role", "");
-        if(role.equals("admin")) {
+
+        if (role.equals("admin")) {
             veryfied.setVisibility(View.VISIBLE);
-            khungVIPImageView.setImageDrawable(getContext().getResources().getDrawable(R.drawable.khung_vip_02));
-        }
-        else {
+            khungVIPImageView.setImageResource(R.drawable.khung_vip_02);
+        } else {
             veryfied.setVisibility(View.INVISIBLE);
-            khungVIPImageView.setImageDrawable(getContext().getResources().getDrawable(R.drawable.khung_vip_03));
+            khungVIPImageView.setImageResource(R.drawable.khung_vip_03);
         }
-        TaiKhoan taiKhoan = queryTaiKhoanFromDatabase(maTK);
-        if (taiKhoan != null) {
-            tenTextView.setText("Tên đăng nhập: " + taiKhoan.getTenDN());
-            emailTextView.setText("Email: " + taiKhoan.getEmail());
-            sdtTextView.setText("Số điện thoại: " + taiKhoan.getSdt());
-            roleTextView.setText("Vai trò: " + taiKhoan.getRole());
-            String profileImageUrl = queryProfileImageFromDatabase(maTK);
+
+        NguoiDung nguoiDung = queryNguoiDungFromDatabase(maND);
+        if (nguoiDung != null) {
+            tenTextView.setText("Tên đăng nhập: " + nguoiDung.getTenDN());
+            emailTextView.setText("Email: " + nguoiDung.getEmail());
+            sdtTextView.setText("Số điện thoại: " + nguoiDung.getSdt());
+            roleTextView.setText("Vai trò: " + nguoiDung.getRole());
+            String profileImageUrl = queryProfileImageFromDatabase(maND);
             if (profileImageUrl != null) {
                 Glide.with(getContext()).load(profileImageUrl).placeholder(R.drawable.img_avatar_nam).into(avatarImageView);
             } else {
@@ -131,12 +131,13 @@ public class SettingsFragment extends Fragment {
                         .show();
             }
         });
-
+        setUpFunctionRecyclerView();
+        setUpRecyclerView();
         return view;
     }
 
-    private TaiKhoan queryTaiKhoanFromDatabase(int maTK) {
-        TaiKhoan taiKhoan = null;
+    private NguoiDung queryNguoiDungFromDatabase(int maND) {
+        NguoiDung nguoiDung = null;
         SQLiteDatabase db = null;
         Cursor cursor = null;
         try {
@@ -144,23 +145,23 @@ public class SettingsFragment extends Fragment {
             db = dbHelper.getReadableDatabase();
             String[] projection = {
                     "tenDN",
-                    "Email",
-                    "SDT",
+                    "email",
+                    "sdt",
                     "role"
             };
-            String selection = "maTK = ?";
-            String[] selectionArgs = {String.valueOf(maTK)};
-            cursor = db.query("TaiKhoan", projection, selection, selectionArgs, null, null, null);
+            String selection = "maND = ?";
+            String[] selectionArgs = {String.valueOf(maND)};
+            cursor = db.query("NguoiDung", projection, selection, selectionArgs, null, null, null);
             if (cursor != null && cursor.moveToFirst()) {
                 int tenDNIndex = cursor.getColumnIndex("tenDN");
-                int emailIndex = cursor.getColumnIndex("Email");
-                int sdtIndex = cursor.getColumnIndex("SDT");
+                int emailIndex = cursor.getColumnIndex("email");
+                int sdtIndex = cursor.getColumnIndex("sdt");
                 int roleIndex = cursor.getColumnIndex("role");
                 String tenDN = cursor.getString(tenDNIndex);
                 String email = cursor.getString(emailIndex);
                 String sdt = cursor.getString(sdtIndex);
                 String role = cursor.getString(roleIndex);
-                taiKhoan = new TaiKhoan(maTK, tenDN, email, sdt, role);
+                nguoiDung = new NguoiDung(maND, tenDN, email, sdt, role);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -172,10 +173,10 @@ public class SettingsFragment extends Fragment {
                 db.close();
             }
         }
-        return taiKhoan;
+        return nguoiDung;
     }
 
-    private String queryProfileImageFromDatabase(int maTK) {
+    private String queryProfileImageFromDatabase(int maND) {
         String profileImage = null;
         SQLiteDatabase db = null;
         Cursor cursor = null;
@@ -185,9 +186,9 @@ public class SettingsFragment extends Fragment {
             String[] projection = {
                     "hinhAnh"
             };
-            String selection = "maTK = ?";
-            String[] selectionArgs = {String.valueOf(maTK)};
-            cursor = db.query("KhachHang", projection, selection, selectionArgs, null, null, null);
+            String selection = "maND = ?";
+            String[] selectionArgs = {String.valueOf(maND)};
+            cursor = db.query("NguoiDung", projection, selection, selectionArgs, null, null, null);
             if (cursor != null && cursor.moveToFirst()) {
                 int profileImageIndex = cursor.getColumnIndex("hinhAnh");
                 profileImage = cursor.getString(profileImageIndex);
@@ -204,18 +205,19 @@ public class SettingsFragment extends Fragment {
         }
         return profileImage;
     }
+
     private void refreshUserData() {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("login_status", Context.MODE_PRIVATE);
-        int maTK = sharedPreferences.getInt("maTK", -1);
-        TaiKhoan taiKhoan = queryTaiKhoanFromDatabase(maTK);
-        if (taiKhoan != null) {
-            tenTextView.setText("Tên đăng nhập: " + taiKhoan.getTenDN());
-            emailTextView.setText("Email: " + taiKhoan.getEmail());
-            sdtTextView.setText("Số điện thoại: " + taiKhoan.getSdt());
-            roleTextView.setText("Vai trò: " + taiKhoan.getRole());
-            String profileImageUrl = queryProfileImageFromDatabase(maTK);
+        int maND = sharedPreferences.getInt("maND", -1);
+        NguoiDung nguoiDung = queryNguoiDungFromDatabase(maND);
+        if (nguoiDung != null) {
+            tenTextView.setText("Tên đăng nhập: " + nguoiDung.getTenDN());
+            emailTextView.setText("Email: " + nguoiDung.getEmail());
+            sdtTextView.setText("Số điện thoại: " + nguoiDung.getSdt());
+            roleTextView.setText("Vai trò: " + nguoiDung.getRole());
+            String profileImageUrl = queryProfileImageFromDatabase(maND);
             if (profileImageUrl != null) {
-                updateProfileImageInDatabase(maTK, profileImageUrl); // Di chuyển phần này lên đây
+                updateProfileImageInDatabase(maND, profileImageUrl); // Di chuyển phần này lên đây
                 Glide.with(getContext()).load(profileImageUrl).placeholder(R.drawable.img_avatar_nam).into(avatarImageView);
             } else {
                 avatarImageView.setImageResource(R.drawable.img_avatar_nam);
@@ -223,17 +225,16 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-
-    private void updateProfileImageInDatabase(int maTK, String newProfileImage) {
+    private void updateProfileImageInDatabase(int maND, String newProfileImage) {
         SQLiteDatabase db = null;
         try {
             DatabaseHelper dbHelper = new DatabaseHelper(getContext());
             db = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put("hinhAnh", newProfileImage);
-            String selection = "maTK = ?";
-            String[] selectionArgs = {String.valueOf(maTK)};
-            int rowsAffected = db.update("KhachHang", values, selection, selectionArgs);
+            String selection = "maND = ?";
+            String[] selectionArgs = {String.valueOf(maND)};
+            int rowsAffected = db.update("NguoiDung", values, selection, selectionArgs);
             if (rowsAffected > 0) {
                 refreshUserData();
                 Toast.makeText(getContext(), "Cập nhật ảnh đại diện thành công", Toast.LENGTH_SHORT).show();
@@ -248,6 +249,7 @@ public class SettingsFragment extends Fragment {
             }
         }
     }
+
     private void setUpFunctionRecyclerView() {
         ArrayList<BuyActivityItem> functionList = new ArrayList<>();
         functionList.add(new BuyActivityItem(R.drawable.wait_confirm, "Chờ xác nhận"));

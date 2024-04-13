@@ -39,7 +39,7 @@ public class ChoLayHangFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("login_status", Context.MODE_PRIVATE);
-        int maKH = sharedPreferences.getInt("maKH", -1);
+        int maKH = sharedPreferences.getInt("maND", -1);
         loadDonMuaData(maKH);
         return rootView;
     }
@@ -48,7 +48,7 @@ public class ChoLayHangFragment extends Fragment {
         donHangList.clear();
         DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String selection = "maKH = ? AND maTTDH = ?";
+        String selection = "maND = ? AND maTTDH = ?";
         String[] selectionArgs = {String.valueOf(maKH), "2"}; // Chỉ lấy các đơn mua có maTTDH là 1
         Cursor cursor = db.query(
                 "DonMua",

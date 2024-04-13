@@ -98,26 +98,29 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
         });
     }
 
-
-
-    public boolean checkAdminRole(Context context, int maTK) {
+    public boolean checkAdminRole(Context context, int maND) {
         boolean isAdmin = false;
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String query = "SELECT role FROM TaiKhoan WHERE maTK = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(maTK)});
+
+        String query = "SELECT role FROM NguoiDung WHERE maND = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(maND)});
+
         if (cursor != null && cursor.moveToFirst()) {
             String role = cursor.getString(cursor.getColumnIndex("role"));
             if (role.equals("admin")) {
                 isAdmin = true;
             }
         }
+
         if (cursor != null) {
             cursor.close();
         }
+
         db.close();
         return isAdmin;
     }
+
 
 
     private void showAdminDialog(Context context, int position) {

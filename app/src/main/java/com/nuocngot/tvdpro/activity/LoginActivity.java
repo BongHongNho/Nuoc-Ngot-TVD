@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -107,16 +108,16 @@ public class LoginActivity extends AppCompatActivity {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String[] projection = {
-                "maTK",
-                "maKH",
+                "maND",
                 "tenDN",
                 "matKhau",
                 "role"
         };
+
         String selection = "tenDN = ?";
         String[] selectionArgs = {username};
         Cursor cursor = db.query(
-                "TaiKhoan",
+                "NguoiDung",
                 projection,
                 selection,
                 selectionArgs,
@@ -124,13 +125,14 @@ public class LoginActivity extends AppCompatActivity {
                 null,
                 null
         );
+
         if (cursor.moveToFirst()) {
-            int maTK = cursor.getInt(cursor.getColumnIndexOrThrow("maTK"));
-            int maKH = cursor.getInt(cursor.getColumnIndexOrThrow("maKH"));
+            int maND = cursor.getInt(cursor.getColumnIndexOrThrow("maND"));
             String storedPassword = cursor.getString(cursor.getColumnIndexOrThrow("matKhau"));
             String role = cursor.getString(cursor.getColumnIndexOrThrow("role"));
             if (password.equals(storedPassword)) {
-                saveLoginStatus(true, maTK, maKH, role);
+                // Đăng nhập thành công
+                saveLoginStatus(true, maND, role);
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -140,16 +142,16 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Tên đăng nhập không tồn tại!", Toast.LENGTH_SHORT).show();
         }
+
         cursor.close();
         dbHelper.close();
     }
 
-    private void saveLoginStatus(boolean isLoggedIn, int maTK, int maKH, String role) {
+    private void saveLoginStatus(boolean isLoggedIn, int maND, String role) {
         SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("isLoggedIn", isLoggedIn);
-        editor.putInt("maTK", maTK);
-        editor.putInt("maKH", maKH);
+        editor.putInt("maND", maND);
         editor.putString("role", role);
         editor.apply();
     }

@@ -102,19 +102,19 @@ public class ChiTietSPActivity extends AppCompatActivity {
     }
 
     private void addBinhLuan() {
-        SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
-        int maKH = sharedPreferences.getInt("maKH", -1);
-        if (maKH == -1) {
-            Toast.makeText(this, "Không tìm thấy thông tin khách hàng", Toast.LENGTH_SHORT).show();
+        SharedPreferences sharedPreferences = getSharedPreferences("login_status", MODE_PRIVATE);
+        int maND = sharedPreferences.getInt("maND", -1);
+        if (maND == -1) {
+            Toast.makeText(this, "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
             return;
         }
         String tenND = "";
         String anhBL = "";
         DatabaseHelper databaseHelper = new DatabaseHelper(this);
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
-        Cursor cursor = database.rawQuery("SELECT tenKH, hinhAnh FROM KhachHang WHERE maKH = ?", new String[]{String.valueOf(maKH)});
+        Cursor cursor = database.rawQuery("SELECT tenND, hinhAnh FROM NguoiDung WHERE maND = ?", new String[]{String.valueOf(maND)});
         if (cursor.moveToFirst()) {
-            tenND = cursor.getString(cursor.getColumnIndex("tenKH"));
+            tenND = cursor.getString(cursor.getColumnIndex("tenND"));
             anhBL = cursor.getString(cursor.getColumnIndex("hinhAnh"));
         }
         cursor.close();
@@ -125,12 +125,24 @@ public class ChiTietSPActivity extends AppCompatActivity {
         }
         String binhLuan = editTextBinhLuan.getText().toString().trim();
         String thoiGian = getCurrentDateTime();
-        String query = "INSERT INTO BinhLuan (maKH, maSP, tenND, anhBL, binhLuan, thoiGian) VALUES (?, ?, ?, ?, ?, ?)";
-        database.execSQL(query, new Object[]{maKH, maSP, tenND, anhBL, binhLuan, thoiGian});
+        String query = "INSERT INTO BinhLuan (maND, maSP, tenND, anhBL, binhLuan, thoiGian) VALUES (?, ?, ?, ?, ?, ?)";
+        database.execSQL(query, new Object[]{maND, maSP, tenND, anhBL, binhLuan, thoiGian});
         Toast.makeText(this, "Thêm bình luận thành công", Toast.LENGTH_SHORT).show();
         editTextBinhLuan.setText("");
         arrayList.clear();
         loadBinhLuan();
+    }
+    private int getCurrentUserId() {
+        int userId = -1;
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT maND FROM NguoiDung WHERE isLogin = 1", null); // Lấy maND của người dùng đang đăng nhập
+        if (cursor.moveToFirst()) {
+            userId = cursor.getInt(cursor.getColumnIndex("maND"));
+        }
+        cursor.close();
+        db.close();
+        return userId;
     }
 
     private void loadBinhLuan() {
@@ -140,22 +152,32 @@ public class ChiTietSPActivity extends AppCompatActivity {
         Cursor cursor = database.rawQuery(query, new String[]{String.valueOf(maSP)});
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                String tenND = cursor.getString(cursor.getColumnIndex("tenND"));
+                int maND = cursor.getInt(cursor.getColumnIndex("maND"));
                 String binhLuan = cursor.getString(cursor.getColumnIndex("binhLuan"));
                 String thoiGian = cursor.getString(cursor.getColumnIndex("thoiGian"));
-                String anhBL = cursor.getString(cursor.getColumnIndex("anhBL"));
-                int maKH = cursor.getInt(cursor.getColumnIndex("maKH"));
+                String tenND = "";
+                String hinhAnh = "";
+
+                // Truy vấn thông tin người dùng từ bảng NguoiDung
+                Cursor userCursor = database.rawQuery("SELECT tenND, hinhAnh FROM NguoiDung WHERE maND = ?", new String[]{String.valueOf(maND)});
+                if (userCursor.moveToFirst()) {
+                    tenND = userCursor.getString(userCursor.getColumnIndex("tenND"));
+                    hinhAnh = userCursor.getString(userCursor.getColumnIndex("hinhAnh"));
+                }
+                userCursor.close();
+
+                // Lấy maBL từ Cursor của bảng BinhLuan
                 int maBL = cursor.getInt(cursor.getColumnIndex("maBL"));
-                BinhLuan binhLuanObj = new BinhLuan(tenND, binhLuan, maBL, thoiGian, anhBL, maKH);
+
+                // Tạo đối tượng BinhLuan và thêm vào danh sách
+                BinhLuan binhLuanObj = new BinhLuan(tenND, binhLuan, thoiGian, hinhAnh, maND, maBL);
                 arrayList.add(binhLuanObj);
             } while (cursor.moveToNext());
+
             cursor.close();
             binhLuanAdapter.notifyDataSetChanged();
         }
     }
-
-
-
 
     private String getCurrentDateTime() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -166,7 +188,6 @@ public class ChiTietSPActivity extends AppCompatActivity {
             return "";
         }
     }
-
     private void showProductDetails() {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -196,24 +217,20 @@ public class ChiTietSPActivity extends AppCompatActivity {
         Glide.with(this).load(imageURL).placeholder(R.drawable.placeholder).into(imageViewProduct);
     }
 
-
     private void addToCartAndNavigateToCartActivity(int maSP) {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
-        int maKH = sharedPreferences.getInt("maKH", -1);
-        if (maKH != -1) {
-            // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng hay chưa
-            Cursor cursor = db.rawQuery("SELECT * FROM GioHang WHERE maSP = ? AND maKH = ?", new String[]{String.valueOf(maSP), String.valueOf(maKH)});
+       SharedPreferences sharedPreferences = getSharedPreferences("login_status", MODE_PRIVATE);
+        int maND = sharedPreferences.getInt("maND", -1);
+        if (maND != -1) {
+            Cursor cursor = db.rawQuery("SELECT * FROM GioHang WHERE maSP = ? AND maND = ?", new String[]{String.valueOf(maSP), String.valueOf(maND)});
             if (cursor.moveToFirst()) {
-                // Nếu sản phẩm đã tồn tại, cập nhật số lượng của nó
                 int soLuongHienTai = cursor.getInt(cursor.getColumnIndex("soLuong"));
                 int soLuongMoi = soLuongHienTai + 1;
                 ContentValues values = new ContentValues();
                 values.put("soLuong", soLuongMoi);
-                db.update("GioHang", values, "maSP = ? AND maKH = ?", new String[]{String.valueOf(maSP), String.valueOf(maKH)});
+                db.update("GioHang", values, "maSP = ? AND maND = ?", new String[]{String.valueOf(maSP), String.valueOf(maND)});
             } else {
-                // Nếu sản phẩm chưa tồn tại, thêm sản phẩm mới vào giỏ hàng
                 Cursor cursorSanPham = db.rawQuery("SELECT * FROM SanPham WHERE maSP = ?", new String[]{String.valueOf(maSP)});
                 if (cursorSanPham.moveToFirst()) {
                     String tenSP = cursorSanPham.getString(cursorSanPham.getColumnIndex("tenSP"));
@@ -225,7 +242,7 @@ public class ChiTietSPActivity extends AppCompatActivity {
                     ContentValues values = new ContentValues();
                     values.put("tenSP", tenSP);
                     values.put("hinhAnh", hinhAnh);
-                    values.put("maKH", maKH);
+                    values.put("maND", maND);
                     values.put("maSP", maSP);
                     values.put("soLuong", soLuong);
                     values.put("tongTien", tongTien);
@@ -238,7 +255,7 @@ public class ChiTietSPActivity extends AppCompatActivity {
             Intent gioHangIntent = new Intent(this, GioHangActivity.class);
             startActivity(gioHangIntent);
         } else {
-            Toast.makeText(this, "Không tìm thấy thông tin khách hàng", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
         }
         db.close();
         dbHelper.close();

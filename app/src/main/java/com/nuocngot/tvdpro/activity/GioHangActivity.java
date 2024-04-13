@@ -46,23 +46,24 @@ public class GioHangActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gio_hang);
+
         recyclerView = findViewById(R.id.recyclerViewGioHang);
         textViewTotalPrice = findViewById(R.id.textViewTotalPrice);
         gioHangAdapter = new GioHangAdapter(gioHangItemList);
-        textViewGHEmpty= findViewById(R.id.textViewGHEmpty);
+        textViewGHEmpty = findViewById(R.id.textViewGHEmpty);
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Giỏ hàng");
+        toolbar.setTitle("Giỏ hàng");
         toolbar.setNavigationIcon(R.drawable.back);
         toolbar.setNavigationOnClickListener(v -> finish());
         btnBuy = findViewById(R.id.btnBuy);
-        SharedPreferences sharedPreferences = getSharedPreferences("login_status", MODE_PRIVATE);
-        int maKH = sharedPreferences.getInt("maKH", -1);
-        if (maKH != -1) {
-            loadGioHangData(maKH);
-        } else {
-            Toast.makeText(this, "Khách hàng không tồn tại", Toast.LENGTH_SHORT).show();
-        }
 
+        SharedPreferences sharedPreferences = getSharedPreferences("login_status", MODE_PRIVATE);
+        int maND = sharedPreferences.getInt("maND", -1); // Thay đổi thành maND
+        if (maND != -1) {
+            loadGioHangData(maND); // Sử dụng maND thay vì maKH
+        } else {
+            Toast.makeText(this, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show();
+        }
         adapter = new GioHangAdapter(this, gioHangItemList, new GioHangAdapter.OnItemChangeListener() {
             @Override
             public void onItemChanged(int position, int newQuantity) {
@@ -76,15 +77,15 @@ public class GioHangActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SharedPreferences sharedPreferences = getSharedPreferences("login_status", MODE_PRIVATE);
-                int maKH = sharedPreferences.getInt("maKH", -1);
-                if (maKH != -1) {
+                int maND = sharedPreferences.getInt("maND", -1); // Thay đổi thành maND
+                if (maND != -1) {
                     if (gioHangItemList != null && gioHangItemList.size() > 0) {
                         DatabaseHelper dbHelper = new DatabaseHelper(GioHangActivity.this);
                         SQLiteDatabase db = dbHelper.getWritableDatabase();
                         ContentValues values = new ContentValues();
                         for (GioHangItem item : gioHangItemList) {
                             values.clear();
-                            values.put("maKH", maKH);
+                            values.put("maND", maND); // Thay đổi thành maND
                             values.put("maSP", item.getMaSP());
                             values.put("soLuong", item.getSoLuong());
                             values.put("tongTien", item.getSoLuong() * item.getGia());
@@ -99,20 +100,19 @@ public class GioHangActivity extends AppCompatActivity {
                         Intent intent = new Intent(GioHangActivity.this, ThanhToanActivity.class);
                         intent.putParcelableArrayListExtra("selected_items", selectedItems);
                         startActivity(intent);
-
                     } else {
                         Toast.makeText(GioHangActivity.this, "Giỏ hàng trống. Vui lòng thêm sản phẩm vào giỏ hàng trước khi mua.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(GioHangActivity.this, "Khách hàng không tồn tại. Vui lòng đăng nhập lại.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GioHangActivity.this, "Người dùng không tồn tại. Vui lòng đăng nhập lại.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
 
-        private void loadGioHangData(int maKH) {
-        String maKHString = String.valueOf(maKH);
+    private void loadGioHangData(int maND) {
+        String maNDString = String.valueOf(maND); // Chuyển maND thành String
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String[] projection = {
@@ -125,8 +125,8 @@ public class GioHangActivity extends AppCompatActivity {
         Cursor cursor = db.query(
                 "GioHang",
                 projection,
-                "maKH = ?",
-                new String[]{maKHString},
+                "maND = ?", // Thay đổi thành maND
+                new String[]{maNDString},
                 null,
                 null,
                 null

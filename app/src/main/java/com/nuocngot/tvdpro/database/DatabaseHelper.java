@@ -22,28 +22,23 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "user_database";
     private static final int DATABASE_VERSION = 1;
-    private static final String CREATE_TABLE_TAI_KHOAN =
-            "CREATE TABLE TaiKhoan (" +
-                    "maTK INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "maKH INTEGER REFERENCES KhachHang(maKH)," +
+
+    private static final String CREATE_TABLE_NGUOI_DUNG =
+            "CREATE TABLE IF NOT EXISTS NguoiDung (" +
+                    "maND INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "tenDN TEXT NOT NULL," +
+                    "tenND TEXT NOT NULL," +
                     "matKhau TEXT NOT NULL," +
-                    "Email TEXT NOT NULL," +
-                    "SDT TEXT NOT NULL," +
-                    "role TEXT NOT NULL," +
-                    "userId INTEGER DEFAULT -1," +
-                    "isLogin INTEGER DEFAULT 0)";
-    private static final String CREATE_TABLE_KHACH_HANG =
-            "CREATE TABLE KhachHang (" +
-                    "maKH INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "maTK INTEGER REFERENCES TaiKhoan(maTK)," +
-                    "tenKH TEXT NOT NULL," +
-                    "Email TEXT NOT NULL," +
-                    "SDT TEXT NOT NULL," +
+                    "email TEXT NOT NULL," +
+                    "sdt TEXT NOT NULL," +
                     "diaChi TEXT NOT NULL," +
                     "capTV TEXT NOT NULL," +
-                    "trangThai INTEGER REFERENCES TrangThaiTK(maTTTK)," +
-                    "hinhAnh TEXT NOT NULL)";
+                    "trangThai INTEGER NOT NULL DEFAULT 1," +
+                    "role TEXT NOT NULL DEFAULT 'user'," +
+                    "isLogin INTEGER NOT NULL DEFAULT 0," +
+                    "hinhAnh TEXT" +
+                    ")";
+
 
     private static final String CREATE_TABLE_SAN_PHAM =
             "CREATE TABLE SanPham (maSP INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -86,7 +81,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE GioHang (maGH INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "tenSP TEXT NOT NULL," +
                     "hinhAnh TEXT NOT NULL," +
-                    "maKH INTEGER REFERENCES KhachHang(maKH)," +
+                    "maND INTEGER REFERENCES NguoiDung(maND)," +
                     "maSP INTEGER REFERENCES SanPham(maSP)," +
                     "soLuong INTEGER NOT NULL," +
                     "tongTien INTEGER NOT NULL)";
@@ -94,7 +89,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_HOA_DON =
             "CREATE TABLE HoaDon (maHD INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "maKH INTEGER REFERENCES KhachHang(maKH)," +
+                    "maND INTEGER REFERENCES NguoiDung(maND)," +
                     "maSP INTEGER REFERENCES SanPham(maSP)," +
                     "ngayTT TEXT NOT NULL," +
                     "soLuong INTEGER NOT NULL," +
@@ -108,7 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_THANH_TOAN =
             "CREATE TABLE ThanhToan (maTToan INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "maKH INTEGER REFERENCES KhachHang(maKH)," +
+                    "maND INTEGER REFERENCES NguoiDung(maND)," +
                     "maSP INTEGER REFERENCES SanPham(maSP)," +
                     "phuongThucTT TEXT NOT NULL," +
                     "tongTienTT INTEGER NOT NULL," +
@@ -118,7 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_DON_MUA =
             "CREATE TABLE DonMua (" +
                     "maDMUA INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "maKH INTEGER REFERENCES KhachHang(maKH)," +
+                    "maND INTEGER REFERENCES NguoiDung(maND)," +
                     "maSP INTEGER REFERENCES SanPham(maSP)," +
                     "maTTDH INTEGER REFERENCES TrangThaiDonHang(maTTHD)," +
                     "tenDH TEXT NOT NULL," +
@@ -134,7 +129,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_BINH_LUAN =
             "CREATE TABLE BinhLuan (maBL INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "maKH INTEGER REFERENCES KhachHang(maKH)," +
+                    "maND INTEGER REFERENCES NguoiDung(maND)," +
                     "maSP INTEGER REFERENCES SanPham(maSP)," +
                     "tenND TEXT NOT NULL," +
                     "anhBL TEXT NOT NULL," +
@@ -143,12 +138,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_TRANGTHAI_DONHANG =
             "CREATE TABLE TrangThaiDonHang (maTTDH INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    " maKH INTEGER REFERENCES KhachHang(maKH)," +
+                    " maND INTEGER REFERENCES KhachHang(maND)," +
                     " tenTTDH TEXT NOT NULL)";
 
     private static final String CREATE_TABLE_THONG_BAO =
             "CREATE TABLE ThongBao (maTB INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "maKH INTEGER REFERENCES KhachHang(maKH)," +
+                    "maND INTEGER REFERENCES KhachHang(maND)," +
                     "anhTB TEXT REFERENCES KhachHang(hinhAnh)," +
                     "noiDungTB TEXT NOT NULL," +
                     "timeTB TEXT NOT NULL)";
@@ -160,19 +155,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL(CREATE_TABLE_NGUOI_DUNG);
+        db.execSQL("INSERT INTO NguoiDung (tenND,tenDN, matKhau, email, sdt, diaChi, capTV, trangThai, role, isLogin, hinhAnh) VALUES " +
+                "('Nguyễn Huy Phước Tấn','tannhp2003', 'tannhp2003', 'tannhpph28818@fpt.edu.vn', '0359762830', 'Địa chỉ 1', 'capTV1', 1, 'admin', 0, 'https://bizweb.dktcdn.net/100/438/408/files/avatar-anime-cho-nam-6.jpg?v=1699239545678')");
 
-        db.execSQL(CREATE_TABLE_TAI_KHOAN);
-        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (1, 1, 'tannhp2003', 'tannhp2003', 'tannhpph28818@fpt.edu.vn', 0359762830, 'admin')");
-        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (2, 2, 'lannp2003', 'lannp2003', 'annanguyen220203@gmail.com', 0337922095, 'admin')");
-        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (3, 3, 'khoind2022', 'knd2022', 'khoind150822@gmail.com', 0989898989, 'admin')");
-        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (4, 4, 'hann1234', 'hann1234', 'hanguyen293@gmai.com', 0917382948, 'user')");
-        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (5, 5, 'longnh2345', 'longnh2345', 'longnguyen2345@gmai.com', 0918377727, 'user')");
-        db.execSQL(CREATE_TABLE_KHACH_HANG);
-        db.execSQL("INSERT INTO KhachHang (maTK, tenKH, Email, SDT, diaChi, capTV, hinhAnh, trangThai) VALUES (1, 'Nguyễn Huy Phước Tấn', 'tannhpph28818@fpt.edu.vn', '0359762830', 'Phương Canh - Nam Từ Liêm - Hà Nội', 'Admin', 'https://bizweb.dktcdn.net/100/438/408/files/avatar-anime-cho-nam-6.jpg?v=1699239545678', 1)");
-        db.execSQL("INSERT INTO KhachHang (maTK, tenKH, Email, SDT, diaChi, capTV, hinhAnh, trangThai) VALUES (2, 'Nguyễn Thị Phương Lan', 'annanguyen220203@gmail.com', '0337922095', 'Cầu Giấy - Hà Nội', 'Admin', 'https://cdn.alongwalk.info/info/wp-content/uploads/2022/11/16190612/image-99-hinh-avatar-cute-ngau-ca-tinh-de-thuong-nhat-cho-nam-nu-8e7c7ad12ae964526b65b74b5de19112.jpg', 1)");
-        db.execSQL("INSERT INTO KhachHang (maTK, tenKH, Email, SDT, diaChi, capTV, hinhAnh, trangThai) VALUES (3, 'Nguyễn Đăng Khôi', 'khoind150822@gmail.com', '0989898989', 'Hà Đông - Hà Nội', 'Admin', 'https://leminhhoang.vn/wp-content/uploads/2023/05/hinh-avatar-nam-naruto-541x580.jpg',1 )");
-        db.execSQL("INSERT INTO KhachHang (maTK, tenKH, Email, SDT, diaChi, capTV, hinhAnh, trangThai) VALUES (4, 'Nguyễn Nhật Hạ', 'hanguyen293@gmail.com', '0917382948', 'Đan Phượng - Hà Nội', 'Thường', 'https://cdn.alongwalk.info/info/wp-content/uploads/2022/11/16190609/image-99-hinh-avatar-cute-ngau-ca-tinh-de-thuong-nhat-cho-nam-nu-345edb2001a254d794b8f6cddade1698.jpg', 0)");
-        db.execSQL("INSERT INTO KhachHang (maTK, tenKH, Email, SDT, diaChi, capTV, hinhAnh, trangThai) VALUES (5, 'Nguyễn Nhật Long', 'longnguyen2345@gmail.com', '0918377727', 'Hoài Đức - Hà Nội', 'Thường', 'https://i.pinimg.com/236x/96/d4/ab/96d4ab38772a3bec726a845da76a839d.jpg', 0)");
+        db.execSQL("INSERT INTO NguoiDung (tenND, tenDN, matKhau, email, sdt, diaChi, capTV, trangThai, role, isLogin, hinhAnh) VALUES " +
+                "('Nguyễn Phương Lan', 'lannp2003', 'lannp2003', 'annanguyen220203@gmail.com', '0337922095', 'Địa chỉ 2', 'capTV2', 1, 'admin', 0, 'https://cdn.alongwalk.info/info/wp-content/uploads/2022/11/16190612/image-99-hinh-avatar-cute-ngau-ca-tinh-de-thuong-nhat-cho-nam-nu-8e7c7ad12ae964526b65b74b5de19112.jpg')");
+
+        db.execSQL("INSERT INTO NguoiDung (tenND, tenDN, matKhau, email, sdt, diaChi, capTV, trangThai, role, isLogin, hinhAnh) VALUES " +
+                "('Nguyễn Đăng Khôi','khoind2022', 'knd2022', 'khoind150822@gmail.com', '0989898989', 'Địa chỉ 3', 'capTV3', 1, 'admin', 0, 'https://leminhhoang.vn/wp-content/uploads/2023/05/hinh-avatar-nam-naruto-541x580.jpg')");
+
+        db.execSQL("INSERT INTO NguoiDung (tenND,tenDN, matKhau, email, sdt, diaChi, capTV, trangThai, role, isLogin, hinhAnh) VALUES " +
+                "('Nguyễn Nhật Hạ','hann1234', 'hann1234', 'hanguyen293@gmail.com', '0917382948', 'Địa chỉ 4', 'capTV4', 1, 'user', 0, 'https://cdn.alongwalk.info/info/wp-content/uploads/2022/11/16190609/image-99-hinh-avatar-cute-ngau-ca-tinh-de-thuong-nhat-cho-nam-nu-345edb2001a254d794b8f6cddade1698.jpg')");
+
+        db.execSQL("INSERT INTO NguoiDung (tenND,tenDN, matKhau, email, sdt, diaChi, capTV, trangThai, role, isLogin, hinhAnh) VALUES " +
+                "('Nguyễn Long Nhật', 'longnh2345', 'longnh2345', 'longnguyen2345@gmail.com', '0918377727', 'Địa chỉ 5', 'capTV5', 1, 'user', 0, 'https://i.pinimg.com/236x/96/d4/ab/96d4ab38772a3bec726a845da76a839d.jpg')");
 
         db.execSQL(CREATE_TABLE_SAN_PHAM);
         db.execSQL("INSERT INTO SanPham (maSP, maDM, hinhAnh, tenSP, soLuong, gia) VALUES (1, 1, 'https://tea-3.lozi.vn/v1/ship/resized/losupply-quan-tan-phu-quan-tan-phu-ho-chi-minh-1618467447167540212-nuoc-ngot-coca-cola-lon-320ml-0-1626403242?w=480&type=o', 'Coca Cola', 420, 15000)");
@@ -294,14 +291,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (16, 'Thums Up Charged','https://www.coca-cola.com/content/dam/onexp/vn/vi/brands/thums-up-charged/thums-up-charged-logo.png')");//
 
 
-        db.execSQL(CREATE_TABLE_YEU_THICH);
-        db.execSQL("INSERT INTO YeuThich (maKH, maSP, thoiGian) VALUES (1, 1, '2024-03-20')");
-        db.execSQL("INSERT INTO YeuThich (maKH, maSP, thoiGian) VALUES (2, 2, '2024-03-20')");
-
-        db.execSQL(CREATE_TABLE_DANH_GIA);
-        db.execSQL("INSERT INTO DanhGia (maKH, maSP, binhLuan, thoiGian) VALUES (1, 1, 'Rất tốt', '2024-03-20')");
-        db.execSQL("INSERT INTO DanhGia (maKH, maSP, binhLuan, thoiGian) VALUES (2, 2, 'Tốt', '2024-03-20')");
-
         db.execSQL(CREATE_TABLE_GIO_HANG);
         db.execSQL(CREATE_TABLE_HOA_DON);
         db.execSQL(CREATE_TABLE_DON_MUA);
@@ -309,8 +298,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO PhuongThucThanhToan (maPTT, tenPTT) VALUES (1, 'Thanh toán khi nhận hàng')");
         db.execSQL("INSERT INTO PhuongThucThanhToan (maPTT, tenPTT) VALUES (2, 'Thanh toán qua ngân hàng')");
         db.execSQL(CREATE_TABLE_THANH_TOAN);
-        db.execSQL("INSERT INTO ThanhToan (maKH, maSP, phuongThucTT, tongTienTT, tongTienPhiVC, tongThanhToan) VALUES (1, 1, 'Thanh toán khi nhận hàng', 20000, 5000, 25000)");
-        db.execSQL("INSERT INTO ThanhToan (maKH, maSP, phuongThucTT, tongTienTT, tongTienPhiVC, tongThanhToan) VALUES (2, 2, 'Thanh toán online', 40000, 5000, 45000)");
+        db.execSQL("INSERT INTO ThanhToan (maND, maSP, phuongThucTT, tongTienTT, tongTienPhiVC, tongThanhToan) VALUES (1, 1, 'Thanh toán khi nhận hàng', 20000, 5000, 25000)");
+        db.execSQL("INSERT INTO ThanhToan (maND, maSP, phuongThucTT, tongTienTT, tongTienPhiVC, tongThanhToan) VALUES (2, 2, 'Thanh toán online', 40000, 5000, 45000)");
 
         db.execSQL(CREATE_TABLE_TRANGTHAI_DONHANG);
         db.execSQL("INSERT INTO TrangThaiDonHang (maTTDH, tenTTDH) VALUES (1, 'Chờ xác nhận')");

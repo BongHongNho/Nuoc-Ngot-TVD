@@ -7,7 +7,7 @@ public class BinhLuan {
 
     private int maBL;
 
-    public BinhLuan(String tenND, String binhLuan, int maBL, String thoiGian, String anhBL, int maKH) {
+    public BinhLuan(String tenND, String binhLuan, String thoiGian, String anhBL, int maKH, int maBL) {
         this.tenNguoiDung = tenND;
         this.noiDung = binhLuan;
         this.maBL = maBL;

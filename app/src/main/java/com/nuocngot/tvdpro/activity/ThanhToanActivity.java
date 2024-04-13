@@ -27,7 +27,7 @@ import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.adapter.GioHangAdapter;
 import com.nuocngot.tvdpro.adapter.GioHangItem;
 import com.nuocngot.tvdpro.adapter.ThanhToanAdapter;
-import com.nuocngot.tvdpro.model.KhachHang;
+import com.nuocngot.tvdpro.model.NguoiDung;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
 
 import java.text.DateFormat;
@@ -98,36 +98,41 @@ public class ThanhToanActivity extends AppCompatActivity {
                 builder.show();
             }
         });
-
-
         linearDCNH.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
-                int maTK = sharedPreferences.getInt("maTK", -1);
+                int maND = sharedPreferences.getInt("maND", -1); // Lấy maND từ SharedPreferences
                 DatabaseHelper dbHelper = new DatabaseHelper(ThanhToanActivity.this);
-                SQLiteDatabase db = dbHelper.getWritableDatabase(); // Sử dụng getWritableDatabase() thay vì getReadableDatabase()
-                Cursor cursor = db.query(
-                        "KhachHang",
-                        null,
-                        "maTK = ?",
-                        new String[]{String.valueOf(maTK)},
-                        null,
-                        null,
-                        null
-                );
+                SQLiteDatabase db = null;
+                Cursor cursor = null;
+
                 try {
+                    db = dbHelper.getWritableDatabase(); // Mở SQLiteDatabase để thực hiện thao tác ghi
+
+                    // Query để lấy thông tin người dùng có mã maND
+                    cursor = db.query(
+                            "NguoiDung",
+                            null,
+                            "maND = ?",
+                            new String[]{String.valueOf(maND)},
+                            null,
+                            null,
+                            null
+                    );
+
                     if (cursor != null && cursor.moveToFirst()) {
-                        String tenKH = cursor.getString(cursor.getColumnIndex("tenKH"));
-                        String sdt = cursor.getString(cursor.getColumnIndex("SDT"));
-                        String diaChi = cursor.getString(cursor.getColumnIndex("diaChi"));
-                        cursor.close();
                         AlertDialog.Builder builder = new AlertDialog.Builder(ThanhToanActivity.this);
                         builder.setTitle("Thông tin nhận hàng");
                         View view = getLayoutInflater().inflate(R.layout.dialog_thong_tin_nhan_hang, null);
                         TextInputEditText edtTenNguoiNhan = view.findViewById(R.id.edtTenNguoiNhan);
                         TextInputEditText edtSDT = view.findViewById(R.id.edtSDT);
                         TextInputEditText edtDiaChi = view.findViewById(R.id.edtDiaChi);
+
+                        String tenKH = cursor.getString(cursor.getColumnIndex("tenND"));
+                        String sdt = cursor.getString(cursor.getColumnIndex("sdt"));
+                        String diaChi = cursor.getString(cursor.getColumnIndex("diaChi"));
+
                         if (tenKH != null && !tenKH.isEmpty()) {
                             edtTenNguoiNhan.setText(tenKH);
                         }
@@ -139,19 +144,28 @@ public class ThanhToanActivity extends AppCompatActivity {
                         }
 
                         builder.setView(view);
+                        SQLiteDatabase finalDb = db;
                         builder.setPositiveButton("Lưu", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String tenNguoiNhan = edtTenNguoiNhan.getText().toString();
                                 String sdtNguoiNhan = edtSDT.getText().toString();
                                 String diaChiNhanHang = edtDiaChi.getText().toString();
+
                                 ContentValues values = new ContentValues();
-                                values.put("maTK", maTK);
-                                values.put("tenKH", tenNguoiNhan);
-                                values.put("SDT", sdtNguoiNhan);
+                                values.put("tenND", tenNguoiNhan);
+                                values.put("sdt", sdtNguoiNhan);
                                 values.put("diaChi", diaChiNhanHang);
-                                long result = db.insert("KhachHang", null, values);
-                                if (result != -1) {
+
+                                // Update thông tin người dùng trong bảng NguoiDung
+                                int rowsAffected = finalDb.update(
+                                        "NguoiDung",
+                                        values,
+                                        "maND = ?",
+                                        new String[]{String.valueOf(maND)}
+                                );
+
+                                if (rowsAffected > 0) {
                                     Toast.makeText(ThanhToanActivity.this, "Thông tin đã được cập nhật", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(ThanhToanActivity.this, "Cập nhật thông tin không thành công", Toast.LENGTH_SHORT).show();
@@ -163,19 +177,23 @@ public class ThanhToanActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(ThanhToanActivity.this, "Không tìm thấy thông tin khách hàng", Toast.LENGTH_SHORT).show();
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 } finally {
+                    // Đóng Cursor
                     if (cursor != null) {
                         cursor.close();
                     }
-                    if (db != null) {
+                    // Đóng SQLiteDatabase
+                    if (db != null && db.isOpen()) {
                         db.close();
                     }
-                    if (dbHelper != null) {
-                        dbHelper.close();
-                    }
+                    // Đóng DatabaseHelper
+                    dbHelper.close();
                 }
             }
         });
+
 
         btnDatHang = findViewById(R.id.btnDatHang);
         String diaChi = "123 Đường ABC, Quận XYZ, Thành phố HCM";
@@ -196,7 +214,7 @@ public class ThanhToanActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
-                int maKH = sharedPreferences.getInt("maTK", -1);
+                int maND = sharedPreferences.getInt("maND", -1); // Sử dụng maND thay vì maTK
                 if (textViewPhuongThucThanhToan.getText().toString().equals("Vui lòng chọn phương thức thanh toán")) {
                     Toast.makeText(ThanhToanActivity.this, "Vui lòng chọn phương thức thanh toán trước khi đặt hàng", Toast.LENGTH_SHORT).show();
                     return;
@@ -204,17 +222,17 @@ public class ThanhToanActivity extends AppCompatActivity {
                 DatabaseHelper dbHelper = new DatabaseHelper(ThanhToanActivity.this);
                 SQLiteDatabase db = dbHelper.getReadableDatabase();
                 Cursor cursor = db.query(
-                        "KhachHang",
+                        "NguoiDung",
                         null,
-                        "maKH = ?",
-                        new String[]{String.valueOf(maKH)},
+                        "maND = ?", // Thay maKHmaKH = ? thành maND = ?
+                        new String[]{String.valueOf(maND)},
                         null,
                         null,
                         null
                 );
                 if (cursor != null && cursor.moveToFirst()) {
-                    String tenKH = cursor.getString(cursor.getColumnIndex("tenKH"));
-                    String sdt = cursor.getString(cursor.getColumnIndex("SDT"));
+                    String tenKH = cursor.getString(cursor.getColumnIndex("tenND"));
+                    String sdt = cursor.getString(cursor.getColumnIndex("sdt"));
                     String diaChi = cursor.getString(cursor.getColumnIndex("diaChi"));
                     cursor.close();
                     if (tenKH.isEmpty() || sdt.isEmpty() || diaChi.isEmpty()) {
@@ -228,7 +246,6 @@ public class ThanhToanActivity extends AppCompatActivity {
                         String anhDH = getRandomProductImage(gioHangItems); // Lấy
                         int soLuong = 0;
                         int tongTien = finalTongTienHang;
-                        ArrayList<GioHangItem> gioHangItems = getIntent().getParcelableArrayListExtra("selected_items");
                         for (GioHangItem item : gioHangItems) {
                             tenSPDH += item.getTenSP() + ", ";
                             soLuong += item.getSoLuong();
@@ -238,7 +255,7 @@ public class ThanhToanActivity extends AppCompatActivity {
                         }
                         String ngayMua = getCurrentDate();
                         ContentValues values = new ContentValues();
-                        values.put("maKH", maKH);
+                        values.put("maND", maND); // Sử dụng maND thay vì maKH
                         values.put("maTTDH", 1);
                         values.put("tenDH", "Đơn hàng mới");
                         values.put("tenSPDH", tenSPDH);
@@ -250,8 +267,8 @@ public class ThanhToanActivity extends AppCompatActivity {
                         if (result != -1) {
                             Toast.makeText(ThanhToanActivity.this, "Đặt hàng thành công", Toast.LENGTH_SHORT).show();
                             SharedPreferences sh = getSharedPreferences("login_status", Context.MODE_PRIVATE);
-                            maKH = sh.getInt("maTK", -1);
-                            xoaGioHangTheoMaKH(maKH);
+                            maND = sh.getInt("maND", -1); // Sử dụng maND thay vì maTK
+                            xoaGioHangTheoMaND(maND);
                             gioHangAdapter.notifyDataSetChanged();
                             Intent intent = new Intent(ThanhToanActivity.this, MainActivity.class);
                             startActivity(intent);
@@ -270,56 +287,62 @@ public class ThanhToanActivity extends AppCompatActivity {
         loadDonMuaData();
     }
 
-    private void xoaGioHangTheoMaKH(int maKH) {
+
+    private void xoaGioHangTheoMaND(int maND) {
         DatabaseHelper dbHelper = new DatabaseHelper(ThanhToanActivity.this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+
         String[] projection = {"maSP", "soLuong"};
-        String selection = "maKH=?";
-        String[] selectionArgs = {String.valueOf(maKH)};
+        String selection = "maND=?";
+        String[] selectionArgs = {String.valueOf(maND)};
         Cursor cursor = db.query("GioHang", projection, selection, selectionArgs, null, null, null);
+
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 int maSP = cursor.getInt(cursor.getColumnIndex("maSP"));
                 int soLuongMua = cursor.getInt(cursor.getColumnIndex("soLuong"));
+
                 String ctspSelection = "maSP=?";
                 String[] ctspSelectionArgs = {String.valueOf(maSP)};
                 Cursor ctspCursor = db.query("ChiTietSanPham", new String[]{"soLuong"}, ctspSelection, ctspSelectionArgs, null, null, null);
+
                 if (ctspCursor != null && ctspCursor.moveToFirst()) {
                     int soLuongHienCo = ctspCursor.getInt(ctspCursor.getColumnIndex("soLuong"));
                     ctspCursor.close();
+
                     int soLuongMoi = soLuongHienCo - soLuongMua;
+
                     ContentValues ctspValues = new ContentValues();
                     ctspValues.put("soLuong", soLuongMoi);
                     int ctspRowsAffected = db.update("ChiTietSanPham", ctspValues, "maSP=?", new String[]{String.valueOf(maSP)});
+
                     if (ctspRowsAffected > 0) {
                         ContentValues spValues = new ContentValues();
                         spValues.put("soLuong", soLuongMoi);
                         int spRowsAffected = db.update("SanPham", spValues, "maSP=?", new String[]{String.valueOf(maSP)});
                         if (spRowsAffected > 0) {
-
+                            // Cập nhật thành công
                         } else {
-
+                            // Lỗi khi cập nhật SanPham
                         }
                     } else {
-
+                        // Lỗi khi cập nhật ChiTietSanPham
                     }
                 }
             } while (cursor.moveToNext());
             cursor.close();
         }
-        String deleteSelection = "maKH=?";
-        String[] deleteSelectionArgs = {String.valueOf(maKH)};
+        String deleteSelection = "maND=?";
+        String[] deleteSelectionArgs = {String.valueOf(maND)};
         int rowsDeleted = db.delete("GioHang", deleteSelection, deleteSelectionArgs);
         if (rowsDeleted > 0) {
 
         } else {
-
+            // Lỗi khi xóa
         }
+
         db.close();
     }
-
-
-
 
     private String getCurrentDate() {
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss:a");
@@ -354,22 +377,22 @@ public class ThanhToanActivity extends AppCompatActivity {
 
     private void loadDonMuaData() {
         SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
-        int maKH = sharedPreferences.getInt("maKH", -1); // Lấy mã khách hàng từ SharedPreferences
+        int maND = sharedPreferences.getInt("maND", -1); // Lấy mã người dùng từ SharedPreferences
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(
-                "KhachHang",
+                "NguoiDung",
                 null,
-                "maKH = ?",
-                new String[]{String.valueOf(maKH)},
+                "maND = ?",
+                new String[]{String.valueOf(maND)},
                 null,
                 null,
                 null
         );
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                String tenKH = cursor.getString(cursor.getColumnIndex("tenKH"));
-                String sdt = cursor.getString(cursor.getColumnIndex("SDT"));
+                String tenND = cursor.getString(cursor.getColumnIndex("tenND"));
+                String sdt = cursor.getString(cursor.getColumnIndex("sdt"));
                 String diaChi = cursor.getString(cursor.getColumnIndex("diaChi"));
                 if (diaChi != null && !diaChi.isEmpty()) {
                     textViewDiaChi.setText("Địa chỉ mua hàng: " + diaChi);
@@ -382,7 +405,7 @@ public class ThanhToanActivity extends AppCompatActivity {
                     textViewSDT.setText("Số điện thoại: (Trống)");
                 }
 
-                textViewNguoiNhan.setText("Người nhận: " + tenKH);
+                textViewNguoiNhan.setText("Người nhận: " + tenND);
             } while (cursor.moveToNext());
             cursor.close();
         } else {
@@ -393,5 +416,6 @@ public class ThanhToanActivity extends AppCompatActivity {
         db.close();
         dbHelper.close();
     }
+
 
 }
