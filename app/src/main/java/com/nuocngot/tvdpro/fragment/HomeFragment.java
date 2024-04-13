@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
@@ -51,6 +52,8 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView selectabRecycale;
 
+    private SearchView searchView;
+
     public SanPhamAdapter sanPhamAdapter = new SanPhamAdapter(sanPhamList);
 
 
@@ -60,8 +63,8 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         recyclerView = rootView.findViewById(R.id.recyclerViewSanPham);
         floatingActionButton = rootView.findViewById(R.id.fab);
-        selectabRecycale = rootView.findViewById(R.id.selectTabProducts);
         imageSwitcher = rootView.findViewById(R.id.imageSwitch);
+        selectabRecycale = rootView.findViewById(R.id.selectTabProducts);
         GridLayoutManager layoutManager = new GridLayoutManager(rootView.getContext(), 3);
         recyclerView.setLayoutManager(layoutManager);
         sanPhamList = new ArrayList<>();
@@ -183,13 +186,14 @@ public class HomeFragment extends Fragment {
         ArrayList<Category> danhMucList = new ArrayList<>();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] projection = {"maDM", "tenDM"};
+        String[] projection = {"maDM", "tenDM", "anhDM"};
         Cursor cursor = db.query("DanhMuc", projection, null, null, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 int maDM = cursor.getInt(cursor.getColumnIndexOrThrow("maDM"));
                 String tenDM = cursor.getString(cursor.getColumnIndexOrThrow("tenDM"));
-                danhMucList.add(new Category(maDM, tenDM));
+                String anhDM = cursor.getString(cursor.getColumnIndexOrThrow("anhDM"));
+                danhMucList.add(new Category(maDM, tenDM, anhDM));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -263,10 +267,10 @@ public class HomeFragment extends Fragment {
 
     private void setUpRecyclerView() {
         ArrayList<SelectTab> selectTabList = new ArrayList<>();
-        selectTabList.add(new SelectTab("Bán chạy nhất"));
-        selectTabList.add(new SelectTab("Sản phẩm mới"));
-        selectTabList.add(new SelectTab("Yêu thích nhiều"));
-        selectTabList.add(new SelectTab("Xem nhiều nhất"));
+        selectTabList.add(new SelectTab("https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/512px-Coca-Cola_logo.svg.png"));
+        selectTabList.add(new SelectTab("https://upload.wikimedia.org/wikipedia/commons/3/3b/Mirinda_Logo.png"));
+        selectTabList.add(new SelectTab("https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Pepsi_logo_%282014%29.svg/2560px-Pepsi_logo_%282014%29.svg.png"));
+        selectTabList.add(new SelectTab("https://upload.wikimedia.org/wikipedia/vi/thumb/6/6d/Red_Bull_Logo.svg/1200px-Red_Bull_Logo.svg.png"));
         SelectTabAdapter selectTabAdapter = new SelectTabAdapter(getContext(), selectTabList);
         selectabRecycale.setAdapter(selectTabAdapter);
         selectabRecycale.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));

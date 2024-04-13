@@ -78,11 +78,11 @@ public class GioHangActivity extends AppCompatActivity {
                 SharedPreferences sharedPreferences = getSharedPreferences("login_status", MODE_PRIVATE);
                 int maKH = sharedPreferences.getInt("maKH", -1);
                 if (maKH != -1) {
-                    if (gioHangItemList != null && gioHangItemList.size() > 0) { // Sử dụng danh sách sản phẩm từ giỏ hàng hiện tại
+                    if (gioHangItemList != null && gioHangItemList.size() > 0) {
                         DatabaseHelper dbHelper = new DatabaseHelper(GioHangActivity.this);
                         SQLiteDatabase db = dbHelper.getWritableDatabase();
                         ContentValues values = new ContentValues();
-                        for (GioHangItem item : gioHangItemList) { // Sử dụng gioHangItemList thay vì gioHangItems
+                        for (GioHangItem item : gioHangItemList) {
                             values.clear();
                             values.put("maKH", maKH);
                             values.put("maSP", item.getMaSP());
@@ -90,7 +90,7 @@ public class GioHangActivity extends AppCompatActivity {
                             values.put("tongTien", item.getSoLuong() * item.getGia());
                             long result = db.insert("DonMua", null, values);
                             if (result == -1) {
-                                // Xử lý khi không thêm được vào bảng DonMua
+
                             }
                         }
                         db.close();
@@ -112,7 +112,7 @@ public class GioHangActivity extends AppCompatActivity {
 
 
         private void loadGioHangData(int maKH) {
-        String maKHString = String.valueOf(maKH); // Chuyển maKH từ int sang String
+        String maKHString = String.valueOf(maKH);
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String[] projection = {
@@ -125,8 +125,8 @@ public class GioHangActivity extends AppCompatActivity {
         Cursor cursor = db.query(
                 "GioHang",
                 projection,
-                "maKH = ?", // Sử dụng điều kiện để lọc dữ liệu theo maKH
-                new String[]{maKHString}, // Truyền maKH dưới dạng một mảng chuỗi
+                "maKH = ?",
+                new String[]{maKHString},
                 null,
                 null,
                 null
@@ -175,8 +175,6 @@ public class GioHangActivity extends AppCompatActivity {
         db.close();
         dbHelper.close();
     }
-
-
 
     private void calculateAndDisplayTotalPrice() {
         int totalPrice = 0;

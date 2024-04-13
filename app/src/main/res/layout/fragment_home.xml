@@ -1,17 +1,25 @@
 <!-- fragment_home.xml -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<com.google.android.material.card.MaterialCardView
+    android:layout_width="match_parent"
+    android:id="@+id/imageSwitchCard"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="20dp"
+    app:strokeWidth="0dp"
+    android:layout_height="wrap_content">
     <ImageSwitcher
         android:id="@+id/imageSwitch"
         android:layout_width="match_parent"
-        android:layout_marginBottom="10dp"
         android:layout_height="200dp">
     </ImageSwitcher>
+</com.google.android.material.card.MaterialCardView>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:background="@drawable/m3_appbar_background"
-        android:layout_below="@id/imageSwitch"
+        android:layout_below="@id/imageSwitchCard"
         android:layout_height="wrap_content"
         android:id="@+id/selectTabProducts">
     </androidx.recyclerview.widget.RecyclerView>

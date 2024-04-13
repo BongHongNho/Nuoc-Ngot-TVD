@@ -15,4 +15,8 @@
     <style name="ThemeOverlay.Material3.AlertDialog" parent="@style/ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="android:windowBackground">@drawable/m3_alert_dialog_background</item>
     </style>
+    <style name="CustomSearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="android:background">@drawable/background_radius</item>
+        <item name="android:imeOptions">actionSearch</item>
+    </style>
 </resources>

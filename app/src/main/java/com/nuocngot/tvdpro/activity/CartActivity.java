@@ -35,8 +35,8 @@ public class CartActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         btnOrder = findViewById(R.id.btnOrder);
         btnOrder.setOnClickListener(v -> {
-            int userId = getCurrentUserId(); // Lấy ID của người dùng đăng nhập
-            ArrayList<CartItem> cartItems = getCartItems(userId); // Lấy danh sách các mục trong giỏ hàng của người dùng đó
+            int userId = getCurrentUserId();
+            ArrayList<CartItem> cartItems = getCartItems(userId);
             int totalQuantity = calculateTotalQuantity(cartItems);
             int totalPrice = calculateTotalPrice(cartItems);
             Order order = new Order(cartItems, totalQuantity, totalPrice);

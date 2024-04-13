@@ -50,7 +50,7 @@ public class ThongKeDoanhThuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thong_ke_doanh_thu);
         dbHelper = new DatabaseHelper(this);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss:aa", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss:a", Locale.getDefault());
         String currentDate = sdf.format(new Date());
         int doanhThuNgay = getDoanhThuTheoNgay(currentDate);
         TextView textViewDoanhThuNgay = findViewById(R.id.textViewDoanhThuNgay);

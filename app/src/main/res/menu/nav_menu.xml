@@ -19,9 +19,6 @@
     <item android:id="@+id/nav_menu_settings"
         android:title="Cài đặt"
         android:icon="@drawable/settings"/>
-    <item android:id="@+id/nav_active_vip"
-        android:title="Kích hoạt VIP"
-        android:icon="@drawable/premium_bagde"/>
     <item android:id="@+id/nav_info"
         android:title="Thông tin"
         android:icon="@drawable/info"/>

@@ -300,7 +300,6 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
         TextInputEditText editTextOldPassword = view.findViewById(R.id.editTextOldPassword);
         TextInputEditText editTextNewPassword = view.findViewById(R.id.editTextNewPassword);
         TextInputEditText editTextConfirmPassword = view.findViewById(R.id.editTextConfirmPassword);
-
         builder.setView(view);
         builder.setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
                     @Override

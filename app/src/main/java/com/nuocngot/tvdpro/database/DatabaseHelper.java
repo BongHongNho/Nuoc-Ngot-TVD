@@ -22,12 +22,10 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "user_database";
     private static final int DATABASE_VERSION = 1;
-
-    // Tạo bảng Tài khoản để lưu thông tin đăng nhập và phân quyền
     private static final String CREATE_TABLE_TAI_KHOAN =
             "CREATE TABLE TaiKhoan (" +
                     "maTK INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "maKH INTEGER REFERENCES KhachHang(maKH)," + // Thêm khóa ngoại để liên kết với bảng KhachHang
+                    "maKH INTEGER REFERENCES KhachHang(maKH)," +
                     "tenDN TEXT NOT NULL," +
                     "matKhau TEXT NOT NULL," +
                     "Email TEXT NOT NULL," +
@@ -38,7 +36,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_KHACH_HANG =
             "CREATE TABLE KhachHang (" +
                     "maKH INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "maTK INTEGER REFERENCES TaiKhoan(maTK)," + // Thêm khóa ngoại để liên kết với bảng Tài Khoản
+                    "maTK INTEGER REFERENCES TaiKhoan(maTK)," +
                     "tenKH TEXT NOT NULL," +
                     "Email TEXT NOT NULL," +
                     "SDT TEXT NOT NULL," +
@@ -57,7 +55,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_DANH_MUC =
             "CREATE TABLE DanhMuc (maDM INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "tenDM TEXT NOT NULL)";
+                    "tenDM TEXT NOT NULL," +
+                    "anhDM TEXT NOT NULL)";
 
     private static final String CREATE_TABLE_CHI_TIET_SAN_PHAM =
             "CREATE TABLE ChiTietSanPham (maCTSP INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -147,6 +146,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     " maKH INTEGER REFERENCES KhachHang(maKH)," +
                     " tenTTDH TEXT NOT NULL)";
 
+    private static final String CREATE_TABLE_THONG_BAO =
+            "CREATE TABLE ThongBao (maTB INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "maKH INTEGER REFERENCES KhachHang(maKH)," +
+                    "anhTB TEXT REFERENCES KhachHang(hinhAnh)," +
+                    "noiDungTB TEXT NOT NULL," +
+                    "timeTB TEXT NOT NULL)";
+
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -156,16 +162,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(CREATE_TABLE_TAI_KHOAN);
-        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (1, 1, 'adminpt', 'adminpt', 'tannhpph28818@fpt.edu.vn', 0359762830, 'admin')");
-        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (2, 2, 'adminpl', 'adminpl', 'annanguyen220203@gmail.com', 0337922095, 'admin')");
-        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (3, 3, 'admindk', 'admindk', 'khoind150822@gmail.com', 0989898989, 'admin')");
-        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (4, 4, 'user', 'user', 'hanguyen293@gmai.com', 0917382948, 'user')");
-
+        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (1, 1, 'tannhp2003', 'tannhp2003', 'tannhpph28818@fpt.edu.vn', 0359762830, 'admin')");
+        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (2, 2, 'lannp2003', 'lannp2003', 'annanguyen220203@gmail.com', 0337922095, 'admin')");
+        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (3, 3, 'khoind2022', 'knd2022', 'khoind150822@gmail.com', 0989898989, 'admin')");
+        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (4, 4, 'hann1234', 'hann1234', 'hanguyen293@gmai.com', 0917382948, 'user')");
+        db.execSQL("INSERT INTO TaiKhoan (maTK, maKH, tenDN, matKhau, Email, SDT, role) VALUES (5, 5, 'longnh2345', 'longnh2345', 'longnguyen2345@gmai.com', 0918377727, 'user')");
         db.execSQL(CREATE_TABLE_KHACH_HANG);
         db.execSQL("INSERT INTO KhachHang (maTK, tenKH, Email, SDT, diaChi, capTV, hinhAnh, trangThai) VALUES (1, 'Nguyễn Huy Phước Tấn', 'tannhpph28818@fpt.edu.vn', '0359762830', 'Phương Canh - Nam Từ Liêm - Hà Nội', 'Admin', 'https://bizweb.dktcdn.net/100/438/408/files/avatar-anime-cho-nam-6.jpg?v=1699239545678', 1)");
         db.execSQL("INSERT INTO KhachHang (maTK, tenKH, Email, SDT, diaChi, capTV, hinhAnh, trangThai) VALUES (2, 'Nguyễn Thị Phương Lan', 'annanguyen220203@gmail.com', '0337922095', 'Cầu Giấy - Hà Nội', 'Admin', 'https://cdn.alongwalk.info/info/wp-content/uploads/2022/11/16190612/image-99-hinh-avatar-cute-ngau-ca-tinh-de-thuong-nhat-cho-nam-nu-8e7c7ad12ae964526b65b74b5de19112.jpg', 1)");
-        db.execSQL("INSERT INTO KhachHang (maTK, tenKH, Email, SDT, diaChi, capTV, hinhAnh, trangThai) VALUES (3, 'Nguyễn Đăng Khôi', 'khoind150822@gmail.com', '0989898989', 'Hà Đông - Hà Nội', 'Admin', 'https://bizweb.dktcdn.net/100/438/408/files/avatar-anime-cho-nam-13.jpg?v=1699239551927',1 )");
+        db.execSQL("INSERT INTO KhachHang (maTK, tenKH, Email, SDT, diaChi, capTV, hinhAnh, trangThai) VALUES (3, 'Nguyễn Đăng Khôi', 'khoind150822@gmail.com', '0989898989', 'Hà Đông - Hà Nội', 'Admin', 'https://leminhhoang.vn/wp-content/uploads/2023/05/hinh-avatar-nam-naruto-541x580.jpg',1 )");
         db.execSQL("INSERT INTO KhachHang (maTK, tenKH, Email, SDT, diaChi, capTV, hinhAnh, trangThai) VALUES (4, 'Nguyễn Nhật Hạ', 'hanguyen293@gmail.com', '0917382948', 'Đan Phượng - Hà Nội', 'Thường', 'https://cdn.alongwalk.info/info/wp-content/uploads/2022/11/16190609/image-99-hinh-avatar-cute-ngau-ca-tinh-de-thuong-nhat-cho-nam-nu-345edb2001a254d794b8f6cddade1698.jpg', 0)");
+        db.execSQL("INSERT INTO KhachHang (maTK, tenKH, Email, SDT, diaChi, capTV, hinhAnh, trangThai) VALUES (5, 'Nguyễn Nhật Long', 'longnguyen2345@gmail.com', '0918377727', 'Hoài Đức - Hà Nội', 'Thường', 'https://i.pinimg.com/236x/96/d4/ab/96d4ab38772a3bec726a845da76a839d.jpg', 0)");
 
         db.execSQL(CREATE_TABLE_SAN_PHAM);
         db.execSQL("INSERT INTO SanPham (maSP, maDM, hinhAnh, tenSP, soLuong, gia) VALUES (1, 1, 'https://tea-3.lozi.vn/v1/ship/resized/losupply-quan-tan-phu-quan-tan-phu-ho-chi-minh-1618467447167540212-nuoc-ngot-coca-cola-lon-320ml-0-1626403242?w=480&type=o', 'Coca Cola', 420, 15000)");
@@ -269,22 +276,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         db.execSQL(CREATE_TABLE_DANH_MUC);
-        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM) VALUES (1, 'Coca-Cola')");//
-        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM) VALUES (2, 'Pepsi')");//
-        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM) VALUES (3, 'Sprite')");//
-        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM) VALUES (4, 'Strong Bow')");//
-        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM) VALUES (5, 'Mirinda')");//
-        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM) VALUES (6, 'Monster')");//
-        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM) VALUES (7, 'Sting')");//
-        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM) VALUES (8, 'Moutain Dew')");
-        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM) VALUES (9, 'Bò Húc')");//
-        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM) VALUES (10, 'FanTa')");//
-        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM) VALUES (11, 'Warrior')");//
-        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM) VALUES (12, '7 Up')");//
-        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM) VALUES (13, 'Soda Schweppes')");//
-        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM) VALUES (14, 'Wake Up 247')");//
-        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM) VALUES (15, 'Carabao')");//
-        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM) VALUES (16, 'Thums Up Charged')");//
+        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (1, 'Coca Cola', 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/512px-Coca-Cola_logo.svg.png')");//
+        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (2, 'Pepsi','https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Pepsi_logo_%282014%29.svg/2560px-Pepsi_logo_%282014%29.svg.png')");//
+        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (3, 'Sprite','https://1000logos.net/wp-content/uploads/2020/09/Sprite-Logo-2019.png')");//
+        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (4, 'Strong Bow','https://www.strongbow.com/media-eu/0s1baeih/logo_strongbow_white.png')");//
+        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (5, 'Mirinda','https://upload.wikimedia.org/wikipedia/commons/3/3b/Mirinda_Logo.png')");//
+        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (6, 'Monster','https://upload.wikimedia.org/wikipedia/commons/d/d4/Logo_Monster_Energy.webp')");//
+        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (7, 'Sting','https://sgp1.digitaloceanspaces.com/pcppicms/pcppicms/2022/june/cms/0216202323123963eeb867e41e1.png')");//
+        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (8, 'Mountain Dew','https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Mountain_Dew_logo.svg/1280px-Mountain_Dew_logo.svg.png')");
+        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (9, 'Red Bull','https://upload.wikimedia.org/wikipedia/vi/thumb/6/6d/Red_Bull_Logo.svg/1200px-Red_Bull_Logo.svg.png')");//
+        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (10, 'Fanta','https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Fanta_logo_%282009%29.svg/1267px-Fanta_logo_%282009%29.svg.png')");//
+        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (11, 'Warrior','https://img.upanh.tv/2024/04/13/images-removebg-preview.png')");//
+        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (12, '7 Up','https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/7-up_Logo.svg/1093px-7-up_Logo.svg.png')");//
+        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (13, 'Schweppes', 'https://cdn.tgdd.vn/Products/Images//2443/128857/bhx/files/Schweppes_Logo_2016.png')");//
+        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (14, 'Wake Up 247', 'https://img.upanh.tv/2024/04/13/images-removebg-preview-1.png')");//
+        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (15, 'Carabao','https://upload.wikimedia.org/wikipedia/vi/f/ff/C%C3%BAp_EFL_Carabao.png')");//
+        db.execSQL("INSERT INTO DanhMuc (maDM, tenDM, anhDM) VALUES (16, 'Thums Up Charged','https://www.coca-cola.com/content/dam/onexp/vn/vi/brands/thums-up-charged/thums-up-charged-logo.png')");//
 
 
         db.execSQL(CREATE_TABLE_YEU_THICH);
@@ -317,6 +324,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO TrangThaiSanPham (maTTSP, tenTrangThai) VALUES (2, 'Sản phẩm mới')");
         db.execSQL("INSERT INTO TrangThaiSanPham (maTTSP, tenTrangThai) VALUES (3, 'Yêu thích nhiều')");
         db.execSQL("INSERT INTO TrangThaiSanPham (maTTSP, tenTrangThai) VALUES (4, 'Xem nhiều nhất')");
+
+        db.execSQL(CREATE_TABLE_THONG_BAO);
 
         db.execSQL(CREATE_TABLE_BINH_LUAN);
     }

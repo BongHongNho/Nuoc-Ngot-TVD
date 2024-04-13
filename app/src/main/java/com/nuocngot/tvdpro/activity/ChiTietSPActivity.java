@@ -160,7 +160,7 @@ public class ChiTietSPActivity extends AppCompatActivity {
     private String getCurrentDateTime() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             LocalDateTime currentDateTime = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss:aa");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss:a");
             return currentDateTime.format(formatter);
         } else {
             return "";

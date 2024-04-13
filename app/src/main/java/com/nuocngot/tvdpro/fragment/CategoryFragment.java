@@ -49,13 +49,14 @@ import java.util.ArrayList;
             categoryList = new ArrayList<>();
             DatabaseHelper dbHelper = new DatabaseHelper(getContext());
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            String[] projection = {"maDM", "tenDM"};
+            String[] projection = {"maDM", "tenDM", "anhDM"};
             Cursor cursor = db.query("DanhMuc", projection, null, null, null, null, null);
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     int maDM = cursor.getInt(cursor.getColumnIndexOrThrow("maDM"));
                     String tenDM = cursor.getString(cursor.getColumnIndexOrThrow("tenDM"));
-                    categoryList.add(new Category(maDM, tenDM));
+                    String anhDM = cursor.getString(cursor.getColumnIndexOrThrow("anhDM"));
+                    categoryList.add(new Category(maDM, tenDM, anhDM));
                 } while (cursor.moveToNext());
                 cursor.close();
             }
@@ -85,6 +86,7 @@ import java.util.ArrayList;
             LayoutInflater inflater = requireActivity().getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.dialog_add_category, null);
             TextInputEditText editTextCategoryName = dialogView.findViewById(R.id.editTextCategoryName);
+            TextInputEditText editTextCategoryImage = dialogView.findViewById(R.id.editTextCategoryImage);
             builder.setView(dialogView)
                     .setTitle("Thêm danh mục")
                     .setMessage("Nhập tên danh mục")
@@ -92,10 +94,11 @@ import java.util.ArrayList;
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             String categoryName = editTextCategoryName.getText().toString().trim();
-                            if (!categoryName.isEmpty()) {
-                                addCategoryToDatabase(categoryName);
+                            String categoryImage = editTextCategoryImage.getText().toString().trim();
+                            if (!categoryName.isEmpty() && !categoryImage.isEmpty()) {
+                                addCategoryToDatabase(categoryName, categoryImage);
                             } else {
-                                Toast.makeText(getContext(), "Vui lòng nhập tên danh mục", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Vui lòng nhập đủ thông tin", Toast.LENGTH_SHORT).show();
                             }
                         }
                     })
@@ -109,11 +112,12 @@ import java.util.ArrayList;
             AlertDialog dialog = builder.create();
             dialog.show();
         }
-        private void addCategoryToDatabase(String categoryName) {
+        private void addCategoryToDatabase(String categoryName, String categoryImage) {
             DatabaseHelper dbHelper = new DatabaseHelper(getContext());
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put("tenDM", categoryName);
+            values.put("anhDM", categoryImage);
             long newRowId = db.insert("DanhMuc", null, values);
             if (newRowId != -1) {
                 Toast.makeText(getContext(), "Thêm danh mục thành công", Toast.LENGTH_SHORT).show();
@@ -128,13 +132,14 @@ import java.util.ArrayList;
             categoryList.clear();
             DatabaseHelper dbHelper = new DatabaseHelper(getContext());
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            String[] projection = {"maDM", "tenDM"};
+            String[] projection = {"maDM", "tenDM", "anhDM"};
             Cursor cursor = db.query("DanhMuc", projection, null, null, null, null, null);
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     int maDM = cursor.getInt(cursor.getColumnIndexOrThrow("maDM"));
                     String tenDM = cursor.getString(cursor.getColumnIndexOrThrow("tenDM"));
-                    categoryList.add(new Category(maDM, tenDM));
+                    String anhDM = cursor.getString(cursor.getColumnIndexOrThrow("anhDM"));
+                    categoryList.add(new Category(maDM, tenDM, anhDM));
                 } while (cursor.moveToNext());
                 cursor.close();
             }

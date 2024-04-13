@@ -9,12 +9,13 @@
     android:layout_width="wrap_content"
     app:cardCornerRadius="20dp"
     android:layout_height="wrap_content">
-    <TextView
+    <ImageView
         android:id="@+id/tvtabTitle"
         android:padding="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:src="@drawable/cocacola"
+        android:layout_width="110dp"
+        android:layout_height="40dp"
         android:text="Sản phẩm mới">
-    </TextView>
+    </ImageView>
 </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
 import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.activity.CategoryActivity;
@@ -124,13 +126,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         categoryList.clear();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] projection = {"maDM", "tenDM"};
+        String[] projection = {"maDM", "tenDM", "anhDM"};
         Cursor cursor = db.query("DanhMuc", projection, null, null, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 int maDM = cursor.getInt(cursor.getColumnIndexOrThrow("maDM"));
                 String tenDM = cursor.getString(cursor.getColumnIndexOrThrow("tenDM"));
-                categoryList.add(new Category(maDM, tenDM));
+                String anhDM = cursor.getString(cursor.getColumnIndexOrThrow("anhDM"));
+                categoryList.add(new Category(maDM, tenDM, anhDM));
             } while (cursor.moveToNext());
             cursor.close();
         }
@@ -178,7 +181,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     }
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
-        private TextView textViewCategoryName;
+        private ImageView textViewCategoryName;
 
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -186,7 +189,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         }
 
         public void bind(Category category) {
-            textViewCategoryName.setText(category.getTenDM());
+            Glide.with(itemView.getContext()).load(category.getAnhDM()).into(textViewCategoryName);
         }
     }
 }

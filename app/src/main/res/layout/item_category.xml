@@ -9,22 +9,21 @@
         android:layout_width="120dp"
         app:cardCornerRadius="10dp"
         app:strokeWidth="0dp"
-        android:layout_height="100dp">
+        android:layout_height="80dp">
         <LinearLayout
             android:padding="10dp"
             android:layout_gravity="center"
             android:background="@drawable/background_radius"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <TextView
+            <ImageView
                 android:id="@+id/textViewCategoryName"
                 android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/imageViewSanPham"
-                android:textSize="14sp"
-                android:singleLine="true"
+                android:src="@drawable/cocacola"
                 android:layout_gravity="center"
                 android:text="Tên Sản Phẩm" />
         </LinearLayout>

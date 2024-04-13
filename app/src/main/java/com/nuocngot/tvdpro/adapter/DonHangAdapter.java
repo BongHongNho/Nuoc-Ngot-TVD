@@ -26,6 +26,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.ViewHolder> {
 
@@ -85,23 +87,51 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.ViewHold
             }
         });
     }
+
     private void showSelectTTDH(final int position, Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Chọn trạng thái đơn hàng");
         String[] trangThaiDonHang = {"Chờ xác nhận", "Chờ lấy hàng", "Đang giao", "Đã giao", "Đã hủy"};
-        builder.setItems(trangThaiDonHang, new DialogInterface.OnClickListener() {
+        DonHang donHang = donHangList.get(position);
+        List<String> availableStatus = new ArrayList<>(Arrays.asList(trangThaiDonHang));
+        if (donHang.getMaTTDH() == 2) {
+            availableStatus.remove("Chờ xác nhận");
+            availableStatus.remove("Chờ lấy hàng");
+        }
+        if (donHang.getMaTTDH() == 3) {
+            availableStatus.remove("Chờ xác nhận");
+            availableStatus.remove("Chờ lấy hàng");
+            availableStatus.remove("Đang giao");
+        }
+        if (donHang.getMaTTDH() == 4) {
+            availableStatus.remove("Chờ xác nhận");
+            availableStatus.remove("Chờ lấy hàng");
+            availableStatus.remove("Đang giao");
+            availableStatus.remove("Đã giao");
+        }
+        if (donHang.getMaTTDH() == 5) {
+            availableStatus.remove("Chờ xác nhận");
+            availableStatus.remove("Chờ lấy hàng");
+            availableStatus.remove("Đang giao");
+            availableStatus.remove("Đã giao");
+            availableStatus.remove("Đã hủy");
+            Toast.makeText(context, "Không có trạng thái hợp lệ", Toast.LENGTH_SHORT).show();
+        }
+        builder.setItems(availableStatus.toArray(new String[0]), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String selectedTTDH = trangThaiDonHang[which];
+                String selectedTTDH = availableStatus.get(which); // Lấy trạng thái được chọn từ danh sách đã lọc
                 updateDonHangTrangThai(position, selectedTTDH, context);
             }
         });
 
         builder.show();
     }
+
     private void updateDonHangTrangThai(int position, String selectedTTDH, Context context) {
         DonHang donHang = donHangList.get(position);
         int maTTDH = -1;
+
         switch (selectedTTDH) {
             case "Chờ xác nhận":
                 maTTDH = 1;
@@ -122,7 +152,7 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.ViewHold
 
         if (maTTDH != -1) {
             Calendar cal = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss:aa");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss:a", Locale.getDefault());
             String ngayCapNhat = sdf.format(cal.getTime());
             DatabaseHelper dbHelper = new DatabaseHelper(context);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -147,6 +177,7 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.ViewHold
             Toast.makeText(context, "Không tìm thấy mã trạng thái", Toast.LENGTH_SHORT).show();
         }
     }
+
     private void showThongTinDH(int position, Context context) {
         if (position != RecyclerView.NO_POSITION) {
             DonHang donHang = donHangList.get(position);
@@ -169,6 +200,7 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.ViewHold
             builder.show();
         }
     }
+
     @Override
     public int getItemCount() {
         return donHangList.size();

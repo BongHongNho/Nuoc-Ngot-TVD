@@ -281,14 +281,15 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
         ArrayList<Category> danhMucList = new ArrayList<>();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] projection = {"maDM", "tenDM"};
+        String[] projection = {"maDM", "tenDM", "anhDM"};
         Cursor cursor = db.query("DanhMuc", projection, null, null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 int maDM = cursor.getInt(cursor.getColumnIndexOrThrow("maDM"));
                 String tenDM = cursor.getString(cursor.getColumnIndexOrThrow("tenDM"));
-                Category category = new Category(maDM, tenDM);
+                String anhDM = cursor.getString(cursor.getColumnIndexOrThrow("anhDM"));
+                Category category = new Category(maDM, tenDM, anhDM);
                 danhMucList.add(category);
             } while (cursor.moveToNext());
             cursor.close();

@@ -153,7 +153,7 @@ public class BinhLuanAdapter extends RecyclerView.Adapter<BinhLuanAdapter.BinhLu
         dialog.show();
     }
     private String getCurrentDateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:s:aa", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:s:a", Locale.getDefault());
         return sdf.format(new Date());
     }
 
