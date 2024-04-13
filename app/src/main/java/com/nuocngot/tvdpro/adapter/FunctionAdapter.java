@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,16 +33,20 @@ import java.util.ArrayList;
 public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.FunctionViewHolder> {
     private ArrayList<String> functions;
     private OnFunctionClickListener listener;
+
     public FunctionAdapter(ArrayList<String> functions, OnFunctionClickListener listener) {
         this.functions = functions;
         this.listener = listener;
     }
+
     public FunctionAdapter(ArrayList<String> functionList) {
         this.functions = functionList;
     }
+
     public interface OnFunctionClickListener {
         void onFunctionClick(int position);
     }
+
     public static class FunctionViewHolder extends RecyclerView.ViewHolder {
         public TextView functionNameTextView;
 
@@ -87,7 +92,7 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
                     Intent intent = new Intent(v.getContext(), QuanLyUserActivity.class);
                     v.getContext().startActivity(intent);
                 }
-                if(selectedFunction.equals("Quản lý đơn hàng")){
+                if (selectedFunction.equals("Quản lý đơn hàng")) {
                     Intent intent = new Intent(v.getContext(), QuanLiDonHangActivity.class);
                     v.getContext().startActivity(intent);
                 }
@@ -97,8 +102,10 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
                     Intent intent = new Intent(v.getContext(), QLTaiKhoanActivity.class);
                     v.getContext().startActivity(intent);
                 } else if (selectedFunction.equals("Hỗ trợ")) {
+                    showErrorReport(v.getContext());
 
-                } else if (selectedFunction.equals("Báo lỗi ứng dụng")) {
+                } else if (selectedFunction.equals("Báo lỗi ứng dụng?")) {
+                    showErrorReport(v.getContext());
 
                 } else if (selectedFunction.equals("Thông tin phiên bản")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
@@ -117,8 +124,7 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
                         }
                     });
                     builder.show();
-                }
-                else if(selectedFunction.equals("Thống kê doanh số")){
+                } else if (selectedFunction.equals("Thống kê doanh số")) {
                     Intent intent = new Intent(v.getContext(), ThongKeDoanhThuActivity.class);
                     v.getContext().startActivity(intent);
                 }
@@ -263,6 +269,7 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
         }
         return currentUserName;
     }
+
     private void updateUserNameInDatabase(String newUserName, Context context) {
         SQLiteDatabase db = null;
         try {
@@ -441,6 +448,29 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
                 db.close();
             }
         }
+    }
+
+    private void showErrorReport(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Báo lỗi và hỗ trợ");
+        builder.setMessage("Để báo lỗi hoặc hỗ trợ, bạn có thể gửi thư về địa chỉ\nEmail: tannhpph28818@fpt.edu.vn\nHotline: 035.976.2830");
+        builder.setPositiveButton("Liên hệ Hotline", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:035.976.2830"));
+                context.startActivity(intent);
+            }
+        });
+        builder.setNegativeButton("Liên hệ Email", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse("mailto:tannhpph28818@fpt.edu.vn"));
+                context.startActivity(intent);
+            }
+        });
+        builder.show();
     }
 
 

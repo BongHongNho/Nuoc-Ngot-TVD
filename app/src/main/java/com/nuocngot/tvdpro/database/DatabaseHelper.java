@@ -364,7 +364,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
 
         if (cursor != null && cursor.moveToFirst()) {
-             int id = cursor.getInt(cursor.getColumnIndex("maSP"));
+            int id = cursor.getInt(cursor.getColumnIndex("maSP"));
             String productName = cursor.getString(cursor.getColumnIndex("tenSP"));
             String productImage = cursor.getString(cursor.getColumnIndex("hinhAnh"));
             int productPrice = cursor.getInt(cursor.getColumnIndex("giaSP"));
@@ -388,15 +388,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String[] selectionArgs = {String.valueOf(productId)};
         db.update("GioHang", values, selection, selectionArgs);
         db.close();
-    }
-
-    public boolean isProductInCart(int productId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM GioHang WHERE maSP = ?", new String[]{String.valueOf(productId)});
-        boolean isInCart = cursor.getCount() > 0;
-        cursor.close();
-        db.close();
-        return isInCart;
     }
 
     public int getTotalPay() {
@@ -459,5 +450,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 }
-
 

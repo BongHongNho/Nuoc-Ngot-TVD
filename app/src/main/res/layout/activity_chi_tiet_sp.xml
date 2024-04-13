@@ -81,6 +81,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
+                            android:maxLines="6"
                             android:text="Thông tin sản phẩm"
                             android:textSize="16dp"></TextView>
                     </LinearLayout>

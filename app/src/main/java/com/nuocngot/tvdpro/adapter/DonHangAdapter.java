@@ -122,7 +122,7 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.ViewHold
 
         if (maTTDH != -1) {
             Calendar cal = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss:aa");
             String ngayCapNhat = sdf.format(cal.getTime());
             DatabaseHelper dbHelper = new DatabaseHelper(context);
             SQLiteDatabase db = dbHelper.getWritableDatabase();

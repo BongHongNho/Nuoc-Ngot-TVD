@@ -144,8 +144,9 @@ public class ChiTietSPActivity extends AppCompatActivity {
                 String binhLuan = cursor.getString(cursor.getColumnIndex("binhLuan"));
                 String thoiGian = cursor.getString(cursor.getColumnIndex("thoiGian"));
                 String anhBL = cursor.getString(cursor.getColumnIndex("anhBL"));
-                int maKH = cursor.getInt(cursor.getColumnIndex("maKH")); // Lấy maKH từ cột maKH
-                BinhLuan binhLuanObj = new BinhLuan(tenND, binhLuan, thoiGian, anhBL, maKH);
+                int maKH = cursor.getInt(cursor.getColumnIndex("maKH"));
+                int maBL = cursor.getInt(cursor.getColumnIndex("maBL"));
+                BinhLuan binhLuanObj = new BinhLuan(tenND, binhLuan, maBL, thoiGian, anhBL, maKH);
                 arrayList.add(binhLuanObj);
             } while (cursor.moveToNext());
             cursor.close();
@@ -155,10 +156,11 @@ public class ChiTietSPActivity extends AppCompatActivity {
 
 
 
+
     private String getCurrentDateTime() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             LocalDateTime currentDateTime = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss:aa");
             return currentDateTime.format(formatter);
         } else {
             return "";

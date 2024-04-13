@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.nuocngot.tvdpro.activity.DonHangActivity;
 import com.nuocngot.tvdpro.activity.LichSuMuaHangActivity;
 import com.nuocngot.tvdpro.activity.LoginActivity;
 import com.nuocngot.tvdpro.adapter.BuyAcitivyAdapter;
@@ -71,7 +72,8 @@ public class SettingsFragment extends Fragment {
         linearDonMua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(requireContext(), "Đơn mua :))", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), DonHangActivity.class);
+                startActivity(intent);
             }
         });
         btnLogOut = view.findViewById(R.id.btnLogOut);

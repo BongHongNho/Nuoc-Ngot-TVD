@@ -5,6 +5,21 @@ public class BinhLuan {
 
     private int maKH;
 
+    private int maBL;
+
+    public BinhLuan(String tenND, String binhLuan, int maBL, String thoiGian, String anhBL, int maKH) {
+        this.tenNguoiDung = tenND;
+        this.noiDung = binhLuan;
+        this.maBL = maBL;
+        this.thoiGian = thoiGian;
+        this.anhDaiDien = anhBL;
+        this.maKH = maKH;
+    }
+
+    public void setMaBL(int maBL) {
+        this.maBL = maBL;
+    }
+
     public int getMaKH() {
         return maKH;
     }
@@ -22,14 +37,6 @@ public class BinhLuan {
     private String anhDaiDien;
 
     private int maSP;
-
-    public BinhLuan(String tenNguoiDung, String noiDung, String thoiGian, String anhDaiDien, int maKH) {
-        this.tenNguoiDung = tenNguoiDung;
-        this.noiDung = noiDung;
-        this.thoiGian = thoiGian;
-        this.anhDaiDien = anhDaiDien;
-        this.maKH = maKH;
-    }
 
     public String getTenNguoiDung() {
         return tenNguoiDung;
@@ -65,5 +72,9 @@ public class BinhLuan {
 
     public int getMaSP() {
         return maSP;
+    }
+
+    public int getMaBL() {
+        return maBL;
     }
 }

@@ -322,7 +322,7 @@ public class ThanhToanActivity extends AppCompatActivity {
 
 
     private String getCurrentDate() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss:aa");
         Date date = new Date();
         return dateFormat.format(date);
     }
