@@ -157,19 +157,13 @@ public class ChiTietSPActivity extends AppCompatActivity {
                 String thoiGian = cursor.getString(cursor.getColumnIndex("thoiGian"));
                 String tenND = "";
                 String hinhAnh = "";
-
-                // Truy vấn thông tin người dùng từ bảng NguoiDung
                 Cursor userCursor = database.rawQuery("SELECT tenND, hinhAnh FROM NguoiDung WHERE maND = ?", new String[]{String.valueOf(maND)});
                 if (userCursor.moveToFirst()) {
                     tenND = userCursor.getString(userCursor.getColumnIndex("tenND"));
                     hinhAnh = userCursor.getString(userCursor.getColumnIndex("hinhAnh"));
                 }
                 userCursor.close();
-
-                // Lấy maBL từ Cursor của bảng BinhLuan
                 int maBL = cursor.getInt(cursor.getColumnIndex("maBL"));
-
-                // Tạo đối tượng BinhLuan và thêm vào danh sách
                 BinhLuan binhLuanObj = new BinhLuan(tenND, binhLuan, thoiGian, hinhAnh, maND, maBL);
                 arrayList.add(binhLuanObj);
             } while (cursor.moveToNext());
@@ -220,7 +214,7 @@ public class ChiTietSPActivity extends AppCompatActivity {
     private void addToCartAndNavigateToCartActivity(int maSP) {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-       SharedPreferences sharedPreferences = getSharedPreferences("login_status", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("login_status", MODE_PRIVATE);
         int maND = sharedPreferences.getInt("maND", -1);
         if (maND != -1) {
             Cursor cursor = db.rawQuery("SELECT * FROM GioHang WHERE maSP = ? AND maND = ?", new String[]{String.valueOf(maSP), String.valueOf(maND)});
@@ -238,7 +232,6 @@ public class ChiTietSPActivity extends AppCompatActivity {
                     int giaSP = cursorSanPham.getInt(cursorSanPham.getColumnIndex("gia"));
                     int soLuong = 1;
                     int tongTien = soLuong * giaSP;
-
                     ContentValues values = new ContentValues();
                     values.put("tenSP", tenSP);
                     values.put("hinhAnh", hinhAnh);
@@ -246,6 +239,7 @@ public class ChiTietSPActivity extends AppCompatActivity {
                     values.put("maSP", maSP);
                     values.put("soLuong", soLuong);
                     values.put("tongTien", tongTien);
+                    values.put("daChon", 1);
                     db.insert("GioHang", null, values);
                 }
                 cursorSanPham.close();
@@ -257,7 +251,9 @@ public class ChiTietSPActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
         }
+
         db.close();
         dbHelper.close();
     }
+
 }

@@ -8,8 +8,30 @@ public class DonHang {
     private String ngayMua;
     private String anhDH;
     private int maDM;
+    private int maND;
 
-    private int maTTDH;
+    public DonHang(String tenDH, String tenSPDH, int soLuongSPDH, int tongTienDH, String ngayMua, String anhDH, int maDM, int maND, int maTTDH) {
+        this.tenDH = tenDH;
+        this.tenSPDH = tenSPDH;
+        this.soLuongSPDH = soLuongSPDH;
+        this.tongTienDH = tongTienDH;
+        this.ngayMua = ngayMua;
+        this.anhDH = anhDH;
+        this.maDM = maDM;
+        this.maND = maND;
+        this.maTTDH = maTTDH;
+    }
+
+    public DonHang(String tenDH, String tenSPDH, int soLuongSPDH, int maTTDHValue, String ngayMua, int tongTien, String anhDH, int maND) {
+        this.tenDH = tenDH;
+        this.tenSPDH = tenSPDH;
+        this.soLuongSPDH = soLuongSPDH;
+        this.ngayMua = ngayMua;
+        this.tongTienDH = tongTien;
+        this.anhDH = anhDH;
+        this.maND = maND;
+        this.maTTDH = maTTDHValue;
+    }
 
     public DonHang(String tenDH, String tenSPDH, int soLuongSPDH, int tongTienDH, String ngayMua, String anhDH, int maDM, int maTTDH) {
         this.tenDH = tenDH;
@@ -21,6 +43,27 @@ public class DonHang {
         this.maDM = maDM;
         this.maTTDH = maTTDH;
     }
+
+    public DonHang(String tenDH, String tenSPDH, int soLuongSPDH, int maTTDHValue, String ngayMua, int tongTien, String anhDH) {
+        this.tenDH = tenDH;
+        this.tenSPDH = tenSPDH;
+        this.soLuongSPDH = soLuongSPDH;
+        this.ngayMua = ngayMua;
+        this.tongTienDH = tongTien;
+        this.anhDH = anhDH;
+        this.maTTDH = maTTDHValue;
+    }
+
+    public int getMaND() {
+        return maND;
+    }
+
+    public void setMaND(int maND) {
+        this.maND = maND;
+    }
+
+    private int maTTDH;
+
 
     public int getMaTTDH() {
         return maTTDH;

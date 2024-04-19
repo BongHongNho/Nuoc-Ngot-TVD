@@ -101,7 +101,6 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.GioHangV
         ImageView imageViewProduct;
         TextView textViewProductName, textViewProductPrice, textViewQuantity;
         TextView buttonDecrease, buttonIncrease;
-
         MaterialCheckBox cbSelectItem;
 
         public GioHangViewHolder(@NonNull View itemView) {
@@ -116,31 +115,33 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.GioHangV
             cbSelectItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    int position = getAdapterPosition(); // Lấy vị trí của mục trong danh sách
+                    int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        GioHangItem gioHangItem = gioHangItemList.get(position); // Lấy mục từ danh sách dựa trên vị trí// Lưu trạng thái đã chọn trong mục giỏ hàng
-                        updateSelectionInDatabase(gioHangItem.getMaSP(), isChecked); // Cập nhật cơ sở dữ liệu
+                        int maGH = gioHangItemList.get(position).getMaGH();
+                        updateDaChonStatus(maGH, isChecked);
                     }
                 }
             });
         }
 
-        private void updateSelectionInDatabase(int maSP, boolean selected) {
-            DatabaseHelper dbHelper = new DatabaseHelper(GetContext.createAppContext());
+        private void updateDaChonStatus(int maSP, boolean isChecked) {
+            DatabaseHelper dbHelper = new DatabaseHelper(itemView.getContext());
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
-            values.put("isSelected", selected ? 1 : 0);
-            String selection = "maSP = ?";
+            values.put("daChon", isChecked ? 1 : 0);
+            String selection = "maGH = ?";
             String[] selectionArgs = {String.valueOf(maSP)};
             int updatedRows = db.update("GioHang", values, selection, selectionArgs);
             db.close();
-            dbHelper.close();
             if (updatedRows > 0) {
 
             } else {
-
+                Toast.makeText(itemView.getContext(), "Không thể cập nhật trạng thái đã chọn", Toast.LENGTH_SHORT).show();
             }
         }
+
+
+
 
 
         public void bind(GioHangItem gioHangItem) {

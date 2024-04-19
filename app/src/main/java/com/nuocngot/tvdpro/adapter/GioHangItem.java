@@ -9,6 +9,48 @@ public class GioHangItem implements Parcelable {
     private int soLuong;
     private int gia;
     private String anhSP;
+    private int maGH;
+    private int  daChon;
+
+    public GioHangItem(int maSP, String tenSP, int soLuong, int tongTien, String hinhAnh, int maGH, int daChon) {
+        this.maSP = maSP;
+        this.tenSP = tenSP;
+        this.soLuong = soLuong;
+        this.gia = tongTien;
+        this.anhSP = hinhAnh;
+        this.maGH = maGH;
+        this.daChon = daChon;
+    }
+
+    public GioHangItem(int maSP, int soLuong, int gia) {
+        this.maSP = maSP;
+        this.soLuong = soLuong;
+        this.gia = gia;
+    }
+
+    public GioHangItem(int maSP, int soLuong, int gia, int daChon) {
+        this.maSP = maSP;
+        this.soLuong = soLuong;
+        this.gia =gia;
+        this.daChon = daChon;
+    }
+
+    public GioHangItem(int maGH, int maSP, int soLuong, int gia, int daChon) {
+        this.maSP = maSP;
+        this.soLuong = soLuong;
+        this.gia =gia;
+        this.daChon = daChon;
+        this.maGH = maGH;
+    }
+
+
+    public int getDaChon() {
+        return daChon;
+    }
+
+    public void setDaChon(int daChon) {
+        this.daChon = daChon;
+    }
 
     public boolean isSelected;
 
@@ -20,13 +62,6 @@ public class GioHangItem implements Parcelable {
         isSelected = selected;
     }
 
-    protected GioHangItem(Parcel in) {
-        maSP = in.readInt();
-        tenSP = in.readString();
-        soLuong = in.readInt();
-        gia = in.readInt();
-        anhSP = in.readString();
-    }
 
     public static final Creator<GioHangItem> CREATOR = new Creator<GioHangItem>() {
         @Override
@@ -40,19 +75,13 @@ public class GioHangItem implements Parcelable {
         }
     };
 
-    public GioHangItem(int maSP, String tenSP, int soLuong, int gia, String anhSP) {
-        this.maSP = maSP;
-        this.tenSP = tenSP;
-        this.soLuong = soLuong;
-        this.gia = gia;
-        this.anhSP = anhSP;
+
+    public int getMaGH() {
+        return maGH;
     }
 
-    public GioHangItem(int maSP, String tenSP, int soLuong, String anhSP) {
-        this.maSP = maSP;
-        this.tenSP = tenSP;
-        this.soLuong = soLuong;
-        this.anhSP = anhSP;
+    public void setMaGH(int maGH) {
+        this.maGH = maGH;
     }
 
     public static int getMaSP() {
@@ -117,6 +146,16 @@ public class GioHangItem implements Parcelable {
         dest.writeInt(soLuong);
         dest.writeInt(gia);
         dest.writeString(anhSP);
+        dest.writeInt(maGH); // Ghi giá trị maGH vào Parcel
+    }
+
+    public GioHangItem(Parcel in) {
+        maSP = in.readInt();
+        tenSP = in.readString();
+        soLuong = in.readInt();
+        gia = in.readInt();
+        anhSP = in.readString();
+        maGH = in.readInt(); // Đọc giá trị maGH từ Parcel
     }
 
 }

@@ -206,16 +206,9 @@ public class HomeFragment extends Fragment {
         sanPhamList.clear();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] projection = {
-                "maSP",
-                "tenSP",
-                "gia",
-                "soLuong",
-                "hinhAnh"
-        };
         Cursor cursor = db.query(
                 "SanPham",
-                projection,
+                new String[]{"maSP", "tenSP", "hinhAnh", "soLuong", "gia"},
                 null,
                 null,
                 null,
@@ -226,17 +219,21 @@ public class HomeFragment extends Fragment {
             do {
                 int maSP = cursor.getInt(cursor.getColumnIndexOrThrow("maSP"));
                 String tenSP = cursor.getString(cursor.getColumnIndexOrThrow("tenSP"));
-                int gia = cursor.getInt(cursor.getColumnIndexOrThrow("gia"));
-                int soLuong = cursor.getInt(cursor.getColumnIndexOrThrow("soLuong"));
                 String hinhAnh = cursor.getString(cursor.getColumnIndexOrThrow("hinhAnh"));
-                sanPhamList.add(new SanPham(maSP, tenSP, hinhAnh, soLuong, gia));
+                int soLuong = cursor.getInt(cursor.getColumnIndexOrThrow("soLuong"));
+                int gia = cursor.getInt(cursor.getColumnIndexOrThrow("gia"));
+                SanPham sanPham = new SanPham(maSP, hinhAnh, tenSP, soLuong, gia);
+                sanPhamList.add(sanPham);
             } while (cursor.moveToNext());
 
             cursor.close();
         }
+
         db.close();
         dbHelper.close();
-        sanPhamAdapter.notifyDataSetChanged();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private void loadSanPhamData() {

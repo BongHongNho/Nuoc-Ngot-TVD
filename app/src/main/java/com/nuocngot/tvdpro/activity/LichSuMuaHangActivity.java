@@ -52,7 +52,7 @@ public class LichSuMuaHangActivity extends AppCompatActivity {
         });
         dbHelper = new DatabaseHelper(this);
         SharedPreferences sharedPreferences = getSharedPreferences("login_status", MODE_PRIVATE);
-        int maKhachHang = sharedPreferences.getInt("maKH", 0);
+        int maKhachHang = sharedPreferences.getInt("maND", 0);
         ArrayList<LichSu> lichSuMuaHang = dbHelper.getLichSuMuaHang(maKhachHang);
         if (lichSuMuaHang.size() == 0) {
             textLSEmpty.setVisibility(View.VISIBLE);

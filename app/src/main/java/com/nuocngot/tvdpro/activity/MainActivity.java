@@ -44,11 +44,12 @@ public class MainActivity extends AppCompatActivity {
     private static final String PREF_THEME_MODE = "theme_mode";
     private Toolbar toolbar;
     private NavigationView navigationView;
-    private ViewPager2 viewPager2;
+
     private DrawerLayout drawerLayout;
 
     private Map<Integer, Fragment> fragmentMap;
     private FragmentManager fragmentManager;
+    private ViewPager2 viewPager2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

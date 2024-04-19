@@ -19,6 +19,8 @@
           <com.google.android.material.card.MaterialCardView
               android:layout_width="wrap_content"
               app:strokeWidth="0dp"
+              android:layout_marginRight="1dp"
+              android:layout_gravity="center"
               android:layout_height="wrap_content">
               <RelativeLayout
                   android:id="@+id/imageViewSanPham2"
@@ -26,6 +28,7 @@
                   android:layout_height="match_parent">
 
                   <ImageView
+                      android:scaleType="centerCrop"
                       android:id="@+id/imageViewSanPham"
                       android:layout_width="wrap_content"
                       android:layout_height="100dp"

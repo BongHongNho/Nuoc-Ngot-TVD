@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -76,11 +77,11 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.ViewHold
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                final int position = holder.getAdapterPosition(); // Lưu vị trí cuối cùng vào biến final
+                final int position = holder.getAdapterPosition();
                 SharedPreferences sharedPreferences = holder.itemView.getContext().getSharedPreferences("login_status", Context.MODE_PRIVATE);
                 String role = sharedPreferences.getString("role", "");
                 if (role.equals("admin")) {
-                    showSelectTTDH(position, holder.itemView.getContext()); // Truyền vị trí vào phương thức showSelectTTDH
+                    showSelectTTDH(position, holder.itemView.getContext());
                     return true;
                 }
                 return false;
@@ -94,33 +95,18 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.ViewHold
         String[] trangThaiDonHang = {"Chờ xác nhận", "Chờ lấy hàng", "Đang giao", "Đã giao", "Đã hủy"};
         DonHang donHang = donHangList.get(position);
         List<String> availableStatus = new ArrayList<>(Arrays.asList(trangThaiDonHang));
-        if (donHang.getMaTTDH() == 2) {
-            availableStatus.remove("Chờ xác nhận");
-            availableStatus.remove("Chờ lấy hàng");
-        }
-        if (donHang.getMaTTDH() == 3) {
-            availableStatus.remove("Chờ xác nhận");
-            availableStatus.remove("Chờ lấy hàng");
-            availableStatus.remove("Đang giao");
-        }
-        if (donHang.getMaTTDH() == 4) {
-            availableStatus.remove("Chờ xác nhận");
-            availableStatus.remove("Chờ lấy hàng");
-            availableStatus.remove("Đang giao");
-            availableStatus.remove("Đã giao");
-        }
         if (donHang.getMaTTDH() == 5) {
-            availableStatus.remove("Chờ xác nhận");
-            availableStatus.remove("Chờ lấy hàng");
-            availableStatus.remove("Đang giao");
-            availableStatus.remove("Đã giao");
-            availableStatus.remove("Đã hủy");
             Toast.makeText(context, "Không có trạng thái hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
         }
+        if (donHang.getMaTTDH() >= 2 && donHang.getMaTTDH() <= 4) {
+            availableStatus.removeAll(Arrays.asList("Chờ xác nhận", "Chờ lấy hàng", "Đang giao", "Đã giao"));
+        }
+
         builder.setItems(availableStatus.toArray(new String[0]), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String selectedTTDH = availableStatus.get(which); // Lấy trạng thái được chọn từ danh sách đã lọc
+                String selectedTTDH = availableStatus.get(which);
                 updateDonHangTrangThai(position, selectedTTDH, context);
             }
         });
@@ -131,7 +117,6 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.ViewHold
     private void updateDonHangTrangThai(int position, String selectedTTDH, Context context) {
         DonHang donHang = donHangList.get(position);
         int maTTDH = -1;
-
         switch (selectedTTDH) {
             case "Chờ xác nhận":
                 maTTDH = 1;
@@ -168,7 +153,8 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.ViewHold
             if (rowsAffected > 0) {
                 donHang.setMaTTDH(maTTDH);
                 donHang.setNgayMua(ngayCapNhat);
-                notifyDataSetChanged();
+                reloadDonHangList(context, maTTDH);
+                notifyItemChanged(position);
                 Toast.makeText(context, "Cập nhật trạng thái đơn hàng thành công", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(context, "Cập nhật trạng thái đơn hàng không thành công", Toast.LENGTH_SHORT).show();
@@ -178,17 +164,83 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.ViewHold
         }
     }
 
+    private void reloadDonHangList(Context context, int maTTDH) {
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        List<DonHang> newList = new ArrayList<>();
+        String[] projection = {
+                "maTTDH",
+                "tenDH",
+                "tenSPDH",
+                "soLuong",
+                "ngayMua",
+                "tongTien",
+                "anhDH"
+        };
+        String selection = "maTTDH = ?";
+        String[] selectionArgs = {String.valueOf(maTTDH)};
+        Cursor cursor = db.query(
+                "DonMua",
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int maTTDHValue = cursor.getInt(cursor.getColumnIndexOrThrow("maTTDH"));
+                String tenDH = cursor.getString(cursor.getColumnIndexOrThrow("tenDH"));
+                String tenSPDH = cursor.getString(cursor.getColumnIndexOrThrow("tenSPDH"));
+                int soLuongSPDH = cursor.getInt(cursor.getColumnIndexOrThrow("soLuong"));
+                String ngayMua = cursor.getString(cursor.getColumnIndexOrThrow("ngayMua"));
+                int tongTien = cursor.getInt(cursor.getColumnIndexOrThrow("tongTien"));
+                String anhDH = cursor.getString(cursor.getColumnIndexOrThrow("anhDH"));
+                DonHang donHang = new DonHang(tenDH, tenSPDH, soLuongSPDH, maTTDHValue, ngayMua, tongTien, anhDH);
+                newList.add(donHang);
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+        donHangList.clear();
+        donHangList.addAll(newList);
+        notifyDataSetChanged();
+        db.close();
+        dbHelper.close();
+    }
+
+    public String getTenNguoiMua(int maND, Context context) {
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String[] projection = {"tenND"};
+        String selection = "maND = ?";
+        String[] selectionArgs = {String.valueOf(maND)};
+        Cursor cursor = db.query("NguoiDung", projection, selection, selectionArgs, null, null, null);
+        String tenNguoiMua = null;
+        if (cursor != null && cursor.moveToFirst()) {
+            tenNguoiMua = cursor.getString(cursor.getColumnIndexOrThrow("tenND"));
+            cursor.close();
+        }
+        db.close();
+        return tenNguoiMua;
+    }
+
+
     private void showThongTinDH(int position, Context context) {
         if (position != RecyclerView.NO_POSITION) {
             DonHang donHang = donHangList.get(position);
+            int maND = donHang.getMaND();
+            String tenNguoiMua = getTenNguoiMua(maND, context);
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Chi tiết đơn hàng");
+
             StringBuilder dialogContent = new StringBuilder();
             dialogContent.append("Tên đơn hàng: ").append(donHang.getTenDH()).append("\n")
                     .append("Tên sản phẩm: ").append(donHang.getTenSPDH()).append("\n")
                     .append("Số lượng: ").append(donHang.getSoLuongSPDH()).append("\n")
                     .append("Tổng tiền: ").append(donHang.getTongTienDH()).append(" VND").append("\n")
-                    .append("Ngày mua: ").append(donHang.getNgayMua());
+                    .append("Ngày mua: ").append(donHang.getNgayMua()).append("\n");
 
             builder.setMessage(dialogContent.toString());
             builder.setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
@@ -201,9 +253,15 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.ViewHold
         }
     }
 
+
     @Override
     public int getItemCount() {
         return donHangList.size();
+    }
+
+    public void updateData(ArrayList<DonHang> donHangList) {
+        this.donHangList = donHangList;
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

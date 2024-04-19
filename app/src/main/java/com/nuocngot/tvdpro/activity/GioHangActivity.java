@@ -6,19 +6,13 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,30 +31,24 @@ public class GioHangActivity extends AppCompatActivity {
     private TextView textViewTotalPrice;
     private ArrayList<GioHangItem> gioHangItemList = new ArrayList<>();
     private GioHangAdapter gioHangAdapter;
-
-    private TextView textViewGHEmpty;
-
     private Button btnBuy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gio_hang);
-
         recyclerView = findViewById(R.id.recyclerViewGioHang);
         textViewTotalPrice = findViewById(R.id.textViewTotalPrice);
         gioHangAdapter = new GioHangAdapter(gioHangItemList);
-        textViewGHEmpty = findViewById(R.id.textViewGHEmpty);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Giỏ hàng");
         toolbar.setNavigationIcon(R.drawable.back);
         toolbar.setNavigationOnClickListener(v -> finish());
         btnBuy = findViewById(R.id.btnBuy);
-
         SharedPreferences sharedPreferences = getSharedPreferences("login_status", MODE_PRIVATE);
-        int maND = sharedPreferences.getInt("maND", -1); // Thay đổi thành maND
+        int maND = sharedPreferences.getInt("maND", -1);
         if (maND != -1) {
-            loadGioHangData(maND); // Sử dụng maND thay vì maKH
+            loadGioHangData(maND);
         } else {
             Toast.makeText(this, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show();
         }
@@ -73,43 +61,54 @@ public class GioHangActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         calculateAndDisplayTotalPrice();
+
         btnBuy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferences sharedPreferences = getSharedPreferences("login_status", MODE_PRIVATE);
-                int maND = sharedPreferences.getInt("maND", -1); // Thay đổi thành maND
+                int maND = sharedPreferences.getInt("maND", -1);
                 if (maND != -1) {
-                    if (gioHangItemList != null && gioHangItemList.size() > 0) {
+                    ArrayList<GioHangItem> selectedItems = new ArrayList<>();
+                    for (GioHangItem item : gioHangItemList) {
+                        if (item.getDaChon() == 1) {
+                            selectedItems.add(item);
+                        }
+                    }
+                    if (!selectedItems.isEmpty()) {
                         DatabaseHelper dbHelper = new DatabaseHelper(GioHangActivity.this);
                         SQLiteDatabase db = dbHelper.getWritableDatabase();
                         ContentValues values = new ContentValues();
-                        for (GioHangItem item : gioHangItemList) {
-                            values.clear();
-                            values.put("maND", maND); // Thay đổi thành maND
-                            values.put("maSP", item.getMaSP());
-                            values.put("soLuong", item.getSoLuong());
-                            values.put("tongTien", item.getSoLuong() * item.getGia());
-                            long result = db.insert("DonMua", null, values);
-                            if (result == -1) {
+                        try {
+                            for (GioHangItem item : selectedItems) {
+                                values.clear();
+                                values.put("maND", maND);
+                                values.put("maSP", item.getMaSP());
+                                values.put("soLuong", item.getSoLuong());
+                                values.put("tongTien", item.getSoLuong() * item.getGia());
+                                Toast.makeText(GioHangActivity.this, "Số lượng: " + item.getSoLuong() , Toast.LENGTH_SHORT).show();
+                                long result = db.insert("DonMua", null, values);
+                                if (result == -1) {
 
+                                }
                             }
+                            db.close();
+                            dbHelper.close();
+                            Intent intent = new Intent(GioHangActivity.this, ThanhToanActivity.class);
+                            intent.putParcelableArrayListExtra("selected_items", selectedItems);
+                            startActivity(intent);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                        db.close();
-                        dbHelper.close();
-                        ArrayList<GioHangItem> selectedItems = gioHangItemList;
-                        Intent intent = new Intent(GioHangActivity.this, ThanhToanActivity.class);
-                        intent.putParcelableArrayListExtra("selected_items", selectedItems);
-                        startActivity(intent);
                     } else {
-                        Toast.makeText(GioHangActivity.this, "Giỏ hàng trống. Vui lòng thêm sản phẩm vào giỏ hàng trước khi mua.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(GioHangActivity.this, "Không có sản phẩm nào được chọn.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(GioHangActivity.this, "Người dùng không tồn tại. Vui lòng đăng nhập lại.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-    }
 
+    }
 
     private void loadGioHangData(int maND) {
         String maNDString = String.valueOf(maND); // Chuyển maND thành String
@@ -120,12 +119,14 @@ public class GioHangActivity extends AppCompatActivity {
                 "tenSP",
                 "soLuong",
                 "tongTien",
-                "hinhAnh"
+                "hinhAnh",
+                "maGH",
+                "daChon"
         };
         Cursor cursor = db.query(
                 "GioHang",
                 projection,
-                "maND = ?", // Thay đổi thành maND
+                "maND = ?",
                 new String[]{maNDString},
                 null,
                 null,
@@ -136,18 +137,22 @@ public class GioHangActivity extends AppCompatActivity {
                 int maSP = cursor.getInt(cursor.getColumnIndexOrThrow("maSP"));
                 String tenSP = cursor.getString(cursor.getColumnIndexOrThrow("tenSP"));
                 int soLuong = cursor.getInt(cursor.getColumnIndexOrThrow("soLuong"));
-                int tongTien = cursor.getInt(cursor.getColumnIndexOrThrow("tongTien"));
+                int gia = cursor.getInt(cursor.getColumnIndexOrThrow("tongTien")) / soLuong;
+                int tongTien = soLuong * gia;
                 String hinhAnh = cursor.getString(cursor.getColumnIndexOrThrow("hinhAnh"));
+                int maGH = cursor.getInt(cursor.getColumnIndexOrThrow("maGH"));
+                int daChon = cursor.getInt(cursor.getColumnIndexOrThrow("daChon"));
+
                 boolean isProductExist = false;
                 for (GioHangItem item : gioHangItemList) {
                     if (item.getMaSP() == maSP) {
-                        item.setSoLuong(item.getSoLuong() + 1);
+                        item.setSoLuong(item.getSoLuong() + soLuong); // Cộng thêm số lượng vào sản phẩm đã tồn tại trong giỏ
                         isProductExist = true;
                         break;
                     }
                 }
                 if (!isProductExist) {
-                    gioHangItemList.add(new GioHangItem(maSP, tenSP, soLuong, tongTien, hinhAnh));
+                    gioHangItemList.add(new GioHangItem(maSP, tenSP, soLuong, tongTien, hinhAnh, maGH, daChon));
                 }
             } while (cursor.moveToNext());
             cursor.close();
@@ -156,6 +161,7 @@ public class GioHangActivity extends AppCompatActivity {
         dbHelper.close();
         gioHangAdapter.notifyDataSetChanged();
     }
+
 
 
     private void updateQuantity(int position, int newQuantity) {

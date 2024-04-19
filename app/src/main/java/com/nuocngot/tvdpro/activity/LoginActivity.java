@@ -1,5 +1,6 @@
 package com.nuocngot.tvdpro.activity;// LoginActivity.java
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -28,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextInputEditText editTextUsername, editTextPassword;
     private CheckBox checkBoxRemember;
-
+    private TextView textViewLogin;
     private boolean checkBoxChecked = false;
     private Button buttonLogin;
     private TextView textViewForgotPassword, textViewRegister;
@@ -41,6 +43,11 @@ public class LoginActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextPassword);
         checkBoxRemember = findViewById(R.id.checkBoxRemember);
         buttonLogin = findViewById(R.id.buttonLogin);
+        textViewLogin = findViewById(R.id.textViewLogin);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(textViewLogin, "translationX", 200f, 0f);
+        animator.setDuration(1000);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.start();
         textViewRegister = findViewById(R.id.textViewRegister);
         textViewForgotPassword = findViewById(R.id.textViewForgotPassword);
         buttonLogin.setOnClickListener(new View.OnClickListener() {
@@ -52,7 +59,6 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Mật khẩu quá ngắn", Toast.LENGTH_SHORT).show();
                 } else if (editTextUsername.getText().toString().length() < 6) {
                     Toast.makeText(LoginActivity.this, "Username quá ngắn", Toast.LENGTH_SHORT).show();
-
                 } else {
                     loginUser();
                 }

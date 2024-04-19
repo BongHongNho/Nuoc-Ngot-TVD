@@ -1,11 +1,13 @@
 package com.nuocngot.tvdpro.activity;
 
+import android.animation.ObjectAnimator;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,7 +22,7 @@ public class RegisterActivity extends AppCompatActivity {
     public TextInputEditText edEmailPhone, adUsername, edPassword, edRepassword;
     public Button btnRegister;
 
-    public TextView gotoLogin;
+    public TextView gotoLogin, textViewRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,11 @@ public class RegisterActivity extends AppCompatActivity {
         edRepassword = findViewById(R.id.edCfPasswordRE);
         btnRegister = findViewById(R.id.btnnRegister);
         gotoLogin = findViewById(R.id.tvResgiter);
-
+        textViewRegister = findViewById(R.id.textViewRegister);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(textViewRegister, "translationY", 200f, 0f);
+        animator.setDuration(1000);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.start();
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,20 +46,32 @@ public class RegisterActivity extends AppCompatActivity {
                 String username = adUsername.getText().toString().trim();
                 String password = edPassword.getText().toString().trim();
                 String repassword = edRepassword.getText().toString().trim();
+
+                // Kiểm tra các trường nhập liệu
                 if (emailOrPhone.isEmpty() || username.isEmpty() || password.isEmpty() || repassword.isEmpty()) {
                     Toast.makeText(RegisterActivity.this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                // Kiểm tra độ dài tối thiểu cho mật khẩu
+                if (password.length() < 6) {
+                    Toast.makeText(RegisterActivity.this, "Mật khẩu phải có ít nhất 6 ký tự", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Kiểm tra mật khẩu và xác nhận mật khẩu có trùng khớp
                 if (!password.equals(repassword)) {
                     Toast.makeText(RegisterActivity.this, "Mật khẩu và xác nhận mật khẩu không trùng khớp", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
+                // Kiểm tra tính hợp lệ của tên đăng nhập
                 if (checkUsernameExists(username)) {
                     Toast.makeText(RegisterActivity.this, "Tên tài khoản đã tồn tại", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
+                // Tiến hành tạo tài khoản
                 if (createAccount(emailOrPhone, username, password)) {
                     Toast.makeText(RegisterActivity.this, "Tạo tài khoản thành công", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
@@ -65,58 +83,46 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
-    private boolean checkUsernameExists (String username){
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String query = "SELECT * FROM TaiKhoan WHERE tenDN = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{username});
-        boolean exists = cursor.getCount() > 0;
-        cursor.close();
-        db.close();
-        return exists;
-    }
-
-    private boolean isEmail (String str){
-        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-        return str.matches(emailPattern);
-    }
-
-    private boolean isPhoneNumber (String str){
-        String phonePattern = "[0-9]{10,11}";
-        return str.matches(phonePattern);
-    }
 
     private boolean createAccount(String emailOrPhone, String username, String password) {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         boolean success = false;
-        ContentValues taiKhoanValues = new ContentValues();
-        taiKhoanValues.put("tenDN", username);
-        taiKhoanValues.put("matKhau", password);
-        taiKhoanValues.put("Email", isEmail(emailOrPhone) ? emailOrPhone : "");
-        taiKhoanValues.put("SDT", isPhoneNumber(emailOrPhone) ? emailOrPhone : "");
-        taiKhoanValues.put("role", "user");
-        taiKhoanValues.put("userId", -1);
-        taiKhoanValues.put("isLogin", 0);
-        long maTK = db.insert("TaiKhoan", null, taiKhoanValues);
-        if (maTK != -1) {
-            ContentValues khachHangValues = new ContentValues();
-            khachHangValues.put("maTK", maTK);
-            khachHangValues.put("tenKH", username);
-            khachHangValues.put("Email", isEmail(emailOrPhone) ? emailOrPhone : "");
-            khachHangValues.put("SDT", isPhoneNumber(emailOrPhone) ? emailOrPhone : "");
-            khachHangValues.put("diaChi", "");
-            khachHangValues.put("capTV", "");
-            khachHangValues.put("hinhAnh", "");
-            long khachHangId = db.insert("KhachHang", null, khachHangValues);
-            if (khachHangId != -1) {
-                success = true;
-            } else {
-                db.delete("TaiKhoan", "maTK = ?", new String[]{String.valueOf(maTK)});
-            }
+        ContentValues nguoiDungValues = new ContentValues();
+        nguoiDungValues.put("tenDN", username);
+        nguoiDungValues.put("tenND", username);
+        nguoiDungValues.put("matKhau", password);
+        nguoiDungValues.put("email", isEmail(emailOrPhone) ? emailOrPhone : "");
+        nguoiDungValues.put("sdt", isPhoneNumber(emailOrPhone) ? emailOrPhone : "");
+        nguoiDungValues.put("diaChi", "");
+        nguoiDungValues.put("capTV", "");
+        nguoiDungValues.put("trangThai", 1);
+        nguoiDungValues.put("role", "user");
+        nguoiDungValues.put("isLogin", 0);
+        long maND = db.insert("NguoiDung", null, nguoiDungValues);
+        if (maND != -1) {
+            success = true;
         }
-
         db.close();
         return success;
     }
+    private boolean checkUsernameExists(String username) {
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM NguoiDung WHERE tenDN = ?", new String[]{username});
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        db.close();
+        return exists;
+    }
+    private boolean isEmail(String str) {
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        return str.matches(emailPattern);
+    }
+
+    private boolean isPhoneNumber(String str) {
+        String phonePattern = "[0-9]{10,11}";
+        return str.matches(phonePattern);
+    }
+
 }

@@ -84,7 +84,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_add_category, null);
         TextInputEditText editTextCategoryName = view.findViewById(R.id.editTextCategoryName);
+        TextInputEditText editImageCategory = view.findViewById(R.id.editTextCategoryImage);
         editTextCategoryName.setText(category.getTenDM());
+        editImageCategory.setText(category.getAnhDM());
         builder.setView(view)
                 .setTitle("Sửa danh mục")
                 .setMessage("Nhập tên danh mục mới")
@@ -92,7 +94,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String newCategoryName = editTextCategoryName.getText().toString().trim();
-                        updateCategoryInDatabase(category.getMaDM(), newCategoryName);
+                        String newCategoryImage = editImageCategory.getText().toString().trim();
+                        updateCategoryInDatabase(category.getMaDM(), newCategoryName, newCategoryImage);
                     }
                 })
                 .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
@@ -105,12 +108,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
-    private void updateCategoryInDatabase(int maDM, String newCategoryName) {
+    private void updateCategoryInDatabase(int maDM, String newCategoryName, String newCategoryImage) {
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-
         ContentValues values = new ContentValues();
         values.put("tenDM", newCategoryName);
+        values.put("anhDM", newCategoryImage);
         int rowsAffected = db.update("DanhMuc", values, "maDM = ?", new String[]{String.valueOf(maDM)});
         if (rowsAffected > 0) {
             Toast.makeText(context, "Danh mục đã được cập nhật", Toast.LENGTH_SHORT).show();
@@ -118,7 +121,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         } else {
             Toast.makeText(context, "Cập nhật danh mục thất bại", Toast.LENGTH_SHORT).show();
         }
-
         db.close();
         dbHelper.close();
     }

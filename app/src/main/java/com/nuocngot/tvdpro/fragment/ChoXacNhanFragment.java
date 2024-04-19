@@ -23,7 +23,13 @@ import com.nuocngot.tvdpro.model.DonHang;
 import com.nuocngot.tvdpro.adapter.DonHangAdapter;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Locale;
 
 public class ChoXacNhanFragment extends Fragment {
 
@@ -52,7 +58,7 @@ public class ChoXacNhanFragment extends Fragment {
         DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selection = "maND = ? AND maTTDH = ?";
-        String[] selectionArgs = {String.valueOf(maKH), "1"}; // Chỉ lấy các đơn mua có maTTDH là 1
+        String[] selectionArgs = {String.valueOf(maKH), "1"};
         Cursor cursor = db.query(
                 "DonMua",
                 null,
@@ -60,7 +66,7 @@ public class ChoXacNhanFragment extends Fragment {
                 selectionArgs,
                 null,
                 null,
-                null
+                "ngayMua DESC"
         );
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -77,9 +83,21 @@ public class ChoXacNhanFragment extends Fragment {
             } while (cursor.moveToNext());
             cursor.close();
         }
+        Collections.sort(donHangList, new Comparator<DonHang>() {
+            @Override
+            public int compare(DonHang o1, DonHang o2) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                try {
+                    Date date1 = sdf.parse(o1.getNgayMua());
+                    Date date2 = sdf.parse(o2.getNgayMua());
+                    return date2.compareTo(date1);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return 0;
+            }
+        });
         adapter.notifyDataSetChanged();
     }
-
-
 
 }

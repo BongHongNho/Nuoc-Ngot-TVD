@@ -1,5 +1,6 @@
 package com.nuocngot.tvdpro.adapter;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,6 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.nuocngot.tvdpro.activity.LoginActivity;
 import com.nuocngot.tvdpro.activity.QLTaiKhoanActivity;
 import com.nuocngot.tvdpro.R;
 import com.nuocngot.tvdpro.activity.CNQuanTriVien;
@@ -71,6 +73,8 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences sharedPreferences = holder.itemView.getContext().getSharedPreferences("login_status", Context.MODE_PRIVATE);
+                int maND = sharedPreferences.getInt("maND", -1);
                 int adapterPosition = holder.getAdapterPosition(); // Lấy vị trí của item trong adapter
                 if (adapterPosition == RecyclerView.NO_POSITION) {
                     return;
@@ -91,6 +95,15 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
                     case "Thay đổi địa chỉ":
                         String currentAddress = getCurrentAddressFromDatabase(context);
                         showAddressChangeDialog(context, currentAddress);
+                        break;
+                    case "Thay đổi thông tin tài khoản":
+                        String currentPhone = getCurrentPhoneFromDatabase(context, maND);
+                        String currentEmail = getCurrentEmailFromDatabase(context, maND);
+                        String currentName = getCurrentNameFromDatabase(context, maND);
+                        showChangeInfoDialog(context, maND,currentName, currentEmail, currentPhone);
+                        break;
+                    case "Xóa tài khoản":
+                        deleteAccount(context, maND);
                         break;
                     case "Chức năng quản trị viên":
                         startNewActivity(context, CNQuanTriVien.class);
@@ -118,7 +131,103 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
                         break;
                 }
             }
+
         });
+    }
+
+    private void deleteAccount(Context context, int maND) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        db.delete("NguoiDung", "maND = ?", new String[]{String.valueOf(maND)});
+        db.close();
+        Toast.makeText(context, "Đã xóa tài khoản thành công", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent);
+        ((Activity) context).finishAffinity();
+    }
+
+
+    private void showChangeInfoDialog(Context context, int maND, String currentName, String currentEmail, String currentPhone) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Thay đổi thông tin");
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_change_info, null);
+        TextInputEditText nameEditText = view.findViewById(R.id.nameEditText);
+        TextInputEditText emailEditText = view.findViewById(R.id.emailEditText);
+        TextInputEditText phoneEditText = view.findViewById(R.id.phoneEditText);
+        nameEditText.setText(currentName);
+        emailEditText.setText(currentEmail);
+        phoneEditText.setText(currentPhone);
+        builder.setView(view);
+        builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newName = nameEditText.getText().toString();
+                String newEmail = emailEditText.getText().toString();
+                String newPhone = phoneEditText.getText().toString();
+                updateUserInfo(context, maND, newName, newEmail, newPhone);
+            }
+        });
+        builder.setNegativeButton("Hủy bỏ", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    private void updateUserInfo(Context context, int maND, String newName, String newEmail, String newPhone) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("tenND", newName);
+        values.put("email", newEmail);
+        values.put("sdt", newPhone);
+        db.update("NguoiDung", values, "maND = ?", new String[]{String.valueOf(maND)});
+        db.close();
+        Toast.makeText(context, "Thay đổi thông tin thành công", Toast.LENGTH_SHORT).show();
+    }
+
+    private String getCurrentNameFromDatabase(Context context, int maND) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+        String query = "SELECT tenND FROM NguoiDung WHERE maND = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(maND)});
+        String currentName = "";
+        if (cursor.moveToFirst()) {
+            currentName = cursor.getString(cursor.getColumnIndex("tenND"));
+        }
+        cursor.close();
+        db.close();
+        return currentName;
+    }
+
+    private String getCurrentEmailFromDatabase(Context context, int maND) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+        String query = "SELECT email FROM NguoiDung WHERE maND = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(maND)});
+        String currentEmail = "";
+        if (cursor.moveToFirst()) {
+            currentEmail = cursor.getString(cursor.getColumnIndex("email"));
+        }
+        cursor.close();
+        db.close();
+        return currentEmail;
+    }
+
+    private String getCurrentPhoneFromDatabase(Context context, int maND) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+        String query = "SELECT sdt FROM NguoiDung WHERE maND = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(maND)});
+        String currentPhone = "";
+        if (cursor.moveToFirst()) {
+            currentPhone = cursor.getString(cursor.getColumnIndex("sdt"));
+        }
+        cursor.close();
+        db.close();
+        return currentPhone;
     }
 
     private void startNewActivity(Context context, Class<?> cls) {
@@ -247,6 +356,7 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
 
         builder.show();
     }
+
     private void updatePasswordInDatabase(String newPassword, Context context) {
         SQLiteDatabase db = null;
         try {
@@ -315,7 +425,6 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
         }
         return currentPassword;
     }
-
 
 
     private void showErrorReport(Context context) {

@@ -108,9 +108,7 @@ public class ThanhToanActivity extends AppCompatActivity {
                 Cursor cursor = null;
 
                 try {
-                    db = dbHelper.getWritableDatabase(); // Mở SQLiteDatabase để thực hiện thao tác ghi
-
-                    // Query để lấy thông tin người dùng có mã maND
+                    db = dbHelper.getWritableDatabase();
                     cursor = db.query(
                             "NguoiDung",
                             null,
@@ -180,15 +178,12 @@ public class ThanhToanActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    // Đóng Cursor
                     if (cursor != null) {
                         cursor.close();
                     }
-                    // Đóng SQLiteDatabase
                     if (db != null && db.isOpen()) {
                         db.close();
                     }
-                    // Đóng DatabaseHelper
                     dbHelper.close();
                 }
             }
@@ -214,7 +209,7 @@ public class ThanhToanActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SharedPreferences sharedPreferences = getSharedPreferences("login_status", Context.MODE_PRIVATE);
-                int maND = sharedPreferences.getInt("maND", -1); // Sử dụng maND thay vì maTK
+                int maND = sharedPreferences.getInt("maND", -1);
                 if (textViewPhuongThucThanhToan.getText().toString().equals("Vui lòng chọn phương thức thanh toán")) {
                     Toast.makeText(ThanhToanActivity.this, "Vui lòng chọn phương thức thanh toán trước khi đặt hàng", Toast.LENGTH_SHORT).show();
                     return;

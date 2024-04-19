@@ -86,7 +86,7 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
                 Context context = v.getContext();
                 if (context != null) {
                     SharedPreferences sharedPreferences = context.getSharedPreferences("login_status", Context.MODE_PRIVATE);
-                    int maTK = sharedPreferences.getInt("maTK", -1);
+                    int maTK = sharedPreferences.getInt("maND", -1);
                     if (checkAdminRole(v.getContext(), maTK)) {
                         showAdminDialog(v.getContext(), position);
                     } else {
@@ -121,8 +121,6 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
         return isAdmin;
     }
 
-
-
     private void showAdminDialog(Context context, int position) {
         String[] options = {"Xóa sản phẩm", "Sửa sản phẩm"};
 
@@ -154,7 +152,7 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
         int productId_edit = sanPhamList.get(position).getMaSP();
         DatabaseHelper dbHelper_edit = new DatabaseHelper(context);
         SQLiteDatabase db_edit = dbHelper_edit.getReadableDatabase();
-        String[] projection = {"tenSP", "gia", "soLuong", "hinhAnh", "maDM"}; // Thêm cột maDM vào projection
+        String[] projection = {"tenSP", "gia", "soLuong", "hinhAnh", "maDM"};
         String selection_edit = "maSP = ?";
         String[] selectionArgs_edit = {String.valueOf(productId_edit)};
         Cursor cursorSanPham = db_edit.query(
@@ -166,8 +164,6 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
                 null,
                 null
         );
-
-        // Truy vấn dữ liệu từ bảng ChiTietSanPham
         String[] projectionChiTiet = {"xuatXu", "thongTinSP"};
         Cursor cursorChiTiet = db_edit.query(
                 "ChiTietSanPham",
@@ -205,14 +201,13 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
         View dialogView = inflater.inflate(R.layout.edit_sp_dialog, null);
         builder.setView(dialogView);
         builder.setTitle("Sửa thông tin");
-
         TextInputEditText editTextProductName = dialogView.findViewById(R.id.editTextProductName);
         TextInputEditText editTextProductPrice = dialogView.findViewById(R.id.editTextProductPrice);
         TextInputEditText editTextProductQuantity = dialogView.findViewById(R.id.editTextProductQuantity);
         TextInputEditText imageViewProduct = dialogView.findViewById(R.id.imageViewProduct);
         TextInputEditText editTextXuatXu = dialogView.findViewById(R.id.editTextXuatxu);
         TextInputEditText editTextThongTinSP = dialogView.findViewById(R.id.editTextThongTin);
-        Spinner spinnerDanhMuc = dialogView.findViewById(R.id.spinnerDanhMuc); // Thêm Spinner danh mục
+        Spinner spinnerDanhMuc = dialogView.findViewById(R.id.spinnerDanhMuc);
         editTextProductName.setText(tenSP);
         editTextProductPrice.setText(String.valueOf(gia));
         editTextProductQuantity.setText(String.valueOf(soLuong));
@@ -224,7 +219,7 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDanhMuc.setAdapter(spinnerAdapter);
         for (int i = 0; i < danhMucList.size(); i++) {
-            if (danhMucList.get(i).getMaDM() == maDM) { // Set giá trị mặc định cho Spinner danh mục
+            if (danhMucList.get(i).getMaDM() == maDM) {
                 spinnerDanhMuc.setSelection(i);
                 break;
             }
@@ -246,7 +241,7 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
                 valuesSanPham.put("gia", Integer.parseInt(productPrice));
                 valuesSanPham.put("soLuong", Integer.parseInt(productQuantity));
                 valuesSanPham.put("hinhAnh", productImage);
-                valuesSanPham.put("maDM", maDanhMuc); // Thêm maDM vào ContentValues
+                valuesSanPham.put("maDM", maDanhMuc);
                 String selectionSanPham = "maSP = ?";
                 String[] selectionArgsSanPham = {String.valueOf(productId)};
                 int rowsUpdatedSanPham = db.update("SanPham", valuesSanPham, selectionSanPham, selectionArgsSanPham);
@@ -302,7 +297,6 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
         return danhMucList;
     }
 
-
     private void showDeleteProductDialog(Context context, int position) {
         new AlertDialog.Builder(context)
                 .setTitle("Xác nhận xóa")
@@ -327,11 +321,11 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
                             String selection = "maSP = ?";
                             String[] selectionArgs = {String.valueOf(productId)};
                             int deletedRows = db.delete("GioHang", selection, selectionArgs);
-//            if (deletedRows > 0) {
-//                Toast.makeText(context, "Đã xóa sản phẩm khỏi giỏ hàng", Toast.LENGTH_SHORT).show();
-//            } else {
-//                Toast.makeText(context, "Xóa sản phẩm khỏi giỏ hàng thất bại", Toast.LENGTH_SHORT).show();
-//            }
+                            if (deletedRows > 0) {
+
+                            } else {
+                                Toast.makeText(context, "Xóa sản phẩm khỏi giỏ hàng thất bại", Toast.LENGTH_SHORT).show();
+                            }
                         }
 
                         String selectionSanPham = "maSP = ?";
@@ -344,8 +338,6 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
                         } else {
                             Toast.makeText(context, "Xóa sản phẩm thất bại", Toast.LENGTH_SHORT).show();
                         }
-
-                        // Đóng các đối tượng Cursor và Database khi đã sử dụng xong
                         if (cursor != null) {
                             cursor.close();
                         }
@@ -397,7 +389,7 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.SanPhamV
         }
         db.close();
         dbHelper.close();
-        notifyDataSetChanged(); // Cập nhật RecyclerView sau khi tải dữ liệu mới
+        notifyDataSetChanged();
     }
 
 

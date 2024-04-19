@@ -5,7 +5,6 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/m3_appbar_background"
     tools:context=".activity.LoginActivity">
     <LinearLayout
         android:id="@+id/layout_regsiter"
@@ -19,9 +18,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ĐĂNG KÝ"
+            android:text="ĐĂNG KÝ TÀI KHOẢN"
             android:textAllCaps="true"
-            android:textSize="20dp"
+            android:textSize="45dp"
+            android:id="@+id/textViewRegister"
             android:layout_margin="10dp"
             android:layout_gravity="center"
             android:textStyle="bold">
@@ -81,12 +81,13 @@
             android:layout_height="wrap_content">
         </Button>
         <TextView
+            android:visibility="gone"
             android:id="@+id/tvResgiter"
             android:layout_marginTop="10dp"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Đã có tài khoản...? Đăng nhập tại đây">
+            android:text="Đăng nhập tại đây">
         </TextView>
     </LinearLayout>
 

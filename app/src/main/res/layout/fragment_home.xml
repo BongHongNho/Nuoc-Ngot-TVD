@@ -15,10 +15,18 @@
         android:layout_width="match_parent"
         android:layout_height="200dp">
     </ImageSwitcher>
+<!--    <me.relex.circleindicator.CircleIndicator-->
+<!--        android:id="@+id/circleIndicator"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="41dp"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        app:ci_drawable="@drawable/background_radius" />-->
 </com.google.android.material.card.MaterialCardView>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:background="@drawable/m3_appbar_background"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/background_radius"
         android:layout_below="@id/imageSwitchCard"
         android:layout_height="wrap_content"
         android:id="@+id/selectTabProducts">

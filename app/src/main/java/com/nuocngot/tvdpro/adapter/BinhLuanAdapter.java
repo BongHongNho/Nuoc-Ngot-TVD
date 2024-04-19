@@ -48,31 +48,56 @@ public class BinhLuanAdapter extends RecyclerView.Adapter<BinhLuanAdapter.BinhLu
         return new BinhLuanAdapter.BinhLuanViewHolder(view);
     }
 
+    private boolean isAdmin(int maNDBinhLuan, Context context) {
+        return isUserAdmin(maNDBinhLuan, context);
+    }
+
+    private boolean isUserAdmin(int maND, Context context) {
+        boolean isAdmin = false;
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.query("NguoiDung", new String[]{"role"}, "maND = ?", new String[]{String.valueOf(maND)}, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                String role = cursor.getString(cursor.getColumnIndex("role"));
+                if ("admin".equalsIgnoreCase(role)) {
+                    isAdmin = true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return isAdmin;
+    }
+
     @Override
     public void onBindViewHolder(@NonNull BinhLuanAdapter.BinhLuanViewHolder holder, int position) {
         BinhLuan binhLuan = listBinhLuan.get(position);
-
-        // Load ảnh đại diện bình luận
-        Glide.with(holder.itemView.getContext()).load(binhLuan.getAnhDaiDien()).into(holder.imageAvatar);
-
-        // Hiển thị tên người bình luận, nội dung bình luận và thời gian
-        holder.textViewTenNguoiBinhLuan.setText(binhLuan.getTenNguoiDung());
+        Glide.with(holder.itemView.getContext()).load(binhLuan.getAnhDaiDien()).placeholder(R.drawable.placeholder).into(holder.imageAvatar);
+        if(binhLuan.getTenNguoiDung().equals("")){
+            holder.textViewTenNguoiBinhLuan.setText("Tài khoản đã xóa");
+        }
+        else {
+            holder.textViewTenNguoiBinhLuan.setText(binhLuan.getTenNguoiDung());
+        }
         holder.textViewBinhLuan.setText(binhLuan.getNoiDung());
         holder.textViewNgayBinhLuan.setText(binhLuan.getThoiGian());
-
-        // Lấy mã người đăng nhập hiện tại từ SharedPreferences
         SharedPreferences sharedPreferences = holder.itemView.getContext().getSharedPreferences("login_status", Context.MODE_PRIVATE);
-        int savedMaND = sharedPreferences.getInt("maND", -1);
-
-        // Kiểm tra vai trò của người đăng nhập và người đăng bình luận
-        boolean isCurrentUserAdmin = isUserAdmin(savedMaND, holder.itemView.getContext());
-        boolean isCommentOwner = binhLuan.getMaKH() == savedMaND;
-
-        // Hiển thị biểu tượng xác thực nếu là chủ bình luận hoặc là quản trị viên
-        if (isCommentOwner || isCurrentUserAdmin) {
+        int maND = sharedPreferences.getInt("maND", -1);
+        int maNDBinhLuan = binhLuan.getMaKH();
+        boolean isAuthorAdmin = isAdmin(maNDBinhLuan, holder.itemView.getContext());
+        if (isAuthorAdmin) {
             holder.veryfied.setVisibility(View.VISIBLE);
-
-            // Xử lý sự kiện long click để hiển thị dialog chỉnh sửa hoặc xóa
+        } else {
+            holder.veryfied.setVisibility(View.GONE);
+        }
+        if (maND == maNDBinhLuan || isAuthorAdmin) {
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -80,16 +105,13 @@ public class BinhLuanAdapter extends RecyclerView.Adapter<BinhLuanAdapter.BinhLu
                     return true;
                 }
             });
-        } else {
-            // Ẩn biểu tượng xác thực và không xử lý sự kiện long click
-            holder.veryfied.setVisibility(View.GONE);
-            holder.itemView.setOnLongClickListener(null);
         }
+
     }
-
-
     private void showEditDeleteDialog(Context context, BinhLuan binhLuan) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        SharedPreferences sharedPreferences = context.getSharedPreferences("login_status", Context.MODE_PRIVATE);
+        String role = sharedPreferences.getString("role", "");
         builder.setTitle("Chọn hoạt động");
         String[] actions = {"Sửa bình luận", "Xóa bình luận"};
         builder.setItems(actions, new DialogInterface.OnClickListener() {
@@ -107,7 +129,6 @@ public class BinhLuanAdapter extends RecyclerView.Adapter<BinhLuanAdapter.BinhLu
         });
         builder.create().show();
     }
-
     private void editBinhLuan(Context context, BinhLuan binhLuan) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Chỉnh sửa bình luận");
@@ -170,7 +191,6 @@ public class BinhLuanAdapter extends RecyclerView.Adapter<BinhLuanAdapter.BinhLu
             public void onClick(DialogInterface dialog, int which) {
                 SQLiteDatabase database = new DatabaseHelper(context).getWritableDatabase();
                 String selection = "maBL = ?";
-                Toast.makeText(context, String.valueOf(binhLuan.getMaBL()), Toast.LENGTH_SHORT).show();
                 String[] selectionArgs = {String.valueOf(binhLuan.getMaBL())};
                 int deletedRows = database.delete("BinhLuan", selection, selectionArgs);
                 if (deletedRows > 0) {
@@ -191,27 +211,6 @@ public class BinhLuanAdapter extends RecyclerView.Adapter<BinhLuanAdapter.BinhLu
         });
         AlertDialog dialog = builder.create();
         dialog.show();
-    }
-
-    private boolean isUserAdminShare(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("login_status", Context.MODE_PRIVATE);
-        String role = sharedPreferences.getString("role", "");
-        return role.equals("admin");
-    }
-    private boolean isUserAdmin(int maND, Context context) {
-        boolean isAdmin = false;
-        SQLiteDatabase database = new DatabaseHelper(context).getReadableDatabase();
-        String query = "SELECT role FROM NguoiDung WHERE maND = ?";
-        Cursor cursor = database.rawQuery(query, new String[]{String.valueOf(maND)});
-        if (cursor != null && cursor.moveToFirst()) {
-            String vaiTro = cursor.getString(cursor.getColumnIndex("role"));
-            if (vaiTro != null && vaiTro.equals("admin")) {
-                isAdmin = true;
-            }
-            cursor.close();
-        }
-
-        return isAdmin;
     }
 
     @Override

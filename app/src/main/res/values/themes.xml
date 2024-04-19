@@ -3,18 +3,19 @@
     <style name="Theme.NuocNgotTVD" parent="Theme.Material3.DynamicColors.Light">
         <item name="fontFamily">@font/googlesans</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="materialThemeOverlay">?attr/dynamicColorThemeOverlay</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+        <item name="android:windowSplashScreenBackground">?attr/colorSurface</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.Material3.AlertDialog</item>
         <item name="dialogTheme">@style/ThemeOverlay.Material3.AlertDialog</item>
-    </style>
-    <style name="ThemeOverlay.Material3.AlertDialog" parent="@style/ThemeOverlay.Material3.MaterialAlertDialog">
-        <item name="android:windowBackground">@drawable/m3_alert_dialog_background</item>
-    </style>
+        </style>
+        <style name="ThemeOverlay.Material3.AlertDialog" parent="@style/ThemeOverlay.Material3.MaterialAlertDialog">
+            <item name="android:windowBackground">@drawable/m3_alert_dialog_background</item>
+        </style>
     <style name="CustomSearchViewStyle" parent="Widget.AppCompat.SearchView">
         <item name="android:background">@drawable/background_radius</item>
         <item name="android:imeOptions">actionSearch</item>

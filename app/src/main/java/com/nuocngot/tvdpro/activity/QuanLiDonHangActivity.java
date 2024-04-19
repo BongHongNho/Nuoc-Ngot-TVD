@@ -19,8 +19,14 @@ import com.nuocngot.tvdpro.adapter.DonHangAdapter;
 import com.nuocngot.tvdpro.database.DatabaseHelper;
 import com.nuocngot.tvdpro.model.DonHang;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class QuanLiDonHangActivity extends AppCompatActivity {
 
@@ -38,17 +44,31 @@ public class QuanLiDonHangActivity extends AppCompatActivity {
         toolbar.setNavigationIcon(R.drawable.back);
         toolbar.setNavigationOnClickListener(v -> finish());
         recyclerView = findViewById(R.id.recyceViewDH);
-        donHangList = loadDonHangList(this);
-        donHangAdapter = new DonHangAdapter(donHangList);
+        donHangAdapter = new DonHangAdapter(new ArrayList<>());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(donHangAdapter);
+        loadDataFromDatabase();
     }
+
+    private void loadDataFromDatabase() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                donHangList = loadDonHangList(QuanLiDonHangActivity.this);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        donHangAdapter.updateData(donHangList);
+                    }
+                });
+            }
+        }).start();
+    }
+
     private ArrayList<DonHang> loadDonHangList(Context context) {
         ArrayList<DonHang> donHangList = new ArrayList<>();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        // Truy vấn để lấy danh sách đơn hàng từ bảng DonMua
         String query = "SELECT * FROM DonMua";
         Cursor cursor = db.rawQuery(query, null);
 
@@ -62,19 +82,30 @@ public class QuanLiDonHangActivity extends AppCompatActivity {
                 String anhDH = cursor.getString(cursor.getColumnIndex("anhDH"));
                 int maDM = cursor.getInt(cursor.getColumnIndex("maDMUA"));
                 int maTTDH = cursor.getInt(cursor.getColumnIndex("maTTDH"));
-
-                // Tạo đối tượng DonHang từ dữ liệu cột của bảng DonMua
                 DonHang donHang = new DonHang(tenDH, tenSPDH, soLuongSPDH, tongTienDH, ngayMua, anhDH, maDM, maTTDH);
                 donHangList.add(donHang);
             } while (cursor.moveToNext());
         }
-
-        // Đóng kết nối CSDL và giải phóng tài nguyên
         cursor.close();
         db.close();
         dbHelper.close();
 
-        // Trả về danh sách các đơn hàng
+        // Sort the list by purchase date (ngayMua)
+        Collections.sort(donHangList, new Comparator<DonHang>() {
+            @Override
+            public int compare(DonHang o1, DonHang o2) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                try {
+                    Date date1 = sdf.parse(o1.getNgayMua());
+                    Date date2 = sdf.parse(o2.getNgayMua());
+                    return date2.compareTo(date1);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return 0;
+            }
+        });
+
         return donHangList;
     }
 

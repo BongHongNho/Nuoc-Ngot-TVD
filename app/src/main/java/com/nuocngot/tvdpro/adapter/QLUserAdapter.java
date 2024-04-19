@@ -48,9 +48,8 @@ public class QLUserAdapter extends RecyclerView.Adapter<QLUserAdapter.QLUserView
         holder.textViewViTri.setText("Vị trí: " + qlUser.getViTri());
         holder.textViewDiaChi.setText("Địa chỉ: " + qlUser.getDiaChiKH());
         holder.textViewMaTK.setText("Mã TK: " + qlUser.getMaTK());
-        SharedPreferences sharedPreferences = holder.itemView.getContext().getSharedPreferences("login_status", Context.MODE_PRIVATE);
-        String role = sharedPreferences.getString("role", "");
-        if (role != null && role.equals("admin")) {
+        String role = getRoleForUser(holder.itemView.getContext(),qlUser.getMaTK());
+        if (role != null && role.equalsIgnoreCase("admin")) {
             holder.imageViewKhungAvt.setImageResource(R.drawable.khung_vip_02);
         } else {
             holder.imageViewKhungAvt.setImageResource(R.drawable.khung_vip_03);
@@ -76,6 +75,29 @@ public class QLUserAdapter extends RecyclerView.Adapter<QLUserAdapter.QLUserView
                 return true;
             }
         });
+    }
+    private String getRoleForUser(Context context, int maND) {
+        String role = null;
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(
+                "NguoiDung",
+                new String[]{"role"},
+                "maND = ?",
+                new String[]{String.valueOf(maND)},
+                null,
+                null,
+                null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            role = cursor.getString(cursor.getColumnIndex("role"));
+            cursor.close();
+        }
+
+        db.close();
+        return role;
     }
 
     private void showInfoDialog(Context context, QLUser qlUser) {

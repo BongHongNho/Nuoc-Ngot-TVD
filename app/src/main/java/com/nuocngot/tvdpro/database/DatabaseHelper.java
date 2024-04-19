@@ -34,7 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "diaChi TEXT NOT NULL," +
                     "capTV TEXT NOT NULL," +
                     "trangThai INTEGER NOT NULL DEFAULT 1," +
-                    "role TEXT NOT NULL DEFAULT 'user'," +
+                    "role TEXT NOT NULL," +
                     "isLogin INTEGER NOT NULL DEFAULT 0," +
                     "hinhAnh TEXT" +
                     ")";
@@ -78,13 +78,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "thoiGian TEXT NOT NULL)";
 
     private static final String CREATE_TABLE_GIO_HANG =
-            "CREATE TABLE GioHang (maGH INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "CREATE TABLE GioHang (" +
+                    "maGH INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "tenSP TEXT NOT NULL," +
                     "hinhAnh TEXT NOT NULL," +
                     "maND INTEGER REFERENCES NguoiDung(maND)," +
                     "maSP INTEGER REFERENCES SanPham(maSP)," +
                     "soLuong INTEGER NOT NULL," +
-                    "tongTien INTEGER NOT NULL)";
+                    "tongTien INTEGER NOT NULL," +
+                    "daChon INTEGER NOT NULL DEFAULT 0)";
+
 
 
     private static final String CREATE_TABLE_HOA_DON =
@@ -424,13 +427,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<LichSu> getLichSuMuaHang(int maKhachHang) {
         ArrayList<LichSu> lichSuMuaHang = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM DonMua WHERE maKH = ?";
+        String query = "SELECT * FROM DonMua WHERE maND = ?";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(maKhachHang)});
         if (cursor.moveToFirst()) {
             do {
                 LichSu donMua = new LichSu();
                 donMua.setMaDonMua(cursor.getInt(cursor.getColumnIndex("maDMUA")));
-                donMua.setMaKhachHang(cursor.getInt(cursor.getColumnIndex("maKH")));
+                donMua.setMaKhachHang(cursor.getInt(cursor.getColumnIndex("maND")));
                 donMua.setMaSanPham(cursor.getInt(cursor.getColumnIndex("maSP")));
                 donMua.setMaTrangThaiDonHang(cursor.getInt(cursor.getColumnIndex("maTTDH")));
                 donMua.setTenDonHang(cursor.getString(cursor.getColumnIndex("tenDH")));
